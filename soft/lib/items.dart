@@ -5,6 +5,7 @@ import 'package:soft/category.dart';
 import 'package:soft/config/upload_url.dart';
 import 'package:soft/create_items.dart';
 import 'package:http/http.dart' as http;
+import 'package:soft/edit_items.dart';
 
 class Items extends StatefulWidget {
   @override
@@ -44,7 +45,7 @@ removeContacts(index, id) async {
       };
      
     });
-    final response = await http.put(Uri.parse(BaseUrl.service+id),
+    final response = await http.put(Uri.parse(BaseUrl.category+id),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(this.clientDetail));
     var res = response.body;
@@ -258,13 +259,17 @@ final serviceId = TextEditingController();
                                   children: [
                                    
                                   IconButton(icon: Icon(Icons.edit), onPressed: (){
-                                     showModalBottomSheet(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return this.createModal(context,'EDIT', this.service[index]);
+                                     Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) =>EditItems(
+                                    items: this.service[0],
+                                  )));
+                                    //  showModalBottomSheet(
+                                    //             context: context,
+                                    //             builder:
+                                    //                 (BuildContext context) {
+                                    //               return this.createModal(context,'EDIT', this.service[index]);
                                                         
-                                                });
+                                    //             });
                                           
                                       
                                         

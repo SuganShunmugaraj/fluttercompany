@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:soft/config/upload_url.dart';
 import 'package:http/http.dart' as http;
+import 'package:soft/invoice_add.dart';
 import 'package:soft/invoice_details.dart';
 
 class Invoice extends StatefulWidget {
@@ -113,65 +114,89 @@ class _InvoiceState extends State<Invoice> {
             ? Container(
                 child: Center(child: CircularProgressIndicator()),
               )
-            : ListView.separated(
-                itemCount: this.invoiceList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => InvoiceDetails(
-                                    name: this.invoiceList[index],
-                                  )));
-                    },
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text((this.invoiceList[index]['invoice'])
-                                    .toString(),style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                         ),),
-                                      
-                                Text('₹ ' +
-                                    (this.invoiceList[index]['totalAmount'])
-                                        .toString(),style: TextStyle(color: Colors.red,
+            : Stack(
+                          children:[
+                             ListView.separated(
+                  itemCount: this.invoiceList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            new MaterialPageRoute(
+                                builder: (context) => InvoiceDetails(
+                                      name: this.invoiceList[index],
+                                    )));
+                      },
+                      child: Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text((this.invoiceList[index]['invoice'])
+                                      .toString(),style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                           ),),
                                         
-                                          fontWeight: FontWeight.bold,
-                                         ),)
-                                        ],
-                            ),
-                            if (this.invoiceList[index]['expiryDate'] == null)
-                              Text((dateFormat(this.invoiceList[index]
-                                      ['recurringstartDate']) +
-                                  ' - ' +
-                                  dateFormat(this.invoiceList[index]
-                                      ['recurringendDate'])))
-                            else
-                              Text((dateFormat(
-                                      this.invoiceList[index]['invoiceDate']) +
-                                  ' - ' +
-                                  dateFormat(
-                                      this.invoiceList[index]['expiryDate']))),
-                                      
-                            setOverdue(this.invoiceList[index]['expiryDate'])
-                             
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                                  Text('₹ ' +
+                                      (this.invoiceList[index]['totalAmount'])
+                                          .toString(),style: TextStyle(color: Colors.red,
+                                          
+                                            fontWeight: FontWeight.bold,
+                                           ),)
+                                          ],
+                              ),
+                              if (this.invoiceList[index]['expiryDate'] == null)
+                                Text((dateFormat(this.invoiceList[index]
+                                        ['recurringstartDate']) +
+                                    ' - ' +
+                                    dateFormat(this.invoiceList[index]
+                                        ['recurringendDate'])))
+                              else
+                                Text((dateFormat(
+                                        this.invoiceList[index]['invoiceDate']) +
+                                    ' - ' +
+                                    dateFormat(
+                                        this.invoiceList[index]['expiryDate']))),
+                                        
+                              setOverdue(this.invoiceList[index]['expiryDate'])
+                               
+                            ],
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return Divider();
-                },
-              ));
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider();
+                  },
+                ),
+                           Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 280.0, bottom: 10.0),
+                                      child: SizedBox(
+                                        width: 60.0,
+                                        child: FloatingActionButton(
+                                          backgroundColor: Colors.tealAccent.shade700,
+                                          onPressed: () {
+                                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) =>InvoiceAdd(
+                                    name: this.invoiceList[0],
+                                   
+                                  )));
+                                          },
+                                          child: Icon(Icons.add),
+                                        ),
+                                      )),
+                                ),
+                              
+                           ] ));
   }
 }
 

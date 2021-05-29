@@ -546,6 +546,7 @@ editCategory(categoryName, categoryDescription,id) async {
                                         ),
                                       )),
                                 ),
+                              
                               ]),
                               Stack(children: [
                                 Container(

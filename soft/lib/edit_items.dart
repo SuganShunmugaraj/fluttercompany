@@ -1,55 +1,36 @@
-
-
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:soft/config/upload_url.dart';
+import 'dart:convert';
 
-
-class CreateItems extends StatefulWidget {
- 
+class EditItems extends StatefulWidget {
+  EditItems({
+    this.items,
+  });
+  
+  final Map items;
   @override
-  _CreateItemsState createState() => _CreateItemsState();
+  _EditItemsState createState() => _EditItemsState();
 }
 
-class _CreateItemsState extends State<CreateItems> {
+class _EditItemsState extends State<EditItems> {
   String _chosenValue;
 
   Map subDetail={};
-List service;
+
 List category;
 List subCategory;
 
-  Future getData() async {
-    var response = await http.get(Uri.parse(BaseUrl.service),
-        headers: {"Accept": "application/json"});
-    this.setState(() {
-      var categoryData = json.decode(response.body);
-      service = categoryData['data'];
-    });
-  }
-
- 
-  
-  addContact(serviceName, serviceSaleSellingPrice,categoryDescription,subcategoryDescription)async{
-    print(serviceName, );
-    print(serviceSaleSellingPrice);
-    
+editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategoryDescription,id)async{
+   
     setState(() {
        this.subDetail['serviceName'] = serviceName;
       this.subDetail['serviceSaleSellingPrice'] = serviceSaleSellingPrice;
-      this.subDetail['categoryDescription'] = categoryDescription;
-      this.subDetail['subcategoryDescription'] = subcategoryDescription;
-
-     
-     service.add(subDetail);
-     print('...................');
-    print(service);
-     print(subDetail);
-    print('...................');
+      this.subDetail['categoryDescription']=categoryDescription;
+      this.subDetail['subcategoryDescription']= subcategoryDescription;
+      this.subDetail['_id']= id;
     }
-    ); final response = await http.post(Uri.parse(BaseUrl.service),
+    ); final response = await http.put(Uri.parse(BaseUrl.service+id),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(this.subDetail));
        var res = response.body;
@@ -83,24 +64,27 @@ List subCategory;
   }
   @override
   void initState() {
-    getData();
-   getCategory();
-   getSubCategory();
+  this.serviceName.text = this.widget.items['serviceName'];
+  this.serviceSaleSellingPrice.text = this.widget.items['serviceSaleSellingPrice'];
+  this.categoryDescription.text = this.widget.items['serviceCategory']['categoryDescription'];
+  this.subcategoryDescription.text = this.widget.items['serviceSubCategory']['subcategoryDescription'];
+  getCategory();
+  getSubCategory();
+   
     super.initState();
   }
-
   final categoryName = TextEditingController();
   final categoryDescription = TextEditingController();
   final subcategoryName = TextEditingController();
   final subcategoryDescription = TextEditingController();
-  final categoryid = TextEditingController();
+  final subcategoryid = TextEditingController();
   final serviceName = TextEditingController();
   final serviceSaleSellingPrice = TextEditingController();
  String drop = 'Select Category ';
  String title = 'Select Subcategory';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return Scaffold(
       appBar:AppBar(backgroundColor: Colors.white,
         title: Text('Create New Item',style: TextStyle(color: Colors.black
 
@@ -185,10 +169,7 @@ List subCategory;
                               );
                             }).toList(),
                               onChanged: (value) {
-                              print('.........');
                                this.subDetail['serviceSubCategory'] =value;
-                             print(this.subDetail['serviceSubCategory'] =value);
-                             print('...........');
                             },
                              hint: Text(this.title.toString(),
                              style:TextStyle(color: Colors.black,
@@ -199,6 +180,7 @@ List subCategory;
                               ),
                               ),
                          ),
+                       
                         Container(
                 padding:
                     const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
@@ -234,7 +216,6 @@ List subCategory;
                 controller: subcategoryDescription,
               ),
             ),
-           
                     //  Container(padding: const EdgeInsets.only(left:15.0,),
                     //     child: Column(
                     //       children: [
@@ -354,53 +335,6 @@ List subCategory;
                                  ],
                               ),
                             ),
-                            
-                    //          Container(
-                    //           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               Container( padding: const EdgeInsets.only(left:15.0,right: 15.0,),
-                    //                              child: Text('Sales Price')),
-                    //                           Container(
-                    //                             height: 40.0,
-                    //                             padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 5.0),
-                    //                             child: TextField(  
-                    //                       obscureText: true,  
-                    //                      decoration: InputDecoration(  
-                    //                      border: OutlineInputBorder(), 
-                    //                     //  suffixIcon: Icon(Icons.calendar_today_outlined),
-                    //                      labelText: ' Item Name',
-                    //                      hintText: 'Enter Item Name',  
-                    //   ),  
-                    // ),  
-                      
-                    //  ),
-                    
-                    //              ],
-                    //           ),
-                    //         ),
-                            
-                    //          Container(
-                    //           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               Container( padding: const EdgeInsets.only(left:15.0,right: 15.0,),
-                    //                              child: Text('Item Name')),
-                    //                           Container(
-                    //                             height: 40.0,
-                    //                             padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 5.0),
-                    //                             child: TextField(  
-                    //                       obscureText: true,  
-                    //                      decoration: InputDecoration(  
-                    //                      border: OutlineInputBorder(), 
-                    //                     //  suffixIcon: Icon(Icons.calendar_today_outlined),
-                    //                      labelText: ' Item Name',
-                    //                      hintText: 'Enter Item Name',  
-                    //   ),  
-                    // ),    
-                    //  ),
-                    //              ],
-                    //           ),
-                    //         ),
-                            
                           ]),
                         ),
                         
@@ -424,11 +358,13 @@ List subCategory;
                 child: RaisedButton(onPressed: () {},child: Text("Save & New",),color: Colors.white,textColor: Colors.purple,)),
                SizedBox(width: 165.0,
                  child: RaisedButton(onPressed: () {
-                   addContact(
+                   editContacts(
                      serviceName.text, 
                      serviceSaleSellingPrice.text,
                      categoryDescription.text,
-                     subcategoryDescription.text
+                     subcategoryDescription.text,
+                     this.widget.items['_id']
+
                      );Navigator.pop(context);
                  },child: Text("Save"),color: Colors.purple,textColor: Colors.white,)),
             ],
