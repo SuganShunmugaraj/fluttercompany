@@ -209,6 +209,7 @@ editCategory(categoryName, categoryDescription,id) async {
                                                               ),
                                                             ),
                                                           ),
+                                                          
                                                           Align(
                                                               alignment: Alignment.bottomLeft,
                                                               child: Container(

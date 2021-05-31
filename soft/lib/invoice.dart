@@ -20,12 +20,13 @@ class _InvoiceState extends State<Invoice> {
   Map values;
 
   getData() async {
-    var response = await http.get(Uri.parse(BaseUrl.invoice + this.values['_id']),
+    var response = await http.get(
+        Uri.parse(BaseUrl.invoice + this.values['_id']),
         headers: {"Accept": "application/json"});
     this.setState(() {
       final invoiceData = json.decode(response.body);
       invoiceList = invoiceData['data'];
-      fullinvoiceList = invoiceData['data']; 
+      fullinvoiceList = invoiceData['data'];
     });
   }
 
@@ -34,7 +35,7 @@ class _InvoiceState extends State<Invoice> {
     setState(() {
       this.values = this.widget.argument['values'];
     });
- 
+
     super.initState();
 
     this.getData();
@@ -48,75 +49,101 @@ class _InvoiceState extends State<Invoice> {
     var expiry = dateFormat(data);
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MMM-dd').format(now);
-    
+
     if (expiry.compareTo(formattedDate.toString()) < 0) {
-      return Text('OverDue',style: TextStyle(color: Colors.red,),);
-    }else{
+      return Text(
+        'OverDue',
+        style: TextStyle(
+          color: Colors.red,
+        ),
+      );
+    } else {
       return Text('Pending');
     }
-    
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: DropdownButtonHideUnderline(
             child: DropdownButton(
-                dropdownColor: Colors.tealAccent.shade700,
-                value: chosenValue,
-                style: TextStyle(
-                    color: Colors.white, decorationColor: Colors.white),
-                items: [
-                  'All Invoice',
-                  'Draft',
-                  'Pending',
-                  'Paid',
-                ].map((String value) {
-                  return DropdownMenuItem(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: TextStyle(color: Colors.white, fontSize: 20.0,),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (String value) {
-                  drop = value;
-                  if (value == 'All Invoice') {
-                    setState(() {
-                      invoiceList = fullinvoiceList;
-                    });
-                  } else {
-                    _invoice = fullinvoiceList
-                        .where((i) => i['status'] == value)
-                        .toList();
-                    setState(() {
-                      invoiceList = _invoice;
-                    });
-                  }
-                },
-                hint: Text(
-                  this.drop.toString(),
-                  
-                  style: TextStyle(
+              dropdownColor: Colors.tealAccent.shade700,
+              value: chosenValue,
+              style:
+                  TextStyle(color: Colors.white, decorationColor: Colors.white),
+              items: [
+                'All Invoice',
+                'Draft',
+                'Pending',
+                'Paid',
+              ].map((String value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,
-             ) ), icon: Icon(               
-                Icons.arrow_drop_down, 
-                color: Colors.white,  
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (String value) {
+                drop = value;
+                if (value == 'All Invoice') {
+                  setState(() {
+                    invoiceList = fullinvoiceList;
+                  });
+                } else {
+                  _invoice = fullinvoiceList
+                      .where((i) => i['status'] == value)
+                      .toList();
+                  setState(() {
+                    invoiceList = _invoice;
+                  });
+                }
+              },
+              hint: Text(this.drop.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                  )),
+              icon: Icon(
+                Icons.arrow_drop_down,
+                color: Colors.white,
               ),
-             ),
+            ),
           ),
           backgroundColor: Colors.tealAccent.shade700,
         ),
         body: invoiceList == null
             ? Container(
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(child:   Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 280.0, bottom: 10.0),
+                      child: SizedBox(
+                        width: 60.0,
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.tealAccent.shade700,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InvoiceAdd(
+                                          //name: this.invoiceList[0],
+                                        )));
+                          },
+                          child: Icon(Icons.add),
+                        ),
+                      )),
+                ),
+             ),
+
               )
-            : Stack(
-                          children:[
-                             ListView.separated(
+            : Stack(children: [
+                ListView.separated(
                   itemCount: this.invoiceList.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
@@ -134,20 +161,26 @@ class _InvoiceState extends State<Invoice> {
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text((this.invoiceList[index]['invoice'])
-                                      .toString(),style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                           ),),
-                                        
-                                  Text('₹ ' +
-                                      (this.invoiceList[index]['totalAmount'])
-                                          .toString(),style: TextStyle(color: Colors.red,
-                                          
-                                            fontWeight: FontWeight.bold,
-                                           ),)
-                                          ],
+                                  Text(
+                                    (this.invoiceList[index]['invoice'])
+                                        .toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    '₹ ' +
+                                        (this.invoiceList[index]['totalAmount'])
+                                            .toString(),
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                ],
                               ),
                               if (this.invoiceList[index]['expiryDate'] == null)
                                 Text((dateFormat(this.invoiceList[index]
@@ -156,14 +189,12 @@ class _InvoiceState extends State<Invoice> {
                                     dateFormat(this.invoiceList[index]
                                         ['recurringendDate'])))
                               else
-                                Text((dateFormat(
-                                        this.invoiceList[index]['invoiceDate']) +
+                                Text((dateFormat(this.invoiceList[index]
+                                        ['invoiceDate']) +
                                     ' - ' +
-                                    dateFormat(
-                                        this.invoiceList[index]['expiryDate']))),
-                                        
+                                    dateFormat(this.invoiceList[index]
+                                        ['expiryDate']))),
                               setOverdue(this.invoiceList[index]['expiryDate'])
-                               
                             ],
                             crossAxisAlignment: CrossAxisAlignment.start,
                           ),
@@ -175,28 +206,27 @@ class _InvoiceState extends State<Invoice> {
                     return Divider();
                   },
                 ),
-                           Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 280.0, bottom: 10.0),
-                                      child: SizedBox(
-                                        width: 60.0,
-                                        child: FloatingActionButton(
-                                          backgroundColor: Colors.tealAccent.shade700,
-                                          onPressed: () {
-                                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) =>InvoiceAdd(
-                                    name: this.invoiceList[0],
-                                   
-                                  )));
-                                          },
-                                          child: Icon(Icons.add),
-                                        ),
-                                      )),
-                                ),
-                              
-                           ] ));
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 280.0, bottom: 10.0),
+                      child: SizedBox(
+                        width: 60.0,
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.tealAccent.shade700,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InvoiceAdd(
+                                        //  name: this.invoiceList[0],
+                                        )));
+                          },
+                          child: Icon(Icons.add),
+                        ),
+                      )),
+                ),
+              ]));
   }
 }
 

@@ -24,11 +24,13 @@ List subCategory;
 editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategoryDescription,id)async{
    
     setState(() {
-       this.subDetail['serviceName'] = serviceName;
-      this.subDetail['serviceSaleSellingPrice'] = serviceSaleSellingPrice;
-      this.subDetail['categoryDescription']=categoryDescription;
-      this.subDetail['subcategoryDescription']= subcategoryDescription;
-      this.subDetail['_id']= id;
+      this.subDetail={
+        'serviceName': serviceName,
+        'serviceSaleSellingPrice' : serviceSaleSellingPrice,
+        'categoryDescription':categoryDescription,
+        'subcategoryDescription' : subcategoryDescription,
+ };
+    
     }
     ); final response = await http.put(Uri.parse(BaseUrl.service+id),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
@@ -64,14 +66,15 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
   }
   @override
   void initState() {
+  super.initState();
   this.serviceName.text = this.widget.items['serviceName'];
   this.serviceSaleSellingPrice.text = this.widget.items['serviceSaleSellingPrice'];
   this.categoryDescription.text = this.widget.items['serviceCategory']['categoryDescription'];
   this.subcategoryDescription.text = this.widget.items['serviceSubCategory']['subcategoryDescription'];
+  this.subcategoryid.text= this.widget.items['_id'];
   getCategory();
   getSubCategory();
    
-    super.initState();
   }
   final categoryName = TextEditingController();
   final categoryDescription = TextEditingController();

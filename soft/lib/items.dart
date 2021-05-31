@@ -261,7 +261,7 @@ final serviceId = TextEditingController();
                                   IconButton(icon: Icon(Icons.edit), onPressed: (){
                                      Navigator.push(context,
                                   MaterialPageRoute(builder: (context) =>EditItems(
-                                    items: this.service[0],
+                                    items: this.service[index],
                                   )));
                                     //  showModalBottomSheet(
                                     //             context: context,
