@@ -174,106 +174,90 @@ final serviceId = TextEditingController();
             child: Row(
               children: [
                 Icon(Icons.search,color: Colors.purple,),
-                Icon(Icons.settings,color: Colors.purple,),
+                //Icon(Icons.settings,color: Colors.purple,),
               ],
             ),
           )
         ],
         ),
-        body: 
-              Stack(
-                              children: [
+        body: Stack(
+              children: [ 
+//             Container(
+//                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                             children: [
+//                               FlatButton(
+//                                   shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(28.0),
+//         ),
+//                                   color: Colors.grey.shade300,
+//                                   onPressed: (){}, child: Text('Low Stock')),
+                             
+//                                Container(child:  DropdownButton<String>(
+//   focusColor:Colors.white,
+//   value: _chosenValue,
+//   //elevation: 5,
+//   style: TextStyle(color: Colors.blue),
+//   iconEnabledColor:Colors.black,
+//   items: <String>[
+//     '60a8e247fa336a24a0a2c456'
+//   ].map<DropdownMenuItem<String>>((String value) {
+//     return DropdownMenuItem<String>(
+//       value: value,
+//       child: Text(value,style:TextStyle(color:Colors.black),),
+//     );
+//   }).toList(),
+//   hint:Text(
+//     "Select Category",
+//     style: TextStyle(
+//                 color: Colors.black,
+//                 fontSize: 14,
+//                 fontWeight: FontWeight.w500),
+//   ),
+//   onChanged: (String value) {
+//     setState(() {
+//       _chosenValue = value;
+//     });
+//   },
+// ),),
+// ],
+//                           ),
+//                         ),
+//                       Divider(),
                                ListView.separated(
                                     itemCount: service.length,
                                     itemBuilder: (context, index) {
                                       return  SingleChildScrollView(
-                  child: Container(
-                    child: Column(
-                      children: [
-                        Container(
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              FlatButton(
-                                  shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(28.0),
-        ),
-                                  color: Colors.grey.shade300,
-                                  onPressed: (){}, child: Text('Low Stock')),
-                             
-                               Container(child:  DropdownButton<String>(
-  focusColor:Colors.white,
-  value: _chosenValue,
-  //elevation: 5,
-  style: TextStyle(color: Colors.blue),
-  iconEnabledColor:Colors.black,
-  items: <String>[
-    '60a8e247fa336a24a0a2c456'
-  ].map<DropdownMenuItem<String>>((String value) {
-    return DropdownMenuItem<String>(
-      value: value,
-      child: Text(value,style:TextStyle(color:Colors.black),),
-    );
-  }).toList(),
-  hint:Text(
-    "Select Category",
-    style: TextStyle(
-                color: Colors.black,
-                fontSize: 14,
-                fontWeight: FontWeight.w500),
-  ),
-  onChanged: (String value) {
-    setState(() {
-      _chosenValue = value;
-    });
-  },
-),),
-],
-                          ),
-                        ),
-                      Divider(),
-
+                  child: 
                       Container(
-                        child: Row(
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                              Container(  padding: const EdgeInsets.only(
-                                   left:15.0,),
-                                         child:  ClipRRect(
+                               Container( padding: const EdgeInsets.only(top:15.0,left: 10.0),
+                                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),
                   child: Container(
                   color: Colors.grey.shade500,
                   width: 50,
                   height: 50,
   ),
-                ), ),
-                            Container(padding: const EdgeInsets.only(left:8.0),
-                              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                               ), 
+                          
+                             Column(crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(service[index]['serviceName']),
                                     Text(service[index]['serviceSaleSellingPrice']),
                                    // Text('₹ 220')
                                   ],
                               ),
-                            ),
-                             Container(padding: const EdgeInsets.only(left:80.0,),
-                              child: Row(crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                   
-                                  IconButton(icon: Icon(Icons.edit), onPressed: (){
-                                     Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) =>EditItems(
-                                    items: this.service[index],
-                                  )));
-                                    //  showModalBottomSheet(
-                                    //             context: context,
-                                    //             builder:
-                                    //                 (BuildContext context) {
-                                    //               return this.createModal(context,'EDIT', this.service[index]);
-                                                        
-                                    //             });
-                                          
-                                      
-                                        
-                                  }),
+                          
+             Container(padding: const EdgeInsets.only(left:70.0),
+               child: IconButton(icon: Icon(Icons.edit), onPressed: (){
+                                       Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) =>EditItems(
+                                      items: this.service[index],
+                                    )));
+                                    }),
+             ),
                                    IconButton(icon: Icon(Icons.delete), onPressed: ()async{
                                     await showDialog(context: context,builder:
                                                             (_) => AlertDialog(
@@ -315,36 +299,30 @@ final serviceId = TextEditingController();
                                                                 ));
                                    
                                   }),
-                                   
-                                  ],
-                              ),
-                            )
                           ],
                         ),
                       ),
                      
-                      Container(
-                         child: Column(
-                           children: [
-                             Text('Add Multiple items at once'),
-                             GestureDetector(
-                                  onTap: (){
+                      // Container(
+                      //    child: Column(
+                      //      children: [
+                      //        Text('Add Multiple items at once'),
+                      //        GestureDetector(
+                      //             onTap: (){
 
-                                  },
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.add,color: Colors.purple,),
-                                      Text('Add Bulk Items',style: TextStyle(color:Colors.purple),)
-                                    ],
-                                  ),
-                             ),
-                           ],
-                         ),
-                      ),
+                      //             },
+                      //             child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                      //               children: [
+                      //                 Icon(Icons.add,color: Colors.purple,),
+                      //                 Text('Add Bulk Items',style: TextStyle(color:Colors.purple),)
+                      //               ],
+                      //             ),
+                      //        ),
+                      //      ],
+                      //    ),
+                      // ),
                     
-                      ],
-                    ),
-                  ),
+                
                                     );
                                     }, separatorBuilder: (context, index) {
                                       return Divider();
@@ -358,53 +336,61 @@ final serviceId = TextEditingController();
             child: Container(
               child: Row(mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RaisedButton(
-                     shape: RoundedRectangleBorder(
+                  SizedBox( width:165.0,
+                      child: RaisedButton(
+                       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28.0),
         ),
-                    onPressed: () {
-                    Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) =>CreateItems(
-                                  )));
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add_circle,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        Text('Create New Item',style: TextStyle(color: Colors.white),)
-                      ],
+                      onPressed: () {
+                      Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) =>CreateItems(
+                                    )));
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add_circle,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          Container(padding: const EdgeInsets.only(left:25.0),
+                            child: Text(' Item',style: TextStyle(color: Colors.white,fontSize: 18.0),))
+                        ],
+                      ),
+                      color: Colors.purple,
+                      //elevation: 0,
                     ),
-                    color: Colors.purple,
-                    //elevation: 0,
                   ),
-                   RaisedButton(
-                     shape: RoundedRectangleBorder(
+                   SizedBox(
+                     width: 165.0,
+                      child: RaisedButton(
+                       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28.0),
         ),
-                    onPressed: () {
-                    Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) =>Category(
-                                   
-                                  )));
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add_circle,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        Text('Create Category/Sub Category',
-                        style: TextStyle(color: Colors.white,fontSize: 8.0,fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    color: Colors.purple,
-                    //elevation: 0,
+                      onPressed: () {
+                      Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) =>Category(
+                                     
+                                    )));
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add_circle,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          Container(padding: const EdgeInsets.only(left:17.0),
+                            child: Text('Category',
+                            style: TextStyle(color: Colors.white,fontSize: 18.0,),
+                            ),
+                          )
+                        ],
+                      ),
+                      color: Colors.purple,
+                      //elevation: 0,
                   ),
+                   ),
                 ],
               ),
             ),

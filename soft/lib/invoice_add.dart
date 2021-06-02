@@ -15,9 +15,9 @@ class _InvoiceAddState extends State<InvoiceAdd> {
   List customer = [];
   List items;
   List selectedItems = [];
-  int totalAmount ;
-  //Map addStorage;
-  List addEdit=[];
+  dynamic amount ;
+  Map addEdit={};
+  Map addTotalEdit={};
 
   Future getCustomerData() async {
     var response = await http.get(Uri.parse(BaseUrl.contacts),
@@ -38,6 +38,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
   }
 
   setSelectedItems(items) {
+    setState(() {
     var mockItem = {
       'itemdetails': items['_id'],
       'quantity': 1,
@@ -46,58 +47,86 @@ class _InvoiceAddState extends State<InvoiceAdd> {
       'discount': 0,
       'percentage': 0
     };
-
-    
-    int index = this.selectedItems.indexWhere((element) {
+     selectedItems.add(mockItem);
+   int index = selectedItems.indexWhere((element) {
       return element['itemdetails'] == items['_id'];
     });
-
-    if (index >= 0) {
+ if (index >= 0) {
          setState(() {
-      this.selectedItems[index]['quantity'] += 1;
+     selectedItems[index]['quantity'] += 1;
          });
     } else {
       setState(() {
-        this.selectedItems.add(mockItem);
+        selectedItems.add(mockItem);
       });
     }
-print(selectedItems[index]['quantity'] );
    getTotal();
+   });
+   
   }
   
-  getTotal(){
-    var total = 0;
-    selectedItems.forEach((element) {
+  void getTotal(){
+    setState(() {
+        var total = 0;
+   selectedItems.forEach((element) {
       total += element['rate']*element['quantity'];
       
     });
- print(total);
  setState(() {
-    totalAmount = total;
+    amount = total;
    });
-    
+    });
+  
   }
+  
+editTotalItems(){
+  setState(() {
+    this.addTotalEdit={
+         'adjust': "",
+'adjustValue': 0,
+'amountPaid': 0,
+'customerId': "",
+'customerName': "60b330832b24111e58827185",
+'customerNotes': "",
+'customrepeat': "",
+'expiryDate':addEdit['expiryDate'],
+'files': [],
+'invoice': addEdit['invoice'],
+'invoiceDate': addEdit['invoiceDate'],
+'items': this.selectedItems,
+'paymentterm': "",
+'projectName': null,
+'recurringagreed': null,
+'recurringendDate': null,
+'recurringstartDate': null,
+'reference': "7878",
+'repeat': "",
+'salesPerson': null,
+'status': "Draft",
+'subTotal': 56780,
+'subject': addEdit['subject'],
+'terms': "",
+'total': "",
+'totalAmount': 56780,
+'totalwords': "fifty six thousand seven hundred and eighty rupee",
+    };
+    print('......................');
+    print(addTotalEdit);
+  });
 
+}
 
   editItems(expiryDate,invoiceDate,invoice, subject) async{
-    print(expiryDate);
-    print('.............');
-    print(invoiceDate);
-    print('////////////////////');
-    print(invoice);  print('.............');
-    print(subject);  print('.............');
+   
     setState(() {
-      final addStorage = {
+      this.addEdit = {
         'expiryDate': expiryDate,
         'invoiceDate': invoiceDate,
         'invoice': invoice,
         'subject': subject
       };
-      addEdit.add(addStorage);
-      print(addEdit);
-      print('.............................');
+
     });
-     
   }
 
   @override
@@ -105,6 +134,8 @@ print(selectedItems[index]['quantity'] );
     super.initState();
     getCustomerData();
     getItems();
+     getTotal();
+    
    
   }
 
@@ -167,24 +198,19 @@ print(selectedItems[index]['quantity'] );
                                     context: context,
                                     builder: (BuildContext context) {
                                       return SingleChildScrollView(
-                                        child: new Container(
+                                        child: Container(
                                           child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment:CrossAxisAlignment.start,
                                             children: [
                                               Container(
-                                                  padding: const EdgeInsets.all(
-                                                      15.0),
+                                                  padding: const EdgeInsets.all(15.0),
                                                   child: Text(
                                                     'Edit Invoice Date & Number',
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                        fontWeight:FontWeight.bold),
                                                   )),
                                               Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 15.0),
+                                                  padding:const EdgeInsets.only(left: 15.0),
                                                   child: Text('Invoice Date')),
                                               Container(
                                                 height: 40.0,
@@ -193,21 +219,18 @@ print(selectedItems[index]['quantity'] );
                                                     right: 15.0,
                                                     top: 5.0),
                                                 child: TextField(
-                                                  obscureText: true,
                                                    controller: expiryDate,
                                                   decoration: InputDecoration(
                                                     border: OutlineInputBorder(),
                                                     suffixIcon: IconButton(
                                                       icon: Icon(Icons.calendar_today_outlined), 
                                                       onPressed: (){
-                                                    
                                                         showDatePicker(
                                                            context: context,
                                                             initialDate: DateTime.now(),
                                                              firstDate: DateTime(2015, 8),
                                                              lastDate: DateTime(2101),
                                                               );
-        
                                                     }),
                                                     
                                                     labelText: ' Invoice Date',
@@ -216,24 +239,18 @@ print(selectedItems[index]['quantity'] );
                                                 ),
                                               ),
                                               Container(
-                                                  padding:
-                                                      const EdgeInsets.only(left: 15.0,top: 15.0),
+                                                  padding:const EdgeInsets.only(left: 15.0,top: 15.0),
                                                   child: Text('Due Date')),
                                               Container(
                                                 height: 40.0,
-                                                padding: const EdgeInsets.only(
-                                                    left: 15.0,
-                                                    right: 15.0,
-                                                    top: 5.0),
+                                                padding: const EdgeInsets.only(left: 15.0,right: 15.0,top: 5.0),
                                                 child: TextField(
-                                                  obscureText: true,
-                                                  controller: invoice,
+                                                  controller: invoiceDate,
                                                   decoration: InputDecoration(
                                                     border:OutlineInputBorder(),
                                                     suffixIcon: IconButton(
                                                       icon: Icon(Icons.calendar_today_outlined), 
                                                       onPressed: (){
-                                                    
                                                         showDatePicker(
                                                            context: context,
                                                             initialDate: DateTime.now(),
@@ -248,10 +265,7 @@ print(selectedItems[index]['quantity'] );
                                                 ),
                                               ),
                                               Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 15.0,
-                                                          top: 15.0),
+                                                  padding:const EdgeInsets.only(left: 15.0,top: 15.0),
                                                   child: Row(
                                                     children: [
                                                       Align(alignment:Alignment.center,
@@ -276,26 +290,22 @@ print(selectedItems[index]['quantity'] );
                                               Row(
                                                 mainAxisAlignment:MainAxisAlignment.spaceAround,
                                                 children: [
-                                                 
                                                   Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Container(
-                                                          padding:const EdgeInsets.only(top: 15.0),
+                                                          padding:const EdgeInsets.only(top: 15.0,left: 5.0,),
                                                           child: Text('Invoice Number')),
                                                       Container(
                                                         height: 40.0,
                                                        width: 340.0,
                                                         padding:const EdgeInsets.only(left: 5.0,top: 5.0,right: 5.0),
                                                         child: TextField(
-                                                         
-                                                          controller: invoiceDate,
+                                                          controller: invoice,
                                                           decoration:InputDecoration(
                                                             border:OutlineInputBorder(),
-                                                            labelText:
-                                                                ' Number',
-                                                            hintText:
-                                                                'Enter Number',
+                                                            labelText: ' Number',
+                                                            hintText:'Enter Number',
                                                           ),
                                                         ),
                                                       ),
@@ -306,19 +316,17 @@ print(selectedItems[index]['quantity'] );
                                                Row(
                                                 mainAxisAlignment:MainAxisAlignment.spaceAround,
                                                 children: [
-                                                 
                                                   Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Container(
-                                                          padding:const EdgeInsets.only(top: 15.0),
+                                                          padding:const EdgeInsets.only(left: 5.0,top: 15.0),
                                                           child: Text('Subject')),
                                                       Container(
                                                         height: 40.0,
                                                        width: 340.0,
                                                         padding:const EdgeInsets.only(left: 5.0,top: 5.0,right: 5.0),
                                                         child: TextField(
-                                                         
                                                           controller: subject,
                                                           decoration:InputDecoration(
                                                             border:OutlineInputBorder(),
@@ -333,70 +341,46 @@ print(selectedItems[index]['quantity'] );
                                               ),
                                               
                                               Container(
-                                                padding: const EdgeInsets.only(
-                                                    top: 15.0),
+                                                padding: const EdgeInsets.only(top: 15.0),
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                  mainAxisAlignment:MainAxisAlignment.start,
                                                   children: [
                                                     Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 15.0,
-                                                                bottom: 15.0),
+                                                        padding:const EdgeInsets.only(left: 15.0,bottom: 15.0),
                                                         child: Row(
                                                           children: [
                                                             Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              child:
-                                                                  CircleAvatar(
+                                                              alignment:Alignment.center,
+                                                              child:CircleAvatar(
                                                                 radius: 7.0,
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .purple,
+                                                                backgroundColor:Colors.purple,
                                                                 child: Icon(
                                                                   Icons.close,
-                                                                  color: Colors
-                                                                      .white,
+                                                                  color: Colors.white,
                                                                   size: 9.0,
                                                                 ),
                                                               ),
                                                             ),
                                                             Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            5.0),
+                                                                padding:const EdgeInsets.only(left:5.0),
                                                                 child: Text(
                                                                   'Remove Prefix',
                                                                   style: TextStyle(
-                                                                      color: Colors
-                                                                          .purple),
+                                                                      color: Colors.purple),
                                                                 )),
                                                           ],
                                                         )),
                                                     Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 160.0,
-                                                                bottom: 15.0),
+                                                        padding:const EdgeInsets.only(left: 160.0,bottom: 15.0),
                                                         child:
                                                             Text('(ex:h5,h6)'))
                                                   ],
                                                 ),
                                               ),
                                               Container(
-                                                padding: const EdgeInsets.only(
-                                                    left: 15.0, right: 15.0),
+                                                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .stretch,
+                                                  crossAxisAlignment:CrossAxisAlignment.stretch,
                                                   children: [
                                                     RaisedButton(
                                                         onPressed: () {
@@ -406,6 +390,8 @@ print(selectedItems[index]['quantity'] );
                                                             invoice.text,  
                                                             subject.text
                                                             );
+
+                                                            editTotalItems();
 
                                                         },
                                                         textColor: Colors.white,
@@ -422,6 +408,7 @@ print(selectedItems[index]['quantity'] );
                                           ),
                                         ),
                                       );
+                                   
                                     });
                               },
                               child: Container(
@@ -448,59 +435,40 @@ print(selectedItems[index]['quantity'] );
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                            padding: const EdgeInsets.only(
-                              left: 15.0,
-                              top: 15.0,
-                            ),
+                            padding: const EdgeInsets.only(left: 15.0,top: 15.0,),
                             child: Text('PARTY NAME')),
-                        Container(
-                          child: DropdownButton(
-                            dropdownColor: Colors.tealAccent.shade700,
-                            value: _chosenValue,
-                            style: TextStyle(
-                                color: Colors.white,
-                                decorationColor: Colors.white),
-                            items: customer.map((value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(
-                                  value['userName']['firstName'],
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20.0,
+                        Container( padding: const EdgeInsets.only(left: 15.0,),
+                          child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                              dropdownColor: Colors.tealAccent.shade700,
+                              value: _chosenValue,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  decorationColor: Colors.white),
+                              items: customer.map((value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    value['userName']['firstName'],
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                     // fontSize: 20.0,
+                                    ),
                                   ),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {},
-                            hint: Text(this.drop.toString(),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20.0,
-                                )),
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                              color: Colors.white,
+                                );
+                              }).toList(),
+                              onChanged: (value) {},
+                              hint: Text(this.drop.toString(),
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  )),
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        ),
-
-                        //      Container(
-                        //        padding: const EdgeInsets.only(
-                        //        left:15.0,right:15.0,top: 15.0,),
-                        //   height: 60.0,
-                        //         child: TextField(
-                        //   obscureText: true,
-                        //   decoration: InputDecoration(
-                        //     border: OutlineInputBorder(),
-                        //     prefixIcon: Icon(Icons.person_outline),
-                        //     labelText: ' Party Name',
-                        //     hintText: 'Enter Party Name',
-                        //   ),
-                        // ),
-                        //        ),
-
-                        GestureDetector(
+                        ),GestureDetector(
                           onTap: () {},
                           child: Container(
                             padding:
@@ -544,47 +512,27 @@ selectedItems.length > 0 ? Container(
                                                   return SingleChildScrollView(
                                                       child: Container(
                                                           child: Column(
-                                                              children: [
+                                                           children: [
                                                         Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                            left: 15.0,
-                                                            right: 15.0,
-                                                            top: 15.0,
-                                                          ),
+                                                          padding:const EdgeInsets.only(left: 15.0,right: 15.0,top: 15.0,),
                                                           height: 60.0,
                                                           child: TextField(
                                                             obscureText: true,
-                                                            decoration:
-                                                                InputDecoration(
-                                                              border:
-                                                                  OutlineInputBorder(),
-                                                              prefixIcon: Icon(
-                                                                  Icons.search),
-                                                              suffixIcon: Icon(Icons
-                                                                  .record_voice_over),
-                                                              icon: Icon(Icons
-                                                                  .arrow_back),
-                                                              labelText:
-                                                                  ' Search..',
+                                                            decoration: InputDecoration(
+                                                              border: OutlineInputBorder(),
+                                                              prefixIcon: Icon(Icons.search),
+                                                              suffixIcon: Icon(Icons.record_voice_over),
+                                                              icon: Icon(Icons.arrow_back),
+                                                              labelText: ' Search..',
                                                               // hintText: 'Enter Party Name',
                                                             ),
                                                           ),
                                                         ),
                                                         Divider(),
                                                         Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                            left: 15.0,
-                                                            right: 15.0,
-                                                            top: 15.0,
-                                                          ),
+                                                          padding: const EdgeInsets.only(left: 15.0,right: 15.0,top: 15.0,),
                                                           child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceAround,
+                                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                             children: [
 //                          Container(
 
@@ -641,60 +589,33 @@ selectedItems.length > 0 ? Container(
                                                             ],
                                                           ),
                                                         ),
-                                                        Divider(),
                                                         Container(
                                                           child: Row(
                                                             children: [
                                                               Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                  left: 15.0,
-                                                                ),
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              5.0),
-                                                                  child:
-                                                                      Container(
-                                                                    color: Colors
-                                                                        .red,
+                                                                padding:const EdgeInsets.only(left: 15.0,),
+                                                                child: ClipRRect(
+                                                                  borderRadius:BorderRadius.circular(5.0),
+                                                                  child:Container(
+                                                                    color: Colors.red,
                                                                     width: 50,
                                                                     height: 50,
                                                                   ),
                                                                 ),
                                                               ),
                                                               Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                  left: 15.0,
-                                                                ),
+                                                                padding:const EdgeInsets.only(left: 15.0,),
                                                                 child: Column(
                                                                   children: [
-                                                                    Text('Name :' +
-                                                                        this.items[index]
-                                                                            [
-                                                                            'serviceName']),
-                                                                    Text('price : ' +
-                                                                        this.items[index]
-                                                                            [
-                                                                            'serviceSaleSellingPrice']),
+                                                                    Text(this.items[index]['serviceName']),
+                                                                    Text(this.items[index]['serviceSaleSellingPrice']),
                                                                   ],
                                                                 ),
                                                               ),
                                                               Container(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                    left: 50.0,
-                                                                  ),
+                                                                  padding:const EdgeInsets.only(left: 50.0,),
                                                                   child: Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .end,
+                                                                      mainAxisAlignment:MainAxisAlignment.end,
                                                                       children: [
                                                                         TextButton(
                                                                             child:
@@ -751,11 +672,21 @@ selectedItems.length > 0 ? Container(
                                 scrollDirection: Axis.vertical,
                                 itemCount: this.selectedItems.length,
                                 itemBuilder: (BuildContext ctxt, int index) {
-                                  return Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                   var name = selectedItems[index]['name'];
+                                   var rate = selectedItems[index]['rate'];
+                                   var quantity = selectedItems[index]['quantity'];
+                                   var totalAmounts = int.parse(rate) *quantity ;
+                                  return 
+                                      Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(name),
+                                          Text(rate +' x '+quantity.toString()),
+                          Row(mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                          Text(selectedItems[index]['name']),
-                          Text(selectedItems[index]['rate'] * Text(selectedItems[index]['quantity']))
-                                 
+                                      Text(totalAmounts.toString())
+                          ],
+                                      ),
+                                      Text(amount.toString())
                                     ],
                                   );
                                 },separatorBuilder: (context, index) {
@@ -765,8 +696,7 @@ selectedItems.length > 0 ? Container(
                           ]),
                         ) : 
                       Container(
-                            padding: const EdgeInsets.only(
-                                left: 15.0, right: 15.0, bottom: 15.0),
+                            padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -775,188 +705,80 @@ selectedItems.length > 0 ? Container(
                                       showModalBottomSheet(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return ListView.separated(
-                                                itemCount: items.length,
-                                                itemBuilder: (context, index) {
-                                                  return SingleChildScrollView(
-                                                      child: Container(
-                                                          child: Column(
-                                                              children: [
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                            left: 15.0,
-                                                            right: 15.0,
-                                                            top: 15.0,
-                                                          ),
-                                                          height: 60.0,
-                                                          child: TextField(
-                                                            obscureText: true,
-                                                            decoration:
-                                                                InputDecoration(
-                                                              border:
-                                                                  OutlineInputBorder(),
-                                                              prefixIcon: Icon(
-                                                                  Icons.search),
-                                                              suffixIcon: Icon(Icons
-                                                                  .record_voice_over),
-                                                              icon: Icon(Icons
-                                                                  .arrow_back),
-                                                              labelText:
-                                                                  ' Search..',
-                                                              // hintText: 'Enter Party Name',
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Divider(),
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                            left: 15.0,
-                                                            right: 15.0,
-                                                            top: 15.0,
-                                                          ),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceAround,
-                                                            children: [
-//                          Container(
-
-//                            child: DropdownButton<String>(
-//   focusColor:Colors.white,
-//   value: _chosenValue,
-//   //elevation: 5,
-//   style: TextStyle(color: Colors.blue),
-//   iconEnabledColor:Colors.black,
-//   items: <String>[
-//     'Android',
-//     'IOS',
-//     'Flutter',
-//     'Node',
-//     'Java',
-//     'Python',
-//     'PHP',
-//   ].map<DropdownMenuItem<String>>((String value) {
-//     return DropdownMenuItem<String>(
-//       value: value,
-//       child: Text(value,style:TextStyle(color:Colors.black),),
-//     );
-//   }).toList(),
-//   hint:Text(
-//     "Add Category",
-//     style: TextStyle(
-//         color: Colors.black,
-//         fontSize: 14,
-//         fontWeight: FontWeight.w500),
-//   ),
-//   onChanged: (String value) {
-//     setState(() {
-//       _chosenValue = value;
-//     });
-//   },
-// ),
-//                          ),
-
-//               GestureDetector(
-//                                 onTap: (){
-
-//                                 },
-//                                     child: Container(
-
-//                                   child: Row(mainAxisAlignment: MainAxisAlignment.end,
-//                                     children: [
-//                                       Icon(Icons.add),
-//                                       Text('Mobile Number'),
-
-//                                     ],
-//                                   ),
-//                                 ),
-//                               ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Divider(),
-                                                        Container(
-                                                          child: Row(
-                                                            children: [
-                                                              Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                  left: 15.0,
-                                                                ),
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              5.0),
-                                                                  child:
-                                                                      Container(
-                                                                    color: Colors
-                                                                        .red,
-                                                                    width: 50,
-                                                                    height: 50,
-                                                                  ),
-                                                                ),
+                                            return Column(mainAxisAlignment: MainAxisAlignment.start,
+                                             children: [
+                                               Container(padding:const EdgeInsets.only(top:15.0,left:15.0,right: 15.0),
+                                                   child: TextField(
+                                                obscureText: true,
+                                             decoration:InputDecoration(
+                                                border:OutlineInputBorder(),
+                                                    prefixIcon: Icon(Icons.search),
+                                                     suffixIcon: Icon(Icons.record_voice_over),
+                                                icon: Icon(Icons.arrow_back),
+                                                   labelText:' Search..',
+                                                                          // hintText: 'Enter Party Name',
+                                                   ),
+                                            ),
+                                                 ),
+                                              
+                                               Expanded(
+                                                 child:ListView.separated(
+                                                  itemCount: items.length,
+                                                  itemBuilder: (context, index) {
+                                                   return  Container(padding:const EdgeInsets.only(left:15.0,top: 15.0),
+                                                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                ClipRRect(
+                                                                      borderRadius:BorderRadius.circular(5.0),
+                                                                      child:Container(
+                                                                        color: Colors.red,
+                                                                        width: 50,
+                                                                        height: 50,
+                                                                      ),
+                                                                    ),
+                                                                 Container( padding:const EdgeInsets.only(right: 90.0,),
+                                                                   child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Text(this.items[index]['serviceName']),
+                                                                          Text(this.items[index]['serviceSaleSellingPrice']),
+                                                                        ],
+                                                                      ),
+                                                                 ),
+                                                                  Container(padding:const EdgeInsets.only(right: 15.0,),
+                                                                    child:TextButton(
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    Text("ADD", style: TextStyle(color: Colors.purple)),
+                                                                                    Icon(Icons.add),
+                                                                                  ],
+                                                                                ),
+                                                                                style: ButtonStyle(
+                                                                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(15)),
+                                                                                    foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                                                                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.purple)))),
+                                                                                onPressed: () => {
+                                                                                  setSelectedItems(this.items[index]),
+                                                                                  getTotal(),
+                                                                                 
+                                                                                  }),
+                                                                         ),
+                                                                ],
                                                               ),
-                                                              Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                  left: 15.0,
-                                                                ),
-                                                                child: Column(
-                                                                  children: [
-                                                                    Text('Name :' +
-                                                                        this.items[index]
-                                                                            [
-                                                                            'serviceName']),
-                                                                    Text('price : ' +
-                                                                        this.items[index]
-                                                                            [
-                                                                            'serviceSaleSellingPrice']),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                    left: 50.0,
-                                                                  ),
-                                                                  child: Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .end,
-                                                                      children: [
-                                                                        TextButton(
-                                                                            child:
-                                                                                Row(
-                                                                              children: [
-                                                                                Text("ADD", style: TextStyle(color: Colors.purple)),
-                                                                                Icon(Icons.add),
-                                                                              ],
-                                                                            ),
-                                                                            style: ButtonStyle(
-                                                                                padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(15)),
-                                                                                foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                                                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.purple)))),
-                                                                            onPressed: () => {setSelectedItems(this.items[index])}),
-                                                                      ])),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ])));
-                                                },
-                                                separatorBuilder:
-                                                    (context, index) {
-                                                  return Divider();
-                                                });
-                                          });
+                                                            );
+                                                        
+                                                  },
+                                                  separatorBuilder:
+                                                      (context, index) {
+                                                    return Divider();
+                                                  })
+                                                )
+                                             ],
+                                            );
+                                                      
+                                               
+                                                   }
+                                                      );
+                                   
                                     },
                                     textColor: Colors.purple,
                                     color: Colors.purple.shade50,
@@ -967,7 +789,7 @@ selectedItems.length > 0 ? Container(
                               ],
                             )),
                        
-                          //getTotal()
+                        
                       ],
                     ),
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:soft/config/upload_url.dart';
 import 'package:soft/items.dart';
 import 'package:soft/payment.dart';
+import 'package:soft/payment_list.dart';
 import 'package:soft/string.dart';
 import 'package:soft/contacts.dart';
 import 'package:http/http.dart' as http;
@@ -110,7 +111,7 @@ class _FirstPageState extends State<FirstPage> {
                                        GestureDetector(
                                 onTap: (){
                                   Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) =>Payment(
+                                  MaterialPageRoute(builder: (context) =>PaymentList(
                                    
                                   )));
                                  
@@ -163,7 +164,7 @@ class _FirstPageState extends State<FirstPage> {
                                   child: Column(
                                     children: [
                                      Icon(Icons.message),
-                                     Text('Message'),
+                                     Text('Contacts'),
                                      
                                     ],
                                   ),

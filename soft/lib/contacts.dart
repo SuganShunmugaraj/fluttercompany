@@ -37,33 +37,57 @@ class _ContactsState extends State<Contacts> {
           contacts == null
               ? Container(
                   child: Center(child: CircularProgressIndicator()),
-                ):ListView.separated(
+                ):Stack(
+                   children: [
+             ListView.separated(
         itemCount: contacts.length,
         itemBuilder: (context, index) {
           return Container( 
             child:GestureDetector(
-                                onTap: (){
-                                   Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) =>Edit(
-                                  prod: contacts[index],
-                                  )));
-                                },
-                                  child: Container(
-                                  
-                                padding: const EdgeInsets.only(top:15.0),
-                                   
-                                    child: Column(
-                                      children: [
-                                       Text(contacts[index]['userName']['firstName'])
-                                      ],
+                                  onTap: (){
+                                     Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) =>Edit(
+                                    prod: contacts[index],
+                                    )));
+                                  },
+                                    child: Container(
+                                    
+                                  padding: const EdgeInsets.only(top:15.0),
+                                     
+                                      child: Column(
+                                        children: [
+                                         Text(contacts[index]['userName']['firstName'])
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
           );
         },separatorBuilder: (context, index) {
-                  return Divider();
-                },
+                    return Divider();
+                  },
         ),
+                    Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 280.0, bottom: 10.0),
+                      child: SizedBox(
+                        width: 60.0,
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.tealAccent.shade700,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Edit(
+                                        prod: null,
+                                        )));
+                          },
+                          child: Icon(Icons.add),
+                        ),
+                      )),
+                ),
+             
+                   ]),
         ]) 
     );
   }

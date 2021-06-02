@@ -44,10 +44,7 @@ List subCategory;
 
      
      service.add(subDetail);
-     print('...................');
-    print(service);
-     print(subDetail);
-    print('...................');
+    
     }
     ); final response = await http.post(Uri.parse(BaseUrl.service),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
@@ -106,12 +103,12 @@ List subCategory;
 
         ),),
         leading: Icon(Icons.arrow_back,color: Colors.black,),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right:15.0),
-            child: Icon(Icons.settings,color: Colors.black,),
-          )
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right:15.0),
+        //     child: Icon(Icons.settings,color: Colors.black,),
+        //   )
+        // ],
         ),
         body: 
         Stack(
@@ -136,68 +133,69 @@ List subCategory;
                     ),   
                      ),
                  
-                  Container(
-                    child:DropdownButton(
-                       dropdownColor:Colors.tealAccent .shade700,
-                          value:_chosenValue,
-                            style: TextStyle( color: Colors.white,
-                              decorationColor:Colors.white),
-                            items:this.category.map((pageon) {
-                              return DropdownMenuItem(
-                               value: pageon['_id'],
-                                child: Text(pageon['categoryName'],
-                                  style:TextStyle(color: Colors.white,
-                                   fontSize:20.0,
-                                ),
-                                ),
-                                );
-                                }).toList(),
-                                 onChanged: (value) {
-                                   this.subDetail['serviceCategory'] =value;
-                                   print(this.subDetail['serviceCategory'] =value);
-                                                                
-                                   },
-                                   hint: Text(
-                                  this.drop.toString(),
-                                    style:TextStyle(color: Colors.black,
-                                     fontSize: 20.0,
-                                     )),
-                                      icon: Icon(Icons.arrow_drop_down,
-                                      color: Colors.white,
-                                     ),
-                                    ),
+                  Container(padding: const EdgeInsets.only(left:15.0,),
+                    child:DropdownButtonHideUnderline(
+                child: DropdownButton(
+                         dropdownColor:Colors.tealAccent .shade700,
+                            value:_chosenValue,
+                              style: TextStyle( color: Colors.white,
+                                decorationColor:Colors.white),
+                              items:this.category.map((pageon) {
+                                return DropdownMenuItem(
+                                 value: pageon['_id'],
+                                  child: Text(pageon['categoryName'],
+                                    style:TextStyle(color: Colors.white,
+                                     fontSize:20.0,
+                                  ),
+                                  ),
+                                  );
+                                  }).toList(),
+                                   onChanged: (value) {
+                                     this.subDetail['serviceCategory'] =value;
+                                     print(this.subDetail['serviceCategory'] =value);
+                                                                  
+                                     },
+                                     hint: Text(
+                                    this.drop.toString(),
+                                      style:TextStyle(color: Colors.black,
+                                       fontSize: 20.0,
+                                       )),
+                                        icon: Icon(Icons.arrow_drop_down,
+                                       // color: Colors.white,
+                                       ),
+                                      ),
+                    ),
                                   ),
                                                          
-                     Container(
-                            child: DropdownButton(dropdownColor:Colors.tealAccent.shade700,
-                             value:_chosenValue,
-                              style: TextStyle(color: Colors .white,
-                               decorationColor:Colors.white),
-                               items:this.subCategory.map((pagesubCategory) {
-                               return DropdownMenuItem(
-                               value: pagesubCategory['_id'],
-                               child: Text(pagesubCategory['subcategoryName'],
-                                 style:TextStyle(
-                                color: Colors.white,
-                                fontSize:20.0,
-                               ),
-                               ),
-                              );
-                            }).toList(),
-                              onChanged: (value) {
-                              print('.........');
-                               this.subDetail['serviceSubCategory'] =value;
-                             print(this.subDetail['serviceSubCategory'] =value);
-                             print('...........');
-                            },
-                             hint: Text(this.title.toString(),
-                             style:TextStyle(color: Colors.black,
-                             fontSize: 20.0,
-                              )),
-                               icon: Icon(Icons.arrow_drop_down,
-                                color: Colors.white,
-                              ),
-                              ),
+                     Container(padding: const EdgeInsets.only(left:15.0,),
+                            child: DropdownButtonHideUnderline(
+                    child: DropdownButton(dropdownColor:Colors.tealAccent.shade700,
+                               value:_chosenValue,
+                                style: TextStyle(color: Colors .white,
+                                 decorationColor:Colors.white),
+                                 items:this.subCategory.map((pagesubCategory) {
+                                 return DropdownMenuItem(
+                                 value: pagesubCategory['_id'],
+                                 child: Text(pagesubCategory['subcategoryName'],
+                                   style:TextStyle(
+                                  color: Colors.white,
+                                  fontSize:20.0,
+                                 ),
+                                 ),
+                                );
+                              }).toList(),
+                                onChanged: (value) {
+                                 this.subDetail['serviceSubCategory'] =value;
+                              },
+                               hint: Text(this.title.toString(),
+                               style:TextStyle(color: Colors.black,
+                               fontSize: 20.0,
+                                )),
+                                 icon: Icon(Icons.arrow_drop_down,
+                                  //color: Colors.white,
+                                ),
+                                ),
+                            ),
                          ),
                         Container(
                 padding:
@@ -252,20 +250,20 @@ List subCategory;
                           
 
 
-                       Container(padding: const EdgeInsets.only(left:15.0,top: 15.0),
-                               child: Text('Item Type')),
-                               Container(padding: const EdgeInsets.only(left:15.0,top: 15.0,right: 200.0),
-                                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                   children: [
-                                     Container(color: Colors.grey.shade200,
-                               child: Text('Product')),
-                                Container(
-                                  color: Colors.grey.shade200,
-                               child: Text('Service')),
-                                   ],
-                                 ),
-                               ),
-                               Divider(),
+                      //  Container(padding: const EdgeInsets.only(left:15.0,top: 15.0),
+                      //          child: Text('Item Type')),
+                      //          Container(padding: const EdgeInsets.only(left:15.0,top: 15.0,right: 200.0),
+                      //            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //              children: [
+                      //                Container(color: Colors.grey.shade200,
+                      //          child: Text('Product')),
+                      //           Container(
+                      //             color: Colors.grey.shade200,
+                      //          child: Text('Service')),
+                      //              ],
+                      //            ),
+                      //          ),
+                      //          Divider(),
                                 DefaultTabController(
                       length: 1,
                       initialIndex: 0,
@@ -282,7 +280,7 @@ List subCategory;
                             // Tab(text: 'Others'),
                           ],
                         ),
-                        Divider(),
+                        //Divider(),
                        Container(
                           height: 550,
                           child: TabBarView(children: [
@@ -300,7 +298,8 @@ List subCategory;
                                          decoration: InputDecoration(  
                                          border: OutlineInputBorder(), 
                                           suffixIcon:  Container(
-                                            child: DropdownButton<String>(
+                                            child: DropdownButtonHideUnderline(
+                         child: DropdownButton<String>(
   focusColor:Colors.white,
   value: _chosenValue,
   //elevation: 5,
@@ -333,6 +332,7 @@ List subCategory;
     });
   },
 ),
+                                            ),
                                           ),
                                          labelText: ' ₹',
                                          hintText: 'Enter price',  
@@ -417,11 +417,12 @@ List subCategory;
           alignment: Alignment.bottomLeft,
           child:Container( padding: const EdgeInsets.only(left:15.0,right: 15.0),
                    child:
-          Row(
+          Row(mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              SizedBox(
-                width: 165.0,
-                child: RaisedButton(onPressed: () {},child: Text("Save & New",),color: Colors.white,textColor: Colors.purple,)),
+              // SizedBox(
+              //   width: 165.0,
+              //   child: RaisedButton(onPressed: () {},child: Text("Save & New",),color: Colors.white,textColor: Colors.purple,)),
+              
                SizedBox(width: 165.0,
                  child: RaisedButton(onPressed: () {
                    addContact(
