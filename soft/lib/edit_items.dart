@@ -89,7 +89,7 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
   Widget build(BuildContext context) {
      return Scaffold(
       appBar:AppBar(backgroundColor: Colors.white,
-        title: Text('Create New Item',style: TextStyle(color: Colors.black
+        title: Text('Edit Item',style: TextStyle(color: Colors.black
 
         ),),
         leading: Icon(Icons.arrow_back,color: Colors.black,),

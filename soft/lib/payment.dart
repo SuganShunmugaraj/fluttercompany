@@ -1,12 +1,54 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-
-
+import 'package:http/http.dart' as http;
+import 'package:soft/config/upload_url.dart';
+import 'package:intl/intl.dart';
 class Payment extends StatefulWidget {
   @override
   _PaymentState createState() => _PaymentState();
 }
 
 class _PaymentState extends State<Payment> {
+  List customer=[];
+  List payment=[];
+    Future getData() async {
+    var response = await http.get(Uri.parse(BaseUrl.contacts),
+        headers: {"Accept": "application/json"});
+    this.setState(() {
+      var customerData = json.decode(response.body);
+      customer = customerData['data'];
+    });
+  }
+
+
+  getId(getid)async{
+     var response = await http.get(Uri.parse(BaseUrl.invoice + getid),
+        headers: {"Accept": "application/json"});
+    this.setState(() {
+   var paymentList = json.decode(response.body);
+      payment = paymentList['data'];
+    }); 
+    print(payment);
+  }
+
+
+  addAmount(amount){
+    print(amount);
+    print(payment);
+
+  }
+
+    @override
+  void initState() {
+    super.initState();
+    getData(); 
+    
+  }
+  bool _afternoonOutdoor = false;
+ 
+  String _chosenValue;
+  String drop = 'Customer Name';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,10 +58,10 @@ class _PaymentState extends State<Payment> {
         ),),
         leading: Icon(Icons.arrow_back,color: Colors.black,),
         ),
-      body: Stack(children: [
+      body: payment.length>0?
+      Stack(children: [
         SingleChildScrollView(
-          child: Container( 
-            
+          child: Container(  padding: const EdgeInsets.only(bottom:65.0),
             child: Column(
               children: [
                 Padding(
@@ -47,11 +89,12 @@ class _PaymentState extends State<Payment> {
                    ),
                     Padding(
                      padding: const EdgeInsets.only(top:10.0),
+                     
                      child: Container(  
                       
                        color: Colors.white,
                        child: Container(padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 10.0),
-                         child: Column(
+                         child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                            children: [
                              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -63,18 +106,57 @@ class _PaymentState extends State<Payment> {
                                   Text('₹ 12124',style: TextStyle(color: Colors.green),)
                               ],
                   ),
-Container(height: 60.0,
-  padding: const EdgeInsets.only(top: 10.0,bottom: 15.0),
-                  child:TextField( 
-                     decoration: InputDecoration(  
-                        filled: true,
-                    fillColor: Colors.grey.shade200,
-                                           border:  InputBorder.none, 
-                                         prefixIcon: Icon(Icons.person_outline),
-                                           labelText: 'Name',
-                                           hintText: 'Enter Name',  
-                      ),  
-                    ), ), 
+                         Container( 
+                          child: 
+                          DropdownButtonHideUnderline(
+                                child: 
+                                DropdownButton(
+                              dropdownColor: Colors.tealAccent.shade700,
+                              value: _chosenValue,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  decorationColor: Colors.white),
+                              items: customer.map((value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    value['userName']['firstName'],
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                     // fontSize: 20.0,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                 getId( value['_id']);
+                              },
+                              hint: Text(this.drop.toString(),
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  )),
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                //color: Colors.white,
+                              ),
+                            ),
+                         
+                          ),
+                        ),
+
+  //      Container(height: 60.0,
+  // padding: const EdgeInsets.only(top: 10.0,bottom: 15.0),
+  //                 child:TextField( 
+  //                    decoration: InputDecoration(  
+  //                       filled: true,
+  //                   fillColor: Colors.grey.shade200,
+  //                                          border:  InputBorder.none, 
+  //                                        prefixIcon: Icon(Icons.person_outline),
+  //                                          labelText: 'Name',
+  //                                          hintText: 'Enter Name',  
+  //                     ),  
+  //                   ), ), 
+                           
                            ],
                          ),
                        ),
@@ -95,13 +177,15 @@ Container(height: 60.0,
                              ), ),
                                       Container(width: 250.0,
                                       height: 45.0,
-                                        child: TextField( 
-                     decoration: InputDecoration(  
+                                        child: TextField(  onChanged: (text) {
+                                         addAmount(text);
+                                        },
+                     decoration: InputDecoration( 
                         //filled: true,
                    // fillColor: Colors.grey.shade200,
                                              border:  OutlineInputBorder(), 
                                            //prefixIcon: Icon(Icons.person_outline),
-                                             labelText: '₹',
+                                             labelText: ('₹'),
                                              hintText: 'Enter Amount',  
                       ),  
                     ),
@@ -111,7 +195,8 @@ Container(height: 60.0,
                        ),
                      ),
                    ),
-
+                  
+                   for (var i = 0;i <payment.length;i++)
                   Padding(
                      padding: const EdgeInsets.only(top:10.0),
                      child: Container( 
@@ -119,43 +204,41 @@ Container(height: 60.0,
                        child: Container(padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 10.0,bottom: 10.0),
                          child:Column(crossAxisAlignment: CrossAxisAlignment.start,
                            children: [
+                             
                              Text('Invoice',style: TextStyle(
                                fontWeight:FontWeight.bold
                              ),),
                              Text('Settle outstanding Invoice with the above Payment',style: TextStyle(
                                color: Colors.grey.shade500
                              ),),
+
+
                              Container(padding: const EdgeInsets.only(top: 15.0,),
                                child: Row(
                                  children: [
                                    Container(
-  height: 15,
-  width: 15,
-  decoration: BoxDecoration(
-    border: Border.all(
-      color: Colors.blue,
-    ),
-    borderRadius: BorderRadius.circular(2.0),
-  ),
-  // child: Center(
-  //   child: Text('mrflutter.com'),
-  // ),
-),
-                                
-                                Container(padding: const EdgeInsets.only(left:15.0,),
+                                     child: Checkbox(
+                      value: _afternoonOutdoor,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _afternoonOutdoor = value;
+                        });
+                      }),
+                       ),
+                        Container(
                                   child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('#H4'),
-                                      Text('16 May 2021',style: TextStyle(color: Colors.grey.shade500),)
+                                      Text(payment[i]['invoice'].toString()),
+                                      Text(dateFormat(payment[i]['createdAt']),style: TextStyle(color: Colors.grey.shade500),)
                                     ],
                                   ),
                                 ),
-                                Container(padding: const EdgeInsets.only(left:97.0,),
+                                Container(padding: const EdgeInsets.only(left:65.0),
                                   child: Column(crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text('₹ 200'),
-                                      Text('₹ 200 setted',style: TextStyle(color: Colors.green),),
-                                      Text('₹ 20075 Remaining',style: TextStyle(color: Colors.red),)
+                                      Text(payment[i]['subTotal'].toString()),
+                                      Text(payment[i]['amountPaid'].toString(),style: TextStyle(color: Colors.green),),
+                                      Text((payment[i]['subTotal']-payment[i]['amountPaid']).toString()+' '+ ' Remaining',style: TextStyle(color: Colors.red),)
                                     ],
                                   ),
                                 )
@@ -164,46 +247,8 @@ Container(height: 60.0,
                                ),
                             
                              ),
-                              Container(padding: const EdgeInsets.only(top: 15.0,),
-                               child: Row(
-                                 children: [
-                                   Container(
-  height: 15,
-  width: 15,
-  decoration: BoxDecoration(
-    border: Border.all(
-      color: Colors.purple,
-    ),
-    borderRadius: BorderRadius.circular(2.0),
-  ),
-  // child: Center(
-  //   child: Text('mrflutter.com'),
-  // ),
-),
-                                
-                                Container(padding: const EdgeInsets.only(left:15.0,),
-                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('#H4'),
-                                      Text('16 May 2021',style: TextStyle(color: Colors.grey.shade500),)
-                                    ],
-                                  ),
-                                ),
-                                Container(padding: const EdgeInsets.only(left:97.0,),
-                                  child: Column(crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text('₹ 200'),
-                                      Text('₹ 200 setted',style: TextStyle(color: Colors.green),),
-                                      Text('₹ 20075 Remaining',style: TextStyle(color: Colors.red),)
-                                    ],
-                                  ),
-                                )
-                                
-                                 ],
-                               ),
-                            
-                             ),
-                             
+                              
+                           
                              
                            ],
                          )
@@ -307,7 +352,22 @@ Container(height: 60.0,
             ),
           ),
         ),
-      ],),
+      ],
+      ):
+      
+      Container(child:Text('dilip'))
     );
+  }
+}
+
+
+dateFormat(dateFormat) {
+  return DateUtil().formattedDate(DateTime.parse(dateFormat));
+}
+
+class DateUtil {
+  static const DATE_FORMAT = 'yyyy-MMM-dd';
+  String formattedDate(DateTime dateTime) {
+    return DateFormat(DATE_FORMAT).format(dateTime);
   }
 }

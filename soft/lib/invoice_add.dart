@@ -438,8 +438,10 @@ editTotalItems(){
                             padding: const EdgeInsets.only(left: 15.0,top: 15.0,),
                             child: Text('PARTY NAME')),
                         Container( padding: const EdgeInsets.only(left: 15.0,),
-                          child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
+                          child: 
+                          DropdownButtonHideUnderline(
+                                child: 
+                                DropdownButton(
                               dropdownColor: Colors.tealAccent.shade700,
                               value: _chosenValue,
                               style: TextStyle(
@@ -457,7 +459,9 @@ editTotalItems(){
                                   ),
                                 );
                               }).toList(),
-                              onChanged: (value) {},
+                              onChanged: (value) {
+
+                              },
                               hint: Text(this.drop.toString(),
                                   style: TextStyle(
                                     color: Colors.black,
@@ -467,8 +471,12 @@ editTotalItems(){
                                 color: Colors.white,
                               ),
                             ),
+                         
                           ),
-                        ),GestureDetector(
+                        ),
+                        
+                        GestureDetector(
+                         
                           onTap: () {},
                           child: Container(
                             padding:
