@@ -34,13 +34,12 @@ class _EditState extends State<Edit> {
     });
   }
 
-  addContact(emailAddress, mobile, cfirstName, clastName) {
+  addContact(emailAddress, mobile, ) {
     setState(() {
       final value = {
         'emailAddress': emailAddress,
         'mobile': mobile,
-        'firstName': cfirstName,
-        'lastName': clastName
+        
       };
       this.widget.prod['contactPerson'].add(value);
       
@@ -50,11 +49,12 @@ class _EditState extends State<Edit> {
   final salutation = TextEditingController();
   final firstName = TextEditingController();
   final lastName = TextEditingController();
-  final contactEmail =TextEditingController();
   final companyName = TextEditingController();
+  final contactEmail =TextEditingController();
   final primaryContact = TextEditingController();
   final secondarycontact = TextEditingController();
   final website = TextEditingController();
+ // final openingBalance = TextEditingController();
   final facebook = TextEditingController();
   final twitter = TextEditingController();
   final attention = TextEditingController();
@@ -83,9 +83,11 @@ setState(() {
     this.firstName.text = this.widget.prod['userName']['firstName'];
     this.lastName.text = this.widget.prod['userName']['lastName'];
     this.companyName.text = this.widget.prod['companyName'];
+    this.contactEmail.text = this.widget.prod['contactEmail'];
     this.primaryContact.text = this.widget.prod['phone']['primaryContact'];
     this.secondarycontact.text = this.widget.prod['phone']['secondarycontact'];
     this.website.text = this.widget.prod['website'];
+   // this.openingBalance.text = this.widget.prod['otherDetails']['openingBalance'];
     this.facebook.text = this.widget.prod['otherDetails']['facebook'];
     this.twitter.text = this.widget.prod['otherDetails']['twitter'];
     this.attention.text = this.widget.prod['billingAddress']['attention'];
@@ -156,7 +158,8 @@ setState(() {
    
 
 
-createDetails(
+ createDetails(
+  //selectName,
   firstName,
       lastName,
       companyName,
@@ -178,7 +181,7 @@ createDetails(
      )async{
        setState(() {
          this.createItems={
-           'userName':{"salutation":{"name":salutation},'firstName':firstName,'lastName':lastName},
+           'userName':{"salutation":{"name":selectName},'firstName':firstName,'lastName':lastName},
            'companyName':companyName,
            'contactEmail':contactEmail,
            'phone':{'primaryContact':primaryContact,'secondarycontact':secondarycontact},
@@ -196,7 +199,7 @@ createDetails(
            'remarks':{'remarkstext':remarkstext},
          };
          addItems.add(this.createItems);
-          
+          print(addItems);
        });
     final response = await http.post(Uri.parse(BaseUrl.contacts),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
@@ -211,7 +214,8 @@ createDetails(
      
 
   final formKey = GlobalKey<FormState>();
-String selectName;
+String selectName='Salutation';
+
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +226,7 @@ String selectName;
             onPressed: () {
                Navigator.pushNamed(context, MYAPP_PAGE);
             }),
-        title: Text('Profile'),
+        title: Text('Contacts'),
       ),
       body: 
       this.widget.prod==null?
@@ -241,20 +245,24 @@ String selectName;
                 child: Row(
                    children: [
                      DropdownButton<String>(
+                       underline: Container(
+                         height: 1,
+                         color: Colors.grey,
+                       ),
                          items: <String>['Mr.', 'Mrs.'].map((String value) {
                             return  DropdownMenuItem<String>(
                            value: value,
-                           child:  Text(value),
+                           child:  SizedBox(
+                             width: 296.0,
+                             child: Text(value)),
                            );
                           }).toList(),
                               onChanged: (value) {
                         setState(() { 
                           selectName =value;
-                         
-                             // this.widget.prod['userName']['salutation']['name']= value;
                             });
                          },
-                         hint: Text('selectName'),
+                         hint: Text(selectName.toString()),
 ),
                    ],
                  ),
@@ -272,8 +280,8 @@ String selectName;
                             }
                           },
                           decoration: InputDecoration(
-                            hintText: 'firstName',
-                            labelText: 'firstName',
+                            hintText: 'First Name',
+                            labelText: 'First Name',
                           ),
                           controller: firstName,
                         ),
@@ -290,8 +298,8 @@ String selectName;
                             }
                           },
                           decoration: InputDecoration(
-                            hintText: 'lastName',
-                            labelText: 'lastName',
+                            hintText: 'Last Name',
+                            labelText: 'Last Name',
                           ),
                           controller: lastName,
                         ),
@@ -317,7 +325,7 @@ String selectName;
                          validator: (value) {
                             if (value.isEmpty) {
                               return 'Enter something';
-                            } else if (RegExp(r'[a-zA-Z]+|\s')
+                            } else if (RegExp(r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
                                 .hasMatch(value)) {
                               return null;
                             } else {
@@ -325,8 +333,8 @@ String selectName;
                             }
                           },
                           decoration: InputDecoration(
-                            hintText: 'contactEmail',
-                            labelText: 'contactEmail',
+                            hintText: 'Contact Email',
+                            labelText: 'Contact Email',
                           ),
                           controller: contactEmail,
                         ),
@@ -342,8 +350,8 @@ String selectName;
                             }
                           },
                           decoration: InputDecoration(
-                            hintText: 'primaryContact',
-                            labelText: 'primaryContact',
+                            hintText: 'primary Contact',
+                            labelText: 'Primary Contact',
                           ),
                           controller: primaryContact,
                         ),
@@ -377,8 +385,8 @@ String selectName;
                             }
                           },
                           decoration: InputDecoration(
-                            hintText: 'website',
-                            labelText: 'website',
+                            hintText: 'Website',
+                            labelText: 'Website',
                           ),
                           controller: website,
                         ),
@@ -405,6 +413,25 @@ String selectName;
                             Container(
                               child: Column(
                                 children: [
+                                  //  TextFormField(
+                                  //   validator: (value) {
+                                  //     if (value.isEmpty) {
+                                  //       return null;
+                                  //     } else if (RegExp(
+                                  //             r'^((?:.|\n)*?)((http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)([-A-Z0-9.]+)(/[-A-Z0-9+&@#/%=~_|!:,.;]*)?(\?[A-Z0-9+&@#/%=~_|!:‌​,.;]*)?)')
+                                  //         .hasMatch(value)) {
+                                  //       return null;
+                                  //     } else {
+                                  //       return 'Enter valid Amount';
+                                  //     }
+                                  //   },
+                                  //   decoration: InputDecoration(
+                                  //     hintText: 'Opening Balence',
+                                  //     labelText: 'Opening Balence ',
+                                  //   ),
+                                  //   controller: openingBalance,
+                                  // ),
+                                    
                                    TextFormField(
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -623,13 +650,152 @@ String selectName;
                                                 onPressed: () {}),
                                           ),
                                         ]),
-                                      ])
-                                      )
-                                      ])
-                                      )
-                                      )
-                                  ]))]))
-                   ])))
+                                        if(this.widget.prod['contactPerson'].length)
+                                        for (var i = 0;i <this.widget.prod['contactPerson'].length;i++)
+                                          TableRow(children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text((i + 1).toString()),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text(this
+                                                          .widget
+                                                          .prod['contactPerson']
+                                                      [i]['mobile'] ??
+                                                  '-'),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text(this
+                                                      .widget
+                                                      .prod['contactPerson'][i]
+                                                  ['emailAddress']),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: IconButton(
+                                                  icon: Icon(Icons.delete),
+                                                  onPressed: () async {
+                                                    await showDialog(
+                                                        context: context,
+                                                        builder: (_) =>
+                                                            AlertDialog(
+                                                              title: Text(
+                                                                  'Do you want Delete'),
+                                                              actions: [
+                                                                FlatButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(context, rootNavigator: true).pop(true);
+                                                                    },
+                                                                    child: Text(
+                                                                        'No',style:
+                                                       TextStyle(color: Colors.tealAccent.shade700,),)),
+                                                                FlatButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      removeContact(
+                                                                          i);
+                                                                      Navigator.of(context, rootNavigator: true).pop(true);
+                                                                    },
+                                                                    child: Text(
+                                                                        'Yes',style:
+                                                       TextStyle(color: Colors.tealAccent.shade700,),)),
+                                                              ],
+                                                            ));
+                                                  }),
+                                            ),
+                                          ]),
+                                      
+                                      ],
+                                      border: TableBorder.all(
+                                          width: 1, color: Colors.tealAccent.shade700,),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 80.0),
+                                    child: Column(
+                                      children: [
+                                        IconButton(
+                                            icon: Icon(Icons.add),
+                                            onPressed: () {
+                                              setState(() {
+                                                displayForm = true;
+                                              });
+                                            }),
+                                        Text('Add Contact Person'),
+                                      ],
+                                    ),
+                                  ),
+                                  if (displayForm)
+                                    SingleChildScrollView(
+                                      child: Container(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 70.0),
+                                          child: Column(children: [
+                                            TextFormField(
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return 'Enter Email Address';
+                                                } else if (RegExp(
+                                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                                    .hasMatch(value)) {
+                                                  return null;
+                                                } else {
+                                                  return 'Enter valid email';
+                                                }
+                                              },
+                                              decoration: InputDecoration(
+                                                  labelText: 'Email'),
+                                              controller: emailAddress,
+                                            ),
+                                            TextFormField(
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return 'Enter Phone Number';
+                                                } else if (RegExp(
+                                                        r'(^(?:[+0]9)?[0-9]{10}$)')
+                                                    .hasMatch(value)) {
+                                                  return null;
+                                                } else {
+                                                  return 'Enter valid Number';
+                                                }
+                                              },
+                                              decoration: InputDecoration(
+                                                  labelText: 'Phone'),
+                                              controller: mobile,
+                                            ),
+                                            RaisedButton(
+                                                child: Text('Submit'),
+                                                onPressed: () {
+                                                   if (formKey.currentState.validate()) {
+                                                  addContact(
+                                                    emailAddress.text,
+                                                    mobile.text,
+                                                   
+                                                  );
+                                                  emailAddress.clear();
+                                                  mobile.clear();
+                                                 
+                                                  displayForm = false;
+                                                }}),
+                                          ]),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            )),
+                         
+                                  ])
+                                  )
+                                  ])
+                                  )
+                   ])
+                   )
+                   )
                    ),
                    Align(
             alignment: Alignment.bottomLeft,
@@ -657,6 +823,7 @@ String selectName;
                      Navigator.pushNamed(context, MYAPP_PAGE);
                      
                           createDetails(
+                           // selectName.toString(),
                               firstName.text,
                               lastName.text,
                               companyName.text,
@@ -687,7 +854,9 @@ String selectName;
      
                    ])
        
-        ) :Container(
+        ) :
+       
+        Container(
         child: 
         Stack(children: [
           SingleChildScrollView(
@@ -702,11 +871,16 @@ String selectName;
                Container(
                 child: Row(
                    children: [
-                     DropdownButton<String>(
+                     DropdownButton<String>(underline:  Container(
+	  height: 1,
+	  color: Colors.grey,
+	),
                          items: <String>['Mr.', 'Mrs.'].map((String value) {
                             return  DropdownMenuItem<String>(
                            value: value,
-                           child:  Text(value),
+                           child:  SizedBox(
+                             width: 296.0,
+                             child: Text(value)),
                            );
                           }).toList(),
                               onChanged: (value) {
@@ -733,8 +907,8 @@ String selectName;
                             }
                           },
                           decoration: InputDecoration(
-                            hintText: 'firstName',
-                            labelText: 'firstName',
+                            hintText: 'First Name',
+                            labelText: 'First Name',
                           ),
                           controller: firstName,
                         ),
@@ -753,8 +927,8 @@ String selectName;
                             }
                           },
                           decoration: InputDecoration(
-                            hintText: 'lastName',
-                            labelText: 'lastName',
+                            hintText: 'Last Name',
+                            labelText: 'Last Name',
                           ),
                           controller: lastName,
                         ),
@@ -775,16 +949,41 @@ String selectName;
                           ),
                           controller: companyName,
                         ),
-                        
-                        Container(
-                          padding: const EdgeInsets.only( top: 15.0),
-                          child: Text(this.widget.prod['contactEmail']),
+                        TextFormField(
+                           validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Enter something';
+                            } else if (RegExp(r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                .hasMatch(value)) {
+                              return null;
+                            } else {
+                              return 'Enter valid Email';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Contact Email',
+                            labelText: 'Contact Email',
+                          ),
+                          controller: contactEmail,
                         ),
-                        Container(
-                          padding: const EdgeInsets.only( top: 15.0),
-                          child:
-                              Text(this.widget.prod['phone']['primaryContact']),
+                         TextFormField(
+                           validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Enter something';
+                            } else if (RegExp(r'[a-zA-Z]+|\s')
+                                .hasMatch(value)) {
+                              return null;
+                            } else {
+                              return 'Enter valid Number';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Primary Contact',
+                            labelText: 'Primary Contact',
+                          ),
+                          controller: primaryContact,
                         ),
+                       
                         TextFormField(
                           validator: (value) {
                             if (value.isEmpty) {
@@ -815,8 +1014,8 @@ String selectName;
                             }
                           },
                           decoration: InputDecoration(
-                            hintText: 'website',
-                            labelText: 'website',
+                            hintText: 'Website',
+                            labelText: 'Website',
                           ),
                           controller: website,
                         ),
@@ -844,6 +1043,24 @@ String selectName;
                             Container(
                               child: Column(
                                 children: [
+                                  //  TextFormField(
+                                  //   validator: (value) {
+                                  //     if (value.isEmpty) {
+                                  //       return null;
+                                  //     } else if (RegExp(r'(^(?:[+0]9)?[0-9]{10}$)')
+                                  //         .hasMatch(value)) {
+                                  //       return null;
+                                  //     } else {
+                                  //       return 'Enter valid Amount';
+                                  //     }
+                                  //   },
+                                  //   decoration: InputDecoration(
+                                  //     hintText: 'Opening Balence',
+                                  //     labelText: 'Opening Balence ',
+                                  //   ),
+                                  //   controller: openingBalance,
+                                  // ),
+                                  
                                   TextFormField(
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -1193,13 +1410,13 @@ String selectName;
                                                   addContact(
                                                     emailAddress.text,
                                                     mobile.text,
-                                                    cfirstName.text,
-                                                    clastName.text,
+                                                    // cfirstName.text,
+                                                    // clastName.text,
                                                   );
                                                   emailAddress.clear();
                                                   mobile.clear();
-                                                  cfirstName.clear();
-                                                  clastName.clear();
+                                                  // cfirstName.clear();
+                                                  // clastName.clear();
                                                   displayForm = false;
                                                 }}),
                                           ]),
@@ -1209,6 +1426,7 @@ String selectName;
                                 ],
                               ),
                             )),
+                         
                           ]),
                         ),
                       ])),

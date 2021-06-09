@@ -160,79 +160,86 @@ final serviceId = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white,
-        leading:  Container(padding: const EdgeInsets.only(left:15.0,top: 18.0),
-          child: Text('Items',
-          style: TextStyle(color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0
-              ),),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right:15.0),
-            child: Row(
-              children: [
-                Icon(Icons.search,color: Colors.purple,),
-                //Icon(Icons.settings,color: Colors.purple,),
-              ],
-            ),
-          )
-        ],
-        ),
-        body: Stack(
+      body: Stack(
               children: [ 
-//             Container(
-//                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                             children: [
-//                               FlatButton(
-//                                   shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(28.0),
-//         ),
-//                                   color: Colors.grey.shade300,
-//                                   onPressed: (){}, child: Text('Low Stock')),
-                             
-//                                Container(child:  DropdownButton<String>(
-//   focusColor:Colors.white,
-//   value: _chosenValue,
-//   //elevation: 5,
-//   style: TextStyle(color: Colors.blue),
-//   iconEnabledColor:Colors.black,
-//   items: <String>[
-//     '60a8e247fa336a24a0a2c456'
-//   ].map<DropdownMenuItem<String>>((String value) {
-//     return DropdownMenuItem<String>(
-//       value: value,
-//       child: Text(value,style:TextStyle(color:Colors.black),),
-//     );
-//   }).toList(),
-//   hint:Text(
-//     "Select Category",
-//     style: TextStyle(
-//                 color: Colors.black,
-//                 fontSize: 14,
-//                 fontWeight: FontWeight.w500),
-//   ),
-//   onChanged: (String value) {
-//     setState(() {
-//       _chosenValue = value;
-//     });
-//   },
-// ),),
-// ],
-//                           ),
-//                         ),
-//                       Divider(),
-                               ListView.separated(
-                                    itemCount: service.length,
-                                    itemBuilder: (context, index) {
-                                      return  SingleChildScrollView(
+                 Column(
+                        children: [
+                          Container( padding: const EdgeInsets.only(top:40.0,left: 15.0,right: 15.0,bottom: 15.0),
+                                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text('Items',
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 17.0
+                                                     ),),
+                                                     Stack(
+    children: [
+      Container(
+  width: 30,
+  height: 30,
+  child:
+   Stack(
+    children: [
+      Icon(
+        Icons.notifications,
+        color: Colors.grey,
+        size: 30,
+      ),
+      Container(
+        width: 30,
+        height: 30,
+        alignment: Alignment.topRight,
+        margin: EdgeInsets.only(top: 2),
+        child: Container(
+          width: 9,
+          height: 9,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.red,
+             // border: Border.all(color: Colors.white, width: 1)
+             ),
+         
+        ),
+      ),
+    ],
+  ),)
+                 ],
+  ),
+                
+                                                  ],
+                                                ),
+                                              ),
+                                          Container(
+                                           height: 40.0,
+                                           width: 330.0,
+
+   
+  decoration: BoxDecoration(
+    border: Border.all(color: Colors.grey
+    ),
+    borderRadius: BorderRadius.all(
+        Radius.circular(5.0) 
+    ),
+  ),child: Row(mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      Container(padding: const EdgeInsets.only(right: 5.0),
+        child: Icon(Icons.search))
+    ],
+  ),),
+                                 
+                        ],
+                      ),  
+                    Container(padding: const EdgeInsets.only(top:120.0),
+                      child: ListView.separated(
+                                      itemCount: service.length,
+                                      itemBuilder: (context, index) {
+                                        return  SingleChildScrollView(
                   child: 
-                      Container(
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                               Container( padding: const EdgeInsets.only(top:15.0,left: 10.0),
-                                 child: ClipRRect(
+                        Container(
+                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                                 Container( padding: const EdgeInsets.only(top:15.0,left: 10.0),
+                                   child: ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),
                   child: Container(
                   color: Colors.grey.shade500,
@@ -240,164 +247,168 @@ final serviceId = TextEditingController();
                   height: 50,
   ),
                 ),
-                               ), 
-                          
-                             Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(service[index]['serviceName']),
-                                    Text(service[index]['serviceSaleSellingPrice']),
-                                   // Text('₹ 220')
-                                  ],
-                              ),
-                          
+                                 ), 
+                            
+                               Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(service[index]['serviceName']),
+                                      Text(service[index]['serviceSaleSellingPrice']),
+                                     // Text('₹ 220')
+                                    ],
+                                ),
+                            
              Container(padding: const EdgeInsets.only(left:70.0),
                child: IconButton(icon: Icon(Icons.edit), onPressed: (){
-                                       Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) =>EditItems(
-                                      items: this.service[index],
-                                    )));
-                                    }),
+                                         Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) =>EditItems(
+                                        items: this.service[index],
+                                      )));
+                                      }),
              ),
-                                   IconButton(icon: Icon(Icons.delete), onPressed: ()async{
-                                    await showDialog(context: context,builder:
-                                                            (_) => AlertDialog(
-                                                                  title: Text( 'Do you want Delete'),
-                                                                  actions: [
-                                                                    FlatButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          Navigator.of(context, rootNavigator: true)
-                                                                              .pop(true);
-                                                                        },
-                                                                        child:
-                                                                            Text(
-                                                                          'No',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Colors.tealAccent.shade700,
-                                                                          ),
-                                                                        )),
-                                                                    FlatButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                            removeContacts(index,this.service[index]['_id']);
-                                                                          Navigator.of(context, rootNavigator: true)
-                                                                              .pop(true);
-                                                                               
-                                                                        },
-                                                                        child:
-                                                                            Text(
-                                                                          'Yes',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Colors.tealAccent.shade700,
-                                                                          ),
-                                                                        ))
-                                                                  ],
-                                                                ));
-                                   
-                                  }),
-                          ],
+                                     IconButton(icon: Icon(Icons.delete), 
+                                     onPressed: ()async{
+                                      await showDialog(context: context,builder:
+                                                              (_) => AlertDialog(
+                                                                    title: Text( 'Do you want Delete'),
+                                                                    actions: [
+                                                                      FlatButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.of(context, rootNavigator: true)
+                                                                                .pop(true);
+                                                                          },
+                                                                          child:
+                                                                              Text(
+                                                                            'No',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color:
+                                                                                  Colors.tealAccent.shade700,
+                                                                            ),
+                                                                          )),
+                                                                      FlatButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                              removeContacts(index,this.service[index]['_id']);
+                                                                            Navigator.of(context, rootNavigator: true)
+                                                                                .pop(true);
+                                                                                 
+                                                                          },
+                                                                          child:
+                                                                              Text(
+                                                                            'Yes',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color:
+                                                                                  Colors.tealAccent.shade700,
+                                                                            ),
+                                                                          ))
+                                                                    ],
+                                                                  ));
+                                     
+                                    }),
+                            ],
+                          ),
                         ),
-                      ),
-                     
-                      // Container(
-                      //    child: Column(
-                      //      children: [
-                      //        Text('Add Multiple items at once'),
-                      //        GestureDetector(
-                      //             onTap: (){
+                       
+                        // Container(
+                        //    child: Column(
+                        //      children: [
+                        //        Text('Add Multiple items at once'),
+                        //        GestureDetector(
+                        //             onTap: (){
 
-                      //             },
-                      //             child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                      //               children: [
-                      //                 Icon(Icons.add,color: Colors.purple,),
-                      //                 Text('Add Bulk Items',style: TextStyle(color:Colors.purple),)
-                      //               ],
-                      //             ),
-                      //        ),
-                      //      ],
-                      //    ),
-                      // ),
-                    
+                        //             },
+                        //             child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                        //               children: [
+                        //                 Icon(Icons.add,color: Colors.purple,),
+                        //                 Text('Add Bulk Items',style: TextStyle(color:Colors.purple),)
+                        //               ],
+                        //             ),
+                        //        ),
+                        //      ],
+                        //    ),
+                        // ),
+                      
                 
-                                    );
-                                    }, separatorBuilder: (context, index) {
-                                      return Divider();
-                                     } 
-                                     ),
+                                      );
+                                      }, separatorBuilder: (context, index) {
+                                        return Divider();
+                                       } 
+                                       ),
+                    ),
             
                Container(
                 child: 
                 Align(
                   alignment: Alignment.bottomLeft,
-            child: Container(
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox( width:165.0,
-                      child: RaisedButton(
-                       shape: RoundedRectangleBorder(
+                  Container(padding: const EdgeInsets.only(left: 15.0),
+                    child: SizedBox( 
+                        child: RaisedButton(
+                         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28.0),
         ),
-                      onPressed: () {
-                      Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) =>CreateItems(
-                                    )));
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.add_circle,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          Container(padding: const EdgeInsets.only(left:25.0),
-                            child: Text(' Item',style: TextStyle(color: Colors.white,fontSize: 18.0),))
-                        ],
+                        onPressed: () {
+                        Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) =>CreateItems(
+                                      )));
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.add_circle,
+                              color: Colors.tealAccent.shade700,
+                              size: 20,
+                            ),
+                            Container(padding: const EdgeInsets.only(left:20.0,right:40.0),
+                              child: Text(' Item',style: TextStyle(color: Colors.tealAccent.shade700,fontSize: 18.0),))
+                          ],
+                        ),
+                        color: Colors.white,
+                        //elevation: 0,
                       ),
-                      color: Colors.purple,
-                      //elevation: 0,
                     ),
                   ),
-                   SizedBox(
-                     width: 165.0,
-                      child: RaisedButton(
-                       shape: RoundedRectangleBorder(
+                   
+                   Container(padding: const EdgeInsets.only(right: 15.0),
+                     child: SizedBox(
+                       width: 165.0,
+                        child: RaisedButton(
+                         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28.0),
         ),
-                      onPressed: () {
-                      Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) =>Category(
-                                     
-                                    )));
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.add_circle,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          Container(padding: const EdgeInsets.only(left:17.0),
-                            child: Text('Category',
-                            style: TextStyle(color: Colors.white,fontSize: 18.0,),
+                        onPressed: () {
+                        Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) =>Category(
+                                       
+                                      )));
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.add_circle,
+                              color: Colors.white,
+                              size: 20,
                             ),
-                          )
-                        ],
-                      ),
-                      color: Colors.purple,
-                      //elevation: 0,
+                            Container(padding: const EdgeInsets.only(left:17.0),
+                              child: Text('Category',
+                              style: TextStyle(color: Colors.white,fontSize: 18.0,),
+                              ),
+                            )
+                          ],
+                        ),
+                        color: Colors.tealAccent.shade700,
+                        //elevation: 0,
                   ),
+                     ),
                    ),
                 ],
               ),
             ),
           ),
-              ),
-      
-                              ])     
+           ])     
          
     );
   }

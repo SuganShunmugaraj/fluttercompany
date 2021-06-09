@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:soft/config/upload_url.dart';
+import 'package:soft/dashboard.dart';
 import 'package:soft/items.dart';
 import 'package:soft/payment.dart';
 import 'package:soft/payment_list.dart';
+import 'package:soft/contact_detail.dart';
 import 'package:soft/string.dart';
 import 'package:soft/contacts.dart';
 import 'package:http/http.dart' as http;
 import 'package:soft/signin.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:soft/upload.dart';
 
 
 class FirstPage extends StatefulWidget {
@@ -45,7 +48,11 @@ class _FirstPageState extends State<FirstPage> {
                       ),
                       icon: Icon(Icons.upload_file),
                       onPressed: () {
-                        
+                        Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) =>ChartsDemo(
+                                   
+                                   
+                                  )));
                       },
                     ),
                   )
@@ -61,8 +68,7 @@ class _FirstPageState extends State<FirstPage> {
                       ),
                       icon: Icon(Icons.person),
                       onPressed: () {
-                        
-                      },
+                          },
                     ),
                   )
                 ],
@@ -105,6 +111,32 @@ class _FirstPageState extends State<FirstPage> {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
+                               Container(
+                                child: Column(
+                                    children: [
+                                       GestureDetector(
+                                onTap: (){
+                                  Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) =>Dashboard(
+                                   
+                                  )));
+                                 
+                                },
+                                    child: Container(
+                                  
+                                  child: Column(
+                                    children: [
+                                     Icon(Icons.dashboard,color: Colors.grey,),
+                                     Text('Dashboard',
+                                     style: TextStyle(color: Colors.grey),),
+                                     
+                                    ],
+                                  ),
+                                ),
+                              ),
+                                    ],
+                                  ),
+                              ),
                               Container(
                                 child: Column(
                                     children: [
@@ -120,8 +152,9 @@ class _FirstPageState extends State<FirstPage> {
                                   
                                   child: Column(
                                     children: [
-                                     Icon(Icons.money),
-                                     Text('Payment'),
+                                     Icon(Icons.account_balance,color: Colors.grey,),
+                                     Text('Account',
+                                     style: TextStyle(color: Colors.grey),),
                                      
                                     ],
                                   ),
@@ -144,8 +177,9 @@ class _FirstPageState extends State<FirstPage> {
                                   
                                   child: Column(
                                     children: [
-                                     Icon(Icons.album_outlined),
-                                     Text('Invoice'),
+                                     Icon(Icons.watch_later_rounded,color: Colors.grey,),
+                                     Text('Invoice',
+                                     style: TextStyle(color: Colors.grey),),
                                      
                                     ],
                                   ),
@@ -163,8 +197,9 @@ class _FirstPageState extends State<FirstPage> {
                                   
                                   child: Column(
                                     children: [
-                                     Icon(Icons.message),
-                                     Text('Contacts'),
+                                     Icon(Icons.person_outline,color: Colors.grey,),
+                                     Text('Contacts',
+                                     style: TextStyle(color: Colors.grey),),
                                      
                                     ],
                                   ),
@@ -182,8 +217,9 @@ class _FirstPageState extends State<FirstPage> {
                                   
                                   child: Column(
                                     children: [
-                                     Icon(Icons.grid_view),
-                                     Text('Items'),
+                                     Icon(Icons.grid_view,color: Colors.grey,),
+                                     Text('Items',
+                                     style: TextStyle(color: Colors.grey),),
                                      
                                     ],
                                   ),
@@ -200,8 +236,9 @@ class _FirstPageState extends State<FirstPage> {
                                   
                                   child: Column(
                                     children: [
-                                     Icon(Icons.settings),
-                                     Text('Settings'),
+                                     Icon(Icons.settings,color: Colors.grey,),
+                                     Text('Settings',
+                                     style: TextStyle(color: Colors.grey),),
                                      
                                     ],
                                   ),

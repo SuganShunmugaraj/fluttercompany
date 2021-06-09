@@ -28,7 +28,7 @@ addAmount(account){
       amount += element['paymentAmount'];
     });
    totalAmount =amount.toString();
-   return Text(totalAmount,style: TextStyle(color: Colors.red),);
+   return Text('₹ '+totalAmount,style: TextStyle(fontWeight: FontWeight.bold),);
 }
  @override
   void initState() {
@@ -38,7 +38,6 @@ addAmount(account){
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:Text('Payment'),backgroundColor: Colors.tealAccent.shade700,),
       body: Stack(
         children: [
           payment == null
@@ -46,6 +45,73 @@ addAmount(account){
                   child: Center(child: CircularProgressIndicator()),
                 ):Stack(
                    children: [
+
+                       Column(
+                        children: [
+                          Container( padding: const EdgeInsets.only(top:40.0,left: 15.0,right: 15.0,bottom: 15.0),
+                                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text('Transaction',
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,),),
+                                                      Stack(
+    children: [
+      Container(
+  width: 30,
+  height: 30,
+  child:
+   Stack(
+    children: [
+      Icon(
+        Icons.notifications,
+        color: Colors.grey,
+        size: 30,
+      ),
+      Container(
+        width: 30,
+        height: 30,
+        alignment: Alignment.topRight,
+        margin: EdgeInsets.only(top: 2),
+        child: Container(
+          width: 9,
+          height: 9,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.red,
+             // border: Border.all(color: Colors.white, width: 1)
+             ),
+         
+        ),
+      ),
+    ],
+  ),)
+                   ],
+  ),
+                
+                                                  ],
+                                                ),
+                                              ),
+                                          Container(
+                                           height: 40.0,
+                                           width: 330.0,
+
+   
+  decoration: BoxDecoration(
+    border: Border.all(color: Colors.grey
+    ),
+    borderRadius: BorderRadius.all(
+        Radius.circular(5.0) 
+    ),
+  ),child: Row(
+    children: [
+      Container(padding: const EdgeInsets.only(left:5.0),
+        child: Icon(Icons.search))
+    ],
+  ),),
+                                 
+                        ],
+                      ),         
+             
              ListView.separated(
         itemCount: payment.length,
         itemBuilder: (context, index) {
@@ -59,15 +125,19 @@ addAmount(account){
                                   },
                                     child: Container(
                                     
-                                  padding: const EdgeInsets.only(top:15.0,right: 15.0),
+                                  padding: const EdgeInsets.only(top:120.0,right: 15.0),
                                      
                                       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Container(padding: const EdgeInsets.only(left:15.0),
                                             child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                               Text(payment[index]['accountCompanyName']),
-                                               Text(dateFormat(payment[index]['createdAt']))
+                                               Text(payment[index]['accountCompanyName'],
+                                               style: TextStyle(fontWeight: FontWeight.bold),),
+                                               Text(dateFormat(payment[index]['createdAt']),
+                                               style: TextStyle(
+                                                 color: Colors.grey,
+                                                 ),)
                                               ],
                                             ),
                                           ),

@@ -146,20 +146,20 @@ editCategory(categoryName, categoryDescription,id) async {
                                                               padding:const EdgeInsets.only(left: 15.0,right: 15.0,),
                                                               child: Text('Sub Category Name')),
                                                           Container(
-                                                            height: 40.0,
+                                                            height: 50.0,
                                                             padding:const EdgeInsets.only(left: 15.0,right: 15.0,top: 5.0),
                                                             child: TextField(
                                                               decoration:InputDecoration(
                                                                 border:OutlineInputBorder(),
                                                                 labelText:'Name',
-                                                                hintText:'Enter Name',
+                                                                //hintText:'Enter Name',
                                                               ),
                                                               controller: subcategoryName,
                                                             ),
                                                           ),
                                                           Container(
                                                               padding:const EdgeInsets.only(left:15.0,right:15.0,top:20.0),
-                                                              child: Text('Discription')),
+                                                              child: Text('Description')),
                                                           Container(
                                                             padding:const EdgeInsets.only(left: 15.0,right: 15.0,top: 5.0),
                                                             child: TextField(
@@ -167,15 +167,32 @@ editCategory(categoryName, categoryDescription,id) async {
                                                               keyboardType:TextInputType.multiline,
                                                               decoration:InputDecoration(
                                                                 border:OutlineInputBorder(),
-                                                                labelText:' Discription',
-                                                                hintText:'Discription',
+                                                                labelText:' Description',
+                                                                hintText:'Description',
                                                               ),
                                                               controller:
                                                                   subcategoryDescription,
                                                             ),
                                                           ),
-                                                          Container( padding:const EdgeInsets.only(left: 15.0,),
-                                                            child:DropdownButtonHideUnderline(
+                                                          Container(
+                          padding: const EdgeInsets.only(
+                            top: 15.0,bottom: 15.0
+                          ),
+                          child: Center(
+                            child: Container(
+                                padding: const EdgeInsets.only(
+                                  left: 15.0,
+                                ),
+                                height: 40.0,
+                                width: 330.0,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey,),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Row(
+                                  children: [
+                                  DropdownButtonHideUnderline(
                                                               child: DropdownButton(
                                                                 dropdownColor:Colors.tealAccent.shade700,
                                                                 value:_chosenValue,
@@ -185,10 +202,13 @@ editCategory(categoryName, categoryDescription,id) async {
                                                                 items: this.category.map((
                                                                     value) {                                                               return DropdownMenuItem(
                                                                     value: value['_id'],
-                                                                    child: Text( value['categoryName'],
-                                                                      style:TextStyle(
-                                                                        color: Colors.white,
-                                                                        fontSize: 20.0,
+                                                                    child: SizedBox(
+                                                                      width: 280.0,
+                                                                      child: Text( value['categoryName'],
+                                                                        style:TextStyle(
+                                                                          color: Colors.white,
+                                                                          fontSize: 20.0,
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   );
@@ -201,8 +221,8 @@ editCategory(categoryName, categoryDescription,id) async {
                                                                 hint: Text(
                                                                     this.drop.toString(),
                                                                     style:TextStyle(
-                                                                      color: Colors.black,
-                                                                      fontSize:20.0,
+                                                                      
+                                                                      fontSize:16.0,
                                                                     )),
                                                                 icon: Icon(
                                                                   Icons.arrow_drop_down,
@@ -210,8 +230,10 @@ editCategory(categoryName, categoryDescription,id) async {
                                                                 ),
                                                               ),
                                                             ),
-                                                          ),
-                                                          
+                                                         ],
+                                )),
+                          ),
+                        ),
                                                           Align(
                                                               alignment: Alignment.bottomLeft,
                                                               child: Container(
@@ -238,7 +260,7 @@ editCategory(categoryName, categoryDescription,id) async {
                                                                       },
                                                                       child:
                                                                           Text("Save", ),
-                                                                      color: Colors.purple,
+                                                                      color: Colors.tealAccent.shade700,
                                                                       textColor:Colors.white,
                                                                     )),
                                                               )),
@@ -275,13 +297,13 @@ editCategory(categoryName, categoryDescription,id) async {
                 ),
                 child: Text('Category Name')),
             Container(
-              height: 40.0,
+              height: 50.0,
               padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
               child: TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Name',
-                  hintText: 'Enter Name',
+                  //hintText: 'Enter Name',
                 ),
                 controller: categoryName,
               ),
@@ -291,14 +313,14 @@ editCategory(categoryName, categoryDescription,id) async {
                     const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
                 child: Text('Description')),
             Container(
-              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0,bottom: 15.0),
               child: TextField(
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: ' Discription',
-                  hintText: 'Discription',
+                  labelText: ' Description',
+                  hintText: 'Description',
                 ),
                 controller: categoryDescription,
               ),
@@ -332,7 +354,7 @@ editCategory(categoryName, categoryDescription,id) async {
                         child: Text(
                           "Save",
                         ),
-                        color: Colors.purple,
+                        color: Colors.tealAccent.shade700,
                         textColor: Colors.white,
                       )),
                 )),
@@ -416,10 +438,10 @@ editCategory(categoryName, categoryDescription,id) async {
                       initialIndex: 0,
                       child: Column(children: [
                         TabBar(
-                          indicatorColor: Colors.purple,
+                          indicatorColor: Colors.tealAccent.shade700,
                           isScrollable: true,
                           unselectedLabelColor: Colors.black,
-                          labelColor: Colors.purple,
+                          labelColor: Colors.tealAccent.shade700,
                           tabs: [
                             Tab(text: 'Category'),
                             Tab(text: 'Sub Category'),
@@ -431,7 +453,7 @@ editCategory(categoryName, categoryDescription,id) async {
                             children: [
                               Stack(children: [
                                 Container(
-                                  padding: const EdgeInsets.only(bottom: 30.0,),
+                                  padding: const EdgeInsets.only(bottom: 30.0,top: 15.0),
                                   child: ListView.separated(
                                     itemCount: category.length,
                                     itemBuilder: (context, index) {
@@ -531,7 +553,7 @@ editCategory(categoryName, categoryDescription,id) async {
                                       child: SizedBox(
                                         width: 60.0,
                                         child: FloatingActionButton(
-                                          backgroundColor: Colors.purple,
+                                          backgroundColor: Colors.tealAccent.shade700,
                                           onPressed: () {
                                             showModalBottomSheet(
                                                 context: context,
@@ -548,7 +570,7 @@ editCategory(categoryName, categoryDescription,id) async {
                               
                               ]),
                               Stack(children: [
-                                Container(
+                                Container(padding: const EdgeInsets.only(top: 15.0),
                                   child: ListView.separated(
                                     itemCount: subCategory.length,
                                     itemBuilder: (context, index) {
@@ -630,7 +652,7 @@ editCategory(categoryName, categoryDescription,id) async {
                                       child: SizedBox(
                                         width: 60.0,
                                         child: FloatingActionButton(
-                                          backgroundColor: Colors.purple,
+                                          backgroundColor: Colors.tealAccent.shade700,
                                           onPressed: () {
                                             showModalBottomSheet(
                                                 context: context,

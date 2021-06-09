@@ -117,6 +117,7 @@ List subCategory;
             child: Container(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  
                   Container(padding: const EdgeInsets.only(left:15.0,top: 15.0),
                                                  child: Text('Service Name')),
                                               Container(
@@ -127,14 +128,31 @@ List subCategory;
                                          decoration: InputDecoration(  
                                          border: OutlineInputBorder(), 
                                         //  suffixIcon: Icon(Icons.calendar_today_outlined),
-                                         labelText: ' Service Name',
-                                         hintText: 'Enter Service Name',  
+                                        labelText: ' Service Name',
+                                         //hintText: 'Enter Service Name',  
                       ),controller: serviceName,
                     ),   
                      ),
-                 
-                  Container(padding: const EdgeInsets.only(left:15.0,),
-                    child:DropdownButtonHideUnderline(
+                     
+                     Container(
+                          padding: const EdgeInsets.only(
+                            top: 15.0,
+                          ),
+                          child: Center(
+                            child: Container(
+                                padding: const EdgeInsets.only(
+                                  left: 15.0,
+                                ),
+                                height: 40.0,
+                                width: 330.0,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey,),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Row(
+                                  children: [
+                                   DropdownButtonHideUnderline(
                 child: DropdownButton(
                          dropdownColor:Colors.tealAccent .shade700,
                             value:_chosenValue,
@@ -143,32 +161,58 @@ List subCategory;
                               items:this.category.map((pageon) {
                                 return DropdownMenuItem(
                                  value: pageon['_id'],
-                                  child: Text(pageon['categoryName'],
-                                    style:TextStyle(color: Colors.white,
-                                     fontSize:20.0,
-                                  ),
+                                  child: SizedBox(
+                                    width: 280.0,
+                                    child: Text(pageon['categoryName'],
+                                      style:TextStyle(color: Colors.white,
+                                       fontSize:20.0,
+                                    ),
+                                    ),
                                   ),
                                   );
                                   }).toList(),
                                    onChanged: (value) {
-                                     this.subDetail['serviceCategory'] =value;
+                                     setState(() {
+                                       this.subDetail['serviceCategory'] =value;
                                      print(this.subDetail['serviceCategory'] =value);
+                                     });
+                                     
                                                                   
                                      },
                                      hint: Text(
                                     this.drop.toString(),
-                                      style:TextStyle(color: Colors.black,
-                                       fontSize: 20.0,
+                                      style:TextStyle(
+                                       fontSize: 16.0,
                                        )),
                                         icon: Icon(Icons.arrow_drop_down,
                                        // color: Colors.white,
                                        ),
                                       ),
                     ),
-                                  ),
-                                                         
-                     Container(padding: const EdgeInsets.only(left:15.0,),
-                            child: DropdownButtonHideUnderline(
+                                 ],
+                                )),
+                          ),
+                        ),
+                      
+                      Container(
+                          padding: const EdgeInsets.only(
+                            top: 15.0,
+                          ),
+                          child: Center(
+                            child: Container(
+                                padding: const EdgeInsets.only(
+                                  left: 15.0,
+                                ),
+                                height: 40.0,
+                                width: 330.0,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey,),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Row(
+                                  children: [
+                                  DropdownButtonHideUnderline(
                     child: DropdownButton(dropdownColor:Colors.tealAccent.shade700,
                                value:_chosenValue,
                                 style: TextStyle(color: Colors .white,
@@ -176,27 +220,35 @@ List subCategory;
                                  items:this.subCategory.map((pagesubCategory) {
                                  return DropdownMenuItem(
                                  value: pagesubCategory['_id'],
-                                 child: Text(pagesubCategory['subcategoryName'],
-                                   style:TextStyle(
-                                  color: Colors.white,
-                                  fontSize:20.0,
-                                 ),
+                                 child: SizedBox(
+                                   width: 280.0,
+                                   child: Text(pagesubCategory['subcategoryName'],
+                                     style:TextStyle(
+                                    color: Colors.white,
+                                    fontSize:20.0,
+                                   ),
+                                   ),
                                  ),
                                 );
                               }).toList(),
                                 onChanged: (value) {
+                                  setState(() {
                                  this.subDetail['serviceSubCategory'] =value;
+                                  });
                               },
                                hint: Text(this.title.toString(),
-                               style:TextStyle(color: Colors.black,
-                               fontSize: 20.0,
+                               style:TextStyle(
+                               fontSize: 16.0,
                                 )),
                                  icon: Icon(Icons.arrow_drop_down,
                                   //color: Colors.white,
                                 ),
                                 ),
                             ),
-                         ),
+                         ],
+                                )),
+                          ),
+                        ),
                         Container(
                 padding:
                     const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
@@ -344,10 +396,10 @@ List subCategory;
                       children: [
                         Icon(
                           Icons.add,
-                          color: Colors.purple,
+                          color: Colors.tealAccent.shade700,
                           size: 18,
                         ),
-                        Text('Add GST & Tax Details',style: TextStyle(color: Colors.purple),)
+                        Text('Add GST & Tax Details',style: TextStyle(color: Colors.tealAccent.shade700),)
                       ],
                     ),
                      ),
@@ -431,7 +483,7 @@ List subCategory;
                      categoryDescription.text,
                      subcategoryDescription.text
                      );Navigator.pop(context);
-                 },child: Text("Save"),color: Colors.purple,textColor: Colors.white,)),
+                 },child: Text("Save"),color: Colors.tealAccent.shade700,textColor: Colors.white,)),
             ],
           ),
         )

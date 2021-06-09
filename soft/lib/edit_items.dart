@@ -93,12 +93,6 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
 
         ),),
         leading: Icon(Icons.arrow_back,color: Colors.black,),
-        // actions: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(right:15.0),
-        //     child: Icon(Icons.settings,color: Colors.black,),
-        //   )
-        // ],
         ),
         body: 
         Stack(
@@ -109,7 +103,7 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                 children: [
                   Container(padding: const EdgeInsets.only(left:15.0,top: 15.0),
                                                  child: Text('Service Name')),
-                                              Container(
+                 Container(
                                                 height: 40.0,
                                                 padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 5.0),
                                                 child: TextField(  
@@ -118,13 +112,30 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                                          border: OutlineInputBorder(), 
                                         //  suffixIcon: Icon(Icons.calendar_today_outlined),
                                          labelText: ' Service Name',
-                                         hintText: 'Enter Service Name',  
+                                        // hintText: 'Enter Service Name',  
                       ),controller: serviceName,
                     ),   
                      ),
-                 
-                  Container(padding: const EdgeInsets.only(left:15.0,),
-                    child:DropdownButtonHideUnderline(
+                 Container(
+                          padding: const EdgeInsets.only(
+                            top: 15.0,
+                          ),
+                          child: Center(
+                            child: Container(
+                                padding: const EdgeInsets.only(
+                                  left: 15.0,
+                                ),
+                                height: 40.0,
+                                width: 330.0,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey,),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Row(
+                                  children: [
+                                  
+                    DropdownButtonHideUnderline(
                        child: DropdownButton(
                          dropdownColor:Colors.tealAccent .shade700,
                             value:_chosenValue,
@@ -133,10 +144,13 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                               items:this.category.map((pageon) {
                                 return DropdownMenuItem(
                                  value: pageon['_id'],
-                                  child: Text(pageon['categoryName'],
-                                    style:TextStyle(color: Colors.white,
-                                     fontSize:20.0,
-                                  ),
+                                  child: SizedBox(
+                                    width: 280.0,
+                                    child: Text(pageon['categoryName'],
+                                      style:TextStyle(color: Colors.white,
+                                       fontSize:20.0,
+                                    ),
+                                    ),
                                   ),
                                   );
                                   }).toList(),
@@ -148,16 +162,36 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                                      hint: Text(
                                     this.drop.toString(),
                                       style:TextStyle(color: Colors.black,
-                                       fontSize: 20.0,
+                                       fontSize: 16.0,
                                        )),
                                         icon: Icon(Icons.arrow_drop_down,
                                         //color: Colors.white,
                                        ),
                                       ),
                     ),
-                                  ),
-                     Container(padding: const EdgeInsets.only(left:15.0,),
-                            child: DropdownButtonHideUnderline(
+                                  ],
+                                )),
+                          ),
+                        ),
+                       Container(
+                          padding: const EdgeInsets.only(
+                            top: 15.0,
+                          ),
+                          child: Center(
+                            child: Container(
+                                padding: const EdgeInsets.only(
+                                  left: 15.0,
+                                ),
+                                height: 40.0,
+                                width: 330.0,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey,),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Row(
+                                  children: [
+                                  DropdownButtonHideUnderline(
                                child: DropdownButton(dropdownColor:Colors.tealAccent.shade700,
                                value:_chosenValue,
                                 style: TextStyle(color: Colors .white,
@@ -165,11 +199,13 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                                  items:this.subCategory.map((pagesubCategory) {
                                  return DropdownMenuItem(
                                  value: pagesubCategory['_id'],
-                                 child: Text(pagesubCategory['subcategoryName'],
-                                   style:TextStyle(
-                                  color: Colors.white,
-                                  fontSize:20.0,
-                                 ),
+                                 child: SizedBox(width: 280.0,
+                                   child: Text(pagesubCategory['subcategoryName'],
+                                     style:TextStyle(
+                                    color: Colors.white,
+                                    fontSize:20.0,
+                                   ),
+                                   ),
                                  ),
                                 );
                               }).toList(),
@@ -178,18 +214,19 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                               },
                                hint: Text(this.title.toString(),
                                style:TextStyle(color: Colors.black,
-                               fontSize: 20.0,
+                               fontSize: 16.0,
                                 )),
                                  icon: Icon(Icons.arrow_drop_down,
                                   //color: Colors.white,
                                 ),
                                 ),
                             ),
-                         ),
-                       
+                         ],
+                                )),
+                          ),
+                        ),
                         Container(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
+                padding:const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
                 child: Text('Description')),
             Container(
               padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
@@ -332,10 +369,10 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                       children: [
                         Icon(
                           Icons.add,
-                          color: Colors.purple,
+                          color: Colors.tealAccent.shade700,
                           size: 18,
                         ),
-                        Text('Add GST & Tax Details',style: TextStyle(color: Colors.purple),)
+                        Text('Add GST & Tax Details',style: TextStyle(color: Colors.tealAccent.shade700),)
                       ],
                     ),
                      ),
@@ -376,7 +413,7 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                      this.widget.items['_id']
 
                      );Navigator.pop(context);
-                 },child: Text("Save"),color: Colors.purple,textColor: Colors.white,)),
+                 },child: Text("Save"),color: Colors.tealAccent.shade700,textColor: Colors.white,)),
             ],
           ),
         )

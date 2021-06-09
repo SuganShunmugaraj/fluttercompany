@@ -34,6 +34,9 @@ class _PaymentState extends State<Payment> {
 
 
   addAmount(amount){
+    this.payment.forEach((element) { 
+      
+    });
     print(amount);
     print(payment);
 
