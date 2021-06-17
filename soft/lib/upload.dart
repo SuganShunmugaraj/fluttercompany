@@ -55,15 +55,7 @@ class ChartsDemoState extends State<ChartsDemo> {
           return charts.MaterialPalette.green.shadeDefault;
         },
       ),
-      // charts.Series<Sales, String>(
-      //   id: 'Sales',
-      //   domainFn: (Sales sales, _) => sales.year,
-      //   measureFn: (Sales sales, _) => sales.sales,
-      //   data: mobileSalesData,
-      //   fillColorFn: (Sales sales, _) {
-      //     return charts.MaterialPalette.teal.shadeDefault;
-      //   },
-      // )
+      
     ];
   }
  

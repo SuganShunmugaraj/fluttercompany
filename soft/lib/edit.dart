@@ -18,6 +18,7 @@ class Edit extends StatefulWidget {
 
 class _EditState extends State<Edit> {
   bool displayForm = false;
+  List contactPersonList = [];
   String pageType;
   List addItems=[];
   Map createItems;
@@ -34,15 +35,17 @@ class _EditState extends State<Edit> {
     });
   }
 
-  addContact(emailAddress, mobile, ) {
+  addContact(emailAddress, mobile ) {
+    print(emailAddress );
+    print(mobile );
+
     setState(() {
       final value = {
         'emailAddress': emailAddress,
         'mobile': mobile,
         
       };
-      this.widget.prod['contactPerson'].add(value);
-      
+      this.contactPersonList.add(value);
     });
   }
 
@@ -54,8 +57,8 @@ class _EditState extends State<Edit> {
   final primaryContact = TextEditingController();
   final secondarycontact = TextEditingController();
   final website = TextEditingController();
- // final openingBalance = TextEditingController();
   final facebook = TextEditingController();
+  final openingBalance = TextEditingController();
   final twitter = TextEditingController();
   final attention = TextEditingController();
   final countryRegion = TextEditingController();
@@ -87,12 +90,11 @@ setState(() {
     this.primaryContact.text = this.widget.prod['phone']['primaryContact'];
     this.secondarycontact.text = this.widget.prod['phone']['secondarycontact'];
     this.website.text = this.widget.prod['website'];
-   // this.openingBalance.text = this.widget.prod['otherDetails']['openingBalance'];
     this.facebook.text = this.widget.prod['otherDetails']['facebook'];
+    this.openingBalance.text = this.widget.prod['otherDetails']['openingBalance'];
     this.twitter.text = this.widget.prod['otherDetails']['twitter'];
     this.attention.text = this.widget.prod['billingAddress']['attention'];
-    this.countryRegion.text =
-        this.widget.prod['billingAddress']['countryRegion'];
+    this.countryRegion.text =this.widget.prod['billingAddress']['countryRegion'];
     this.street1.text = this.widget.prod['billingAddress']['Street1'];
     this.city.text = this.widget.prod['billingAddress']['city'];
     this.state.text = this.widget.prod['billingAddress']['state'];
@@ -114,6 +116,7 @@ setState(() {
       secondarycontact,
       website,
       facebook,
+      openingBalance,
       twitter,
       attention,
       countryRegion,
@@ -133,7 +136,8 @@ setState(() {
       this.widget.prod['phone']['secondarycontact'] = secondarycontact;
       this.widget.prod['website'] = website;
       this.widget.prod['otherDetails']['facebook'] = facebook;
-      this.widget.prod['otherDetails']['twitter'] = twitter;
+      this.widget.prod['otherDetails']['openingBalance'] = openingBalance;
+       this.widget.prod['otherDetails']['twitter'] = twitter;
       this.widget.prod['billingAddress']['attention'] = attention;
       this.widget.prod['billingAddress']['countryRegion'] = countryRegion;
       this.widget.prod['billingAddress']['Street1'] = street1;
@@ -155,11 +159,8 @@ setState(() {
       print("Error :" + res);
     } 
    }
-   
-
-
+ 
  createDetails(
-  //selectName,
   firstName,
       lastName,
       companyName,
@@ -168,6 +169,7 @@ setState(() {
       secondarycontact,
       website,
       facebook,
+      openingBalance,
       twitter,
       attention,
       countryRegion,
@@ -186,7 +188,7 @@ setState(() {
            'contactEmail':contactEmail,
            'phone':{'primaryContact':primaryContact,'secondarycontact':secondarycontact},
            'website':website,
-           'otherDetails':{'facebook':facebook,'twitter':twitter,},
+           'otherDetails':{'facebook':facebook,'openingBalance':openingBalance,'twitter':twitter,},
            'billingAddress':{
              'attention':attention,
              'countryRegion':countryRegion,
@@ -196,10 +198,10 @@ setState(() {
              'zipCode':zipCode,
              'phone1':phone1
              },
+             'contactPerson': this.contactPersonList,
            'remarks':{'remarkstext':remarkstext},
          };
          addItems.add(this.createItems);
-          print(addItems);
        });
     final response = await http.post(Uri.parse(BaseUrl.contacts),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
@@ -209,7 +211,7 @@ setState(() {
       print('sucess');
     } else {
       print("Error :" + res);
-    }print(addItems);
+    }
   }
      
 
@@ -413,25 +415,6 @@ String selectName='Salutation';
                             Container(
                               child: Column(
                                 children: [
-                                  //  TextFormField(
-                                  //   validator: (value) {
-                                  //     if (value.isEmpty) {
-                                  //       return null;
-                                  //     } else if (RegExp(
-                                  //             r'^((?:.|\n)*?)((http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)([-A-Z0-9.]+)(/[-A-Z0-9+&@#/%=~_|!:,.;]*)?(\?[A-Z0-9+&@#/%=~_|!:‌​,.;]*)?)')
-                                  //         .hasMatch(value)) {
-                                  //       return null;
-                                  //     } else {
-                                  //       return 'Enter valid Amount';
-                                  //     }
-                                  //   },
-                                  //   decoration: InputDecoration(
-                                  //     hintText: 'Opening Balence',
-                                  //     labelText: 'Opening Balence ',
-                                  //   ),
-                                  //   controller: openingBalance,
-                                  // ),
-                                    
                                    TextFormField(
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -449,6 +432,23 @@ String selectName='Salutation';
                                       labelText: 'Facebook ',
                                     ),
                                     controller: facebook,
+                                  ),
+                                   TextFormField(
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return null;
+                                      } else if (RegExp(r'[0-9]')
+                                          .hasMatch(value)) {
+                                        return null;
+                                      } else {
+                                        return 'Enter Amount';
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: 'Opening Balance',
+                                      labelText: 'OpeningBalance ',
+                                    ),
+                                    controller: openingBalance,
                                   ),
                                     TextFormField(
                                     validator: (value) {
@@ -621,6 +621,7 @@ String selectName='Salutation';
                                 child: SingleChildScrollView(
                               child: Column(
                                 children: [
+                                   this.contactPersonList.length > 0 ?
                                   Padding(
                                     padding: const EdgeInsets.only(top: 20.0),
                                     child: Table(
@@ -650,8 +651,7 @@ String selectName='Salutation';
                                                 onPressed: () {}),
                                           ),
                                         ]),
-                                        if(this.widget.prod['contactPerson'].length)
-                                        for (var i = 0;i <this.widget.prod['contactPerson'].length;i++)
+                                        for (var i = 0;i < this.contactPersonList.length;i++)
                                           TableRow(children: [
                                             Padding(
                                               padding: const EdgeInsets.all(8.0),
@@ -659,17 +659,13 @@ String selectName='Salutation';
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child: Text(this
-                                                          .widget
-                                                          .prod['contactPerson']
+                                              child: Text(this.contactPersonList
                                                       [i]['mobile'] ??
                                                   '-'),
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child: Text(this
-                                                      .widget
-                                                      .prod['contactPerson'][i]
+                                              child: Text(this.contactPersonList[i]
                                                   ['emailAddress']),
                                             ),
                                             Padding(
@@ -706,13 +702,14 @@ String selectName='Salutation';
                                                             ));
                                                   }),
                                             ),
-                                          ]),
+                                          ]
+                                          ),
                                       
                                       ],
                                       border: TableBorder.all(
                                           width: 1, color: Colors.tealAccent.shade700,),
                                     ),
-                                  ),
+                                  ): Text('No Data Found'),
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 80.0),
                                     child: Column(
@@ -770,17 +767,15 @@ String selectName='Salutation';
                                             RaisedButton(
                                                 child: Text('Submit'),
                                                 onPressed: () {
-                                                   if (formKey.currentState.validate()) {
                                                   addContact(
                                                     emailAddress.text,
-                                                    mobile.text,
-                                                   
+                                                    mobile.text                                                   
                                                   );
                                                   emailAddress.clear();
                                                   mobile.clear();
                                                  
                                                   displayForm = false;
-                                                }}),
+                                                }),
                                           ]),
                                         ),
                                       ),
@@ -821,9 +816,7 @@ String selectName='Salutation';
                       onPressed: () {
                         if (formKey.currentState.validate()) {
                      Navigator.pushNamed(context, MYAPP_PAGE);
-                     
                           createDetails(
-                           // selectName.toString(),
                               firstName.text,
                               lastName.text,
                               companyName.text,
@@ -832,6 +825,7 @@ String selectName='Salutation';
                               secondarycontact.text,
                               website.text,
                               facebook.text,
+                              openingBalance.text,
                               twitter.text,
                               attention.text,
                               countryRegion.text,
@@ -1043,24 +1037,6 @@ String selectName='Salutation';
                             Container(
                               child: Column(
                                 children: [
-                                  //  TextFormField(
-                                  //   validator: (value) {
-                                  //     if (value.isEmpty) {
-                                  //       return null;
-                                  //     } else if (RegExp(r'(^(?:[+0]9)?[0-9]{10}$)')
-                                  //         .hasMatch(value)) {
-                                  //       return null;
-                                  //     } else {
-                                  //       return 'Enter valid Amount';
-                                  //     }
-                                  //   },
-                                  //   decoration: InputDecoration(
-                                  //     hintText: 'Opening Balence',
-                                  //     labelText: 'Opening Balence ',
-                                  //   ),
-                                  //   controller: openingBalance,
-                                  // ),
-                                  
                                   TextFormField(
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -1078,6 +1054,23 @@ String selectName='Salutation';
                                       labelText: 'Facebook ',
                                     ),
                                     controller: facebook,
+                                  ),
+                                  TextFormField(
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return null;
+                                      } else if (RegExp(r'[0-9]')
+                                          .hasMatch(value)) {
+                                        return null;
+                                      } else {
+                                        return 'Enter Amount';
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: 'Opening Balance',
+                                      labelText: 'Opening Balance ',
+                                    ),
+                                    controller: openingBalance,
                                   ),
                                   
                                   TextFormField(
@@ -1410,13 +1403,9 @@ String selectName='Salutation';
                                                   addContact(
                                                     emailAddress.text,
                                                     mobile.text,
-                                                    // cfirstName.text,
-                                                    // clastName.text,
                                                   );
                                                   emailAddress.clear();
                                                   mobile.clear();
-                                                  // cfirstName.clear();
-                                                  // clastName.clear();
                                                   displayForm = false;
                                                 }}),
                                           ]),
@@ -1469,6 +1458,7 @@ String selectName='Salutation';
                               secondarycontact.text,
                               website.text,
                               facebook.text,
+                              openingBalance.text,
                               twitter.text,
                               attention.text,
                               countryRegion.text,

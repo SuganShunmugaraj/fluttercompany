@@ -15,12 +15,9 @@ class EditItems extends StatefulWidget {
 
 class _EditItemsState extends State<EditItems> {
   String _chosenValue;
-
   Map subDetail={};
-
 List category;
 List subCategory;
-
 editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategoryDescription,id)async{
    
     setState(() {
@@ -52,7 +49,6 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
       var categoryData = json.decode(response.body);
       category = categoryData['data'];
     });
-    print(category);
   }
 
   Future getSubCategory() async {
@@ -62,11 +58,12 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
       var subCategoryData = json.decode(response.body);
       subCategory = subCategoryData['data'];
     });
-    print(subCategory);
   }
   @override
   void initState() {
   super.initState();
+  this.drop=this.widget.items['serviceCategory']['categoryName'];
+   this.title=this.widget.items['serviceSubCategory']['subcategoryName'];
   this.serviceName.text = this.widget.items['serviceName'];
   this.serviceSaleSellingPrice.text = this.widget.items['serviceSaleSellingPrice'];
   this.categoryDescription.text = this.widget.items['serviceCategory']['categoryDescription'];
@@ -106,24 +103,19 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                  Container(
                                                 height: 40.0,
                                                 padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 5.0),
-                                                child: TextField(  
-                                          //obscureText: true,  
+                                                child: TextField(
                                          decoration: InputDecoration(  
-                                         border: OutlineInputBorder(), 
-                                        //  suffixIcon: Icon(Icons.calendar_today_outlined),
+                                         border: OutlineInputBorder(),
                                          labelText: ' Service Name',
-                                        // hintText: 'Enter Service Name',  
                       ),controller: serviceName,
                     ),   
                      ),
                  Container(
-                          padding: const EdgeInsets.only(
-                            top: 15.0,
-                          ),
+                   padding: const EdgeInsets.only(top: 15.0,),
                           child: Center(
                             child: Container(
                                 padding: const EdgeInsets.only(
-                                  left: 15.0,
+                                  left: 10.0,
                                 ),
                                 height: 40.0,
                                 width: 330.0,
@@ -143,10 +135,10 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                                 decorationColor:Colors.white),
                               items:this.category.map((pageon) {
                                 return DropdownMenuItem(
-                                 value: pageon['_id'],
+                                 value: pageon['categoryDescription'],
                                   child: SizedBox(
                                     width: 280.0,
-                                    child: Text(pageon['categoryName'],
+                                    child: Text(pageon['categoryDescription'],
                                       style:TextStyle(color: Colors.white,
                                        fontSize:20.0,
                                     ),
@@ -155,9 +147,7 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                                   );
                                   }).toList(),
                                    onChanged: (value) {
-                                     this.subDetail['serviceCategory'] =value;
-                                     print(this.subDetail['serviceCategory'] =value);
-                                                                  
+                                    drop =value;            
                                      },
                                      hint: Text(
                                     this.drop.toString(),
@@ -165,7 +155,6 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                                        fontSize: 16.0,
                                        )),
                                         icon: Icon(Icons.arrow_drop_down,
-                                        //color: Colors.white,
                                        ),
                                       ),
                     ),
@@ -174,20 +163,15 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                           ),
                         ),
                        Container(
-                          padding: const EdgeInsets.only(
-                            top: 15.0,
-                          ),
+                          padding: const EdgeInsets.only(top: 15.0,),
                           child: Center(
                             child: Container(
-                                padding: const EdgeInsets.only(
-                                  left: 15.0,
-                                ),
+                                padding: const EdgeInsets.only(left: 10.0,),
                                 height: 40.0,
                                 width: 330.0,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey,),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
+                                  borderRadius:BorderRadius.all(Radius.circular(5.0)),
                                 ),
                                 child: Row(
                                   children: [
@@ -210,14 +194,13 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                                 );
                               }).toList(),
                                 onChanged: (value) {
-                                 this.subDetail['serviceSubCategory'] =value;
+                                  title =value;
                               },
                                hint: Text(this.title.toString(),
                                style:TextStyle(color: Colors.black,
                                fontSize: 16.0,
                                 )),
                                  icon: Icon(Icons.arrow_drop_down,
-                                  //color: Colors.white,
                                 ),
                                 ),
                             ),
@@ -235,7 +218,7 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: ' Discription',
+                  labelText: ' Description',
                   hintText: 'Description',
                 ),
                 controller: categoryDescription,
@@ -259,38 +242,7 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                 controller: subcategoryDescription,
               ),
             ),
-                    //  Container(padding: const EdgeInsets.only(left:15.0,),
-                    //     child: Column(
-                    //       children: [
-                    //         Text('serviceSaleInfo  :'  + this.widget.category['serviceSaleInfo']),
-                    //         Text('serviceUnit  : '),
-                    //         Container(padding: const EdgeInsets.only(left:15.0,),
-                    //           child: Text('name  :  '  + this.widget.category['serviceUnit']['name'])),
-                    //         Container(
-                    //           child: Text('id  :  '  + this.widget.category['serviceUnit']['id']))
-                    //       ],
-                    //     ),
-
-                    //   ),
-                  
-                          
-
-
-                      //  Container(padding: const EdgeInsets.only(left:15.0,top: 15.0),
-                      //          child: Text('Item Type')),
-                      //          Container(padding: const EdgeInsets.only(left:15.0,top: 15.0,right: 200.0),
-                      //            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //              children: [
-                      //                Container(color: Colors.grey.shade200,
-                      //          child: Text('Product')),
-                      //           Container(
-                      //             color: Colors.grey.shade200,
-                      //          child: Text('Service')),
-                      //              ],
-                      //            ),
-                      //          ),
-                              // Divider(),
-                                DefaultTabController(
+             DefaultTabController(
                       length: 1,
                       initialIndex: 0,
                       child: Column(
@@ -302,8 +254,6 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                           labelColor: Colors.tealAccent.shade700,
                           tabs: [
                             Tab(text: 'Pricing'),
-                            // Tab(text: 'Stock'),
-                            // Tab(text: 'Others'),
                           ],
                         ),
                        Container(
@@ -327,7 +277,6 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                                        child: DropdownButton<String>(
   focusColor:Colors.white,
   value: _chosenValue,
-  //elevation: 5,
   style: TextStyle(color: Colors.blue),
   iconEnabledColor:Colors.black,
   items: <String>[
@@ -360,7 +309,6 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                                             ),
                                           ),
                                          labelText: ' ₹',
-                                         hintText: 'Enter price',  
                       ),  
                     ),    
                      ),
@@ -380,16 +328,10 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                               ),
                             ),
                           ]),
-                        ),
-                        
-                     
-                
-                                             
+                        ),                     
                 ],
               ),
-            ),
-                
-                 ] ),
+            ),] ),
           )),
                    Align(
           alignment: Alignment.bottomLeft,
@@ -397,13 +339,7 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                    child:
           Row(mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              // SizedBox(
-              //   width: 165.0,
-              //   child: RaisedButton(onPressed: () {},child: Text("Save & New",),color: Colors.white,textColor: Colors.purple,)),
-              
-              
-              
-               SizedBox(width: 165.0,
+              SizedBox(width: 165.0,
                  child: RaisedButton(onPressed: () {
                    editContacts(
                      serviceName.text, 
@@ -411,7 +347,6 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
                      categoryDescription.text,
                      subcategoryDescription.text,
                      this.widget.items['_id']
-
                      );Navigator.pop(context);
                  },child: Text("Save"),color: Colors.tealAccent.shade700,textColor: Colors.white,)),
             ],
@@ -419,8 +354,8 @@ editContacts(serviceName, serviceSaleSellingPrice,categoryDescription,subcategor
         )
           ),     
            ] ),
-                  
-                   );
-  
+            );
   }
 }
+
+                                              

@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,16 +6,20 @@ import 'package:soft/config/upload_url.dart';
 
 
 class CreateItems extends StatefulWidget {
- 
+  CreateItems({
+    this.items,
+  });
+  
+  final Map items;
+
   @override
   _CreateItemsState createState() => _CreateItemsState();
 }
 
 class _CreateItemsState extends State<CreateItems> {
-  String _chosenValue;
-
-  Map subDetail={};
-List service;
+String _chosenValue;
+Map subDetail={};
+List service=[];
 List category;
 List subCategory;
 
@@ -32,20 +34,23 @@ List subCategory;
 
  
   
-  addContact(serviceName, serviceSaleSellingPrice,categoryDescription,subcategoryDescription)async{
-    print(serviceName, );
-    print(serviceSaleSellingPrice);
-    
-    setState(() {
-       this.subDetail['serviceName'] = serviceName;
-      this.subDetail['serviceSaleSellingPrice'] = serviceSaleSellingPrice;
-      this.subDetail['categoryDescription'] = categoryDescription;
-      this.subDetail['subcategoryDescription'] = subcategoryDescription;
-
+  addContact(categoryDescription,drop,serviceName,subcategoryDescription,title,serviceSaleSellingPrice,)async{
+ print(drop);
+   setState(() {
+      this.subDetail['serviceCategory']['categoryDescription']=categoryDescription;
+      this.subDetail['serviceCategory']['categoryName']=drop;
+       this.subDetail['serviceName']=serviceName;
+      this.subDetail['serviceSubCategory']['subcategoryDescription']=subcategoryDescription;
+       this.subDetail['serviceSubCategory']['subcategoryName']=title;
      
-     service.add(subDetail);
-    
-    }
+      this.subDetail['serviceSaleSellingPrice']=serviceSaleSellingPrice;
+      //   'serviceCategory':{'categoryDescription':categoryDescription,},
+      //  'serviceSubCategory':{'subcategoryDescription':subcategoryDescription,},
+      //   'serviceName':serviceName,
+      //   'serviceSaleSellingPrice':serviceSaleSellingPrice,
+      
+     service.add(this.subDetail);
+     }
     ); final response = await http.post(Uri.parse(BaseUrl.service),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(this.subDetail));
@@ -66,7 +71,6 @@ List subCategory;
       var categoryData = json.decode(response.body);
       category = categoryData['data'];
     });
-    print(category);
   }
 
   Future getSubCategory() async {
@@ -76,10 +80,21 @@ List subCategory;
       var subCategoryData = json.decode(response.body);
       subCategory = subCategoryData['data'];
     });
-    print(subCategory);
   }
   @override
   void initState() {
+    if(this.widget.items!=null){
+       setState(() {
+       drop=this.widget.items['serviceCategory']['categoryName'].toString();
+       title=this.widget.items['serviceSubCategory']['subcategoryName'].toString();
+      serviceName.text=this.widget.items['serviceName'];
+      serviceSaleSellingPrice.text=this.widget.items['serviceSaleSellingPrice'];
+      categoryDescription.text=this.widget.items['serviceCategory']['categoryDescription'];
+      subcategoryDescription.text=this.widget.items['serviceSubCategory']['subcategoryDescription'];
+ });
+      
+    }
+    
     getData();
    getCategory();
    getSubCategory();
@@ -103,46 +118,30 @@ List subCategory;
 
         ),),
         leading: Icon(Icons.arrow_back,color: Colors.black,),
-        // actions: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(right:15.0),
-        //     child: Icon(Icons.settings,color: Colors.black,),
-        //   )
-        // ],
+        
         ),
         body: 
         Stack(
-                  children:[ 
-                    SingleChildScrollView(
+        children:[ 
+       SingleChildScrollView(
             child: Container(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  
-                  Container(padding: const EdgeInsets.only(left:15.0,top: 15.0),
-                                                 child: Text('Service Name')),
-                                              Container(
-                                                height: 40.0,
-                                                padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 5.0),
-                                                child: TextField(  
-                                          //obscureText: true,  
-                                         decoration: InputDecoration(  
-                                         border: OutlineInputBorder(), 
-                                        //  suffixIcon: Icon(Icons.calendar_today_outlined),
-                                        labelText: ' Service Name',
-                                         //hintText: 'Enter Service Name',  
-                      ),controller: serviceName,
+                Container(padding: const EdgeInsets.only(left:15.0,top: 15.0),
+                 child: Text('Service Name')),
+                 Container(
+                  height: 40.0,
+                  padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 5.0),
+                   child: TextField(  
+                   decoration: InputDecoration(  
+                   border: OutlineInputBorder(), 
+                   labelText: ' Service Name',
+                   ),controller: serviceName,
                     ),   
                      ),
-                     
-                     Container(
-                          padding: const EdgeInsets.only(
-                            top: 15.0,
-                          ),
-                          child: Center(
-                            child: Container(
-                                padding: const EdgeInsets.only(
-                                  left: 15.0,
-                                ),
+                  Container(padding: const EdgeInsets.only(top: 15.0,),
+                    child: Center(
+                      child: Container(padding: const EdgeInsets.only(left: 15.0, ),
                                 height: 40.0,
                                 width: 330.0,
                                 decoration: BoxDecoration(
@@ -173,19 +172,12 @@ List subCategory;
                                   }).toList(),
                                    onChanged: (value) {
                                      setState(() {
-                                       this.subDetail['serviceCategory'] =value;
-                                     print(this.subDetail['serviceCategory'] =value);
+                                       drop =value;print('............');print(value);
                                      });
-                                     
-                                                                  
-                                     },
-                                     hint: Text(
-                                    this.drop.toString(),
-                                      style:TextStyle(
-                                       fontSize: 16.0,
-                                       )),
+                                   },
+                                     hint: Text(this.drop.toString(),
+                                      style:TextStyle( fontSize: 16.0,)),
                                         icon: Icon(Icons.arrow_drop_down,
-                                       // color: Colors.white,
                                        ),
                                       ),
                     ),
@@ -195,31 +187,24 @@ List subCategory;
                         ),
                       
                       Container(
-                          padding: const EdgeInsets.only(
-                            top: 15.0,
-                          ),
+                          padding: const EdgeInsets.only(top: 15.0,),
                           child: Center(
-                            child: Container(
-                                padding: const EdgeInsets.only(
-                                  left: 15.0,
-                                ),
+                            child: Container(padding: const EdgeInsets.only(left: 15.0,),
                                 height: 40.0,
                                 width: 330.0,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey,),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
+                                  borderRadius:BorderRadius.all(Radius.circular(5.0)),
                                 ),
                                 child: Row(
                                   children: [
                                   DropdownButtonHideUnderline(
                     child: DropdownButton(dropdownColor:Colors.tealAccent.shade700,
-                               value:_chosenValue,
                                 style: TextStyle(color: Colors .white,
                                  decorationColor:Colors.white),
-                                 items:this.subCategory.map((pagesubCategory) {
+                                 items:subCategory.map((pagesubCategory) {
                                  return DropdownMenuItem(
-                                 value: pagesubCategory['_id'],
+                                 value: pagesubCategory['subcategoryName'],
                                  child: SizedBox(
                                    width: 280.0,
                                    child: Text(pagesubCategory['subcategoryName'],
@@ -233,15 +218,13 @@ List subCategory;
                               }).toList(),
                                 onChanged: (value) {
                                   setState(() {
-                                 this.subDetail['serviceSubCategory'] =value;
+                                 title =value;
                                   });
                               },
                                hint: Text(this.title.toString(),
-                               style:TextStyle(
-                               fontSize: 16.0,
+                               style:TextStyle(fontSize: 16.0,
                                 )),
                                  icon: Icon(Icons.arrow_drop_down,
-                                  //color: Colors.white,
                                 ),
                                 ),
                             ),
@@ -249,9 +232,7 @@ List subCategory;
                                 )),
                           ),
                         ),
-                        Container(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
+           Container(padding:const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
                 child: Text('Description')),
             Container(
               padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
@@ -260,16 +241,15 @@ List subCategory;
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: ' Discription',
-                  hintText: 'Discription',
+                  labelText: ' Description',
+                  hintText: 'Description',
                 ),
                 controller: categoryDescription,
               ),
             ),
            
             Container(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
+                padding:const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
                 child: Text('Subcategory Description')),
             Container(
               padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
@@ -278,45 +258,13 @@ List subCategory;
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: ' Discription',
-                  hintText: 'Discription',
+                  labelText: ' Description',
+                  hintText: 'Description',
                 ),
                 controller: subcategoryDescription,
               ),
             ),
-           
-                    //  Container(padding: const EdgeInsets.only(left:15.0,),
-                    //     child: Column(
-                    //       children: [
-                    //         Text('serviceSaleInfo  :'  + this.widget.category['serviceSaleInfo']),
-                    //         Text('serviceUnit  : '),
-                    //         Container(padding: const EdgeInsets.only(left:15.0,),
-                    //           child: Text('name  :  '  + this.widget.category['serviceUnit']['name'])),
-                    //         Container(
-                    //           child: Text('id  :  '  + this.widget.category['serviceUnit']['id']))
-                    //       ],
-                    //     ),
-
-                    //   ),
-                  
-                          
-
-
-                      //  Container(padding: const EdgeInsets.only(left:15.0,top: 15.0),
-                      //          child: Text('Item Type')),
-                      //          Container(padding: const EdgeInsets.only(left:15.0,top: 15.0,right: 200.0),
-                      //            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //              children: [
-                      //                Container(color: Colors.grey.shade200,
-                      //          child: Text('Product')),
-                      //           Container(
-                      //             color: Colors.grey.shade200,
-                      //          child: Text('Service')),
-                      //              ],
-                      //            ),
-                      //          ),
-                      //          Divider(),
-                                DefaultTabController(
+             DefaultTabController(
                       length: 1,
                       initialIndex: 0,
                       child: Column(
@@ -328,11 +276,8 @@ List subCategory;
                           labelColor: Colors.tealAccent.shade700,
                           tabs: [
                             Tab(text: 'Pricing'),
-                            // Tab(text: 'Stock'),
-                            // Tab(text: 'Others'),
                           ],
                         ),
-                        //Divider(),
                        Container(
                           height: 550,
                           child: TabBarView(children: [
@@ -344,8 +289,7 @@ List subCategory;
                                               Container(
                                                 height: 40.0,
                                                 padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 5.0),
-                                                child: TextField(  
-                                         // obscureText: true,  
+                                                child: TextField( 
                                           controller: serviceSaleSellingPrice,
                                          decoration: InputDecoration(  
                                          border: OutlineInputBorder(), 
@@ -405,60 +349,8 @@ List subCategory;
                      ),
                                  ],
                               ),
-                            ),
-                            
-                    //          Container(
-                    //           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               Container( padding: const EdgeInsets.only(left:15.0,right: 15.0,),
-                    //                              child: Text('Sales Price')),
-                    //                           Container(
-                    //                             height: 40.0,
-                    //                             padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 5.0),
-                    //                             child: TextField(  
-                    //                       obscureText: true,  
-                    //                      decoration: InputDecoration(  
-                    //                      border: OutlineInputBorder(), 
-                    //                     //  suffixIcon: Icon(Icons.calendar_today_outlined),
-                    //                      labelText: ' Item Name',
-                    //                      hintText: 'Enter Item Name',  
-                    //   ),  
-                    // ),  
-                      
-                    //  ),
-                    
-                    //              ],
-                    //           ),
-                    //         ),
-                            
-                    //          Container(
-                    //           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               Container( padding: const EdgeInsets.only(left:15.0,right: 15.0,),
-                    //                              child: Text('Item Name')),
-                    //                           Container(
-                    //                             height: 40.0,
-                    //                             padding: const EdgeInsets.only(left:15.0,right: 15.0,top: 5.0),
-                    //                             child: TextField(  
-                    //                       obscureText: true,  
-                    //                      decoration: InputDecoration(  
-                    //                      border: OutlineInputBorder(), 
-                    //                     //  suffixIcon: Icon(Icons.calendar_today_outlined),
-                    //                      labelText: ' Item Name',
-                    //                      hintText: 'Enter Item Name',  
-                    //   ),  
-                    // ),    
-                    //  ),
-                    //              ],
-                    //           ),
-                    //         ),
-                            
-                          ]),
-                        ),
-                        
-                     
-                
-                                             
+                            ), ]),
+                        ),                    
                 ],
               ),
             ),
@@ -471,13 +363,11 @@ List subCategory;
                    child:
           Row(mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              // SizedBox(
-              //   width: 165.0,
-              //   child: RaisedButton(onPressed: () {},child: Text("Save & New",),color: Colors.white,textColor: Colors.purple,)),
-              
                SizedBox(width: 165.0,
                  child: RaisedButton(onPressed: () {
                    addContact(
+                     drop.toString(),
+                   title.toString(),
                      serviceName.text, 
                      serviceSaleSellingPrice.text,
                      categoryDescription.text,

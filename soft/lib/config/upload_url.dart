@@ -7,5 +7,6 @@ class BaseUrl{
     static String subCategory = baseUrl + "api/subcategory/";
     static String service = baseUrl + "api/service/";
     static String payment = baseUrl + "api/accounts/";
+    static String addInvoice = baseUrl + "api/invoices/";
      
 }

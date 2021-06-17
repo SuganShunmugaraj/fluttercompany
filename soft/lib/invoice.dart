@@ -5,6 +5,7 @@ import 'package:soft/config/upload_url.dart';
 import 'package:http/http.dart' as http;
 import 'package:soft/invoice_add.dart';
 import 'package:soft/invoice_details.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Invoice extends StatefulWidget {
   Invoice({this.argument});
@@ -19,6 +20,10 @@ class _InvoiceState extends State<Invoice> {
   List _invoice;
   Map values;
 
+
+  
+
+
   getData() async {
     var response = await http.get(
         Uri.parse(BaseUrl.invoice + this.values['_id']),
@@ -30,16 +35,25 @@ class _InvoiceState extends State<Invoice> {
     });
   }
 
+removeInvoice(index,id)async{
+ setState(() {
+    invoiceList.remove(index);
+    });
+    var response = await http.delete(Uri.parse(BaseUrl.addInvoice + id),
+        headers: {"Accept": "application/json"});
+        print(response);
+}
+
+
   @override
   void initState() {
     setState(() {
       this.values = this.widget.argument['values'];
     });
-
     super.initState();
-
     this.getData();
   }
+
 
   String chosenValue;
   String drop = 'All Invoice ';
@@ -132,7 +146,6 @@ class _InvoiceState extends State<Invoice> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => InvoiceAdd(
-                                          //name: this.invoiceList[0],
                                         )));
                           },
                           child: Icon(Icons.add),
@@ -146,7 +159,15 @@ class _InvoiceState extends State<Invoice> {
                 ListView.separated(
                   itemCount: this.invoiceList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
+                      return  Slidable(
+  actionPane: new SlidableBehindActionPane(),
+  actionExtentRatio: 0.25,
+  child: new Container(
+    color: Colors.white,
+    child:  
+    ListTile(
+          title: Container( 
+                   child:GestureDetector(
                       onTap: () {
                         Navigator.push(
                             context,
@@ -200,8 +221,63 @@ class _InvoiceState extends State<Invoice> {
                           ),
                         ),
                       ),
-                    );
-                  },
+                    ),
+     
+                 ),
+    ),
+    
+  ),
+  
+  
+  secondaryActions: <Widget>[
+    new IconSlideAction(
+      caption: 'Edit',
+      color: Colors.grey,
+      icon: Icons.more_horiz,
+      onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InvoiceAdd(
+                                         prod: invoiceList[index],
+                                        )))
+    ),
+    new IconSlideAction(
+      caption: 'Delete',
+      color: Colors.tealAccent.shade700,
+      icon: Icons.delete,
+      onTap: ()async{
+        await showDialog(context: context,builder:
+                    (_) => AlertDialog(
+                 title: Text( 'Do you want Delete'),
+                 actions: [
+                  FlatButton(
+                     onPressed:
+                    () {
+                      Navigator.of(context, rootNavigator: true).pop(true);
+                         }, child: Text('No',
+                         style:TextStyle(
+                           color:  Colors.tealAccent.shade700,
+                                ),
+                                                  )),
+                            FlatButton(
+                               onPressed:
+                                    () {
+                                    removeInvoice(index,this.invoiceList[index]['_id']);
+                                    Navigator.of(context, rootNavigator: true).pop(true);
+                                     },
+                                      child:Text('Yes',
+                                      style:TextStyle(color:Colors.tealAccent.shade700,
+                                                                            ),
+                                                                          ))
+                                                                    ],
+                                                                  ));
+                                     
+      },
+    ),
+  ],
+
+          );
+       },
                   separatorBuilder: (context, index) {
                     return Divider();
                   },
@@ -219,7 +295,6 @@ class _InvoiceState extends State<Invoice> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => InvoiceAdd(
-                                        //  name: this.invoiceList[0],
                                         )));
                           },
                           child: Icon(Icons.add),

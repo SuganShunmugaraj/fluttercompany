@@ -29,18 +29,13 @@ class _PaymentState extends State<Payment> {
    var paymentList = json.decode(response.body);
       payment = paymentList['data'];
     }); 
-    print(payment);
   }
 
 
   addAmount(amount){
     this.payment.forEach((element) { 
       
-    });
-    print(amount);
-    print(payment);
-
-  }
+    });}
 
     @override
   void initState() {
@@ -145,22 +140,7 @@ class _PaymentState extends State<Payment> {
                             ),
                          
                           ),
-                        ),
-
-  //      Container(height: 60.0,
-  // padding: const EdgeInsets.only(top: 10.0,bottom: 15.0),
-  //                 child:TextField( 
-  //                    decoration: InputDecoration(  
-  //                       filled: true,
-  //                   fillColor: Colors.grey.shade200,
-  //                                          border:  InputBorder.none, 
-  //                                        prefixIcon: Icon(Icons.person_outline),
-  //                                          labelText: 'Name',
-  //                                          hintText: 'Enter Name',  
-  //                     ),  
-  //                   ), ), 
-                           
-                           ],
+                        ),],
                          ),
                        ),
                      ),
@@ -183,11 +163,8 @@ class _PaymentState extends State<Payment> {
                                         child: TextField(  onChanged: (text) {
                                          addAmount(text);
                                         },
-                     decoration: InputDecoration( 
-                        //filled: true,
-                   // fillColor: Colors.grey.shade200,
+                     decoration: InputDecoration(
                                              border:  OutlineInputBorder(), 
-                                           //prefixIcon: Icon(Icons.person_outline),
                                              labelText: ('₹'),
                                              hintText: 'Enter Amount',  
                       ),  

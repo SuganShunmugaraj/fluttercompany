@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:soft/config/upload_url.dart';
@@ -25,9 +24,6 @@ class _ContactsState extends State<Contacts> {
    
   }
 removeContacts(index,id)async{
-print(index);
-print(id);
-print('................');
  setState(() {
     contacts.remove(index);
     });
@@ -35,7 +31,6 @@ print('................');
         headers: {"Accept": "application/json"});
         print(response);
 }
-
 
   @override
   void initState() {
@@ -55,14 +50,13 @@ print('................');
                       Column(
                         children: [
                           Container( padding: const EdgeInsets.only(top:40.0,left: 15.0,right: 15.0,bottom: 15.0),
-                                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text('Contacts',
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 17.0
-                                                     ),),
-                                                     Stack(
+                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          Text('Contacts',style: TextStyle(
+                         fontWeight: FontWeight.bold,
+                         fontSize: 17.0
+                         ),),
+                   Stack(
     children: [
       Container(
   width: 30,
@@ -86,24 +80,19 @@ print('................');
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.red,
-             // border: Border.all(color: Colors.white, width: 1)
              ),
-         
         ),
       ),
     ],
   ),)
                  ],
   ),
-                
-                                                  ],
-                                                ),
-                                              ),
-                                          Container(
-                                           height: 40.0,
-                                           width: 330.0,
-
-   
+     ],
+     ),
+      ),
+        Container(
+           height: 40.0,
+           width: 330.0,
   decoration: BoxDecoration(
     border: Border.all(color: Colors.grey
     ),
@@ -116,12 +105,10 @@ print('................');
         child: Icon(Icons.search))
     ],
   ),),
-                                 
-                        ],
-                      ),         
-             
-             Container(padding: const EdgeInsets.only(top: 120.0),
-               child: ListView.separated(
+   ],
+     ), 
+      Container(padding: const EdgeInsets.only(top: 120.0),
+        child: ListView.separated(
         itemCount: contacts.length,
         itemBuilder: (context, index) {
           return  Slidable(
@@ -132,75 +119,52 @@ print('................');
     child:  
     ListTile(
           title: Container( 
-                  
                   child:GestureDetector(
-                                        onTap: (){
-                                           Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) =>ContactDetailPage(
-                                          prod: contacts[index],
-                                          )));
-                                        },
-                                          child: 
-                                               
-                                                Container( 
-                                                  child: Row(
-                                                    children: [
-                                                      Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(contacts[index]['userName']['firstName'],
-                                                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0),),
-                                                          Text(contacts[index]['phone']['primaryContact'],
-                                                          style: TextStyle(color: Colors.grey,
-                                                          fontWeight: FontWeight.bold),)
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                          ),
-                                        ),
+                   onTap: (){
+                    Navigator.push(context,
+                     MaterialPageRoute(builder: (context) =>ContactDetailPage(
+                     prod: contacts[index],
+                     )));
+                   },
+                  child:Container( 
+                   child: Row(
+                   children: [
+                   Column(crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                   Text(contacts[index]['userName']['firstName'],
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0),),
+                   Text(contacts[index]['phone']['primaryContact'],
+                    style: TextStyle(color: Colors.grey,
+                   fontWeight: FontWeight.bold),)
+                   ],
+                    ),
+                    ],
+                 ),
+                 ),
+                  ),
                 ),
     ),
     
   ),
-  // actions: <Widget>[
-  //   new IconSlideAction(
-  //     caption: 'Archive',
-  //     color: Colors.blue,
-  //     icon: Icons.archive,
-  //     onTap: () =>(''),
-  //   ),
-  //   new IconSlideAction(
-  //     caption: 'Share',
-  //     color: Colors.indigo,
-  //     icon: Icons.share,
-  //     onTap: () => ('Share'),
-  //   ),
-  // ],
-  
   secondaryActions: <Widget>[
     new IconSlideAction(
       caption: 'Edit',
       color: Colors.grey,
       icon: Icons.more_horiz,
-      onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Edit(
-                                         prod: contacts[index],
-                                        )))
+      onTap: () => Navigator.push( 
+        context, MaterialPageRoute(
+        builder: (context) => Edit(prod: contacts[index], )))
     ),
     new IconSlideAction(
       caption: 'Delete',
       color: Colors.tealAccent.shade700,
       icon: Icons.delete,
       onTap: ()async{
-        await showDialog(context: context,builder:
-                    (_) => AlertDialog(
+        await showDialog(context: context,builder:(_) => AlertDialog(
                  title: Text( 'Do you want Delete'),
                  actions: [
                   FlatButton(
-                     onPressed:
-                    () {
+                     onPressed:() {
                       Navigator.of(context, rootNavigator: true).pop(true);
                          }, child: Text('No',
                          style:TextStyle(
@@ -208,8 +172,7 @@ print('................');
                                 ),
                                                   )),
                             FlatButton(
-                               onPressed:
-                                    () {
+                               onPressed:() {
                                     removeContacts(index,this.contacts[index]['_id']);
                                     Navigator.of(context, rootNavigator: true).pop(true);
                                      },
@@ -230,8 +193,8 @@ print('................');
                     },
         ),
              ),
-                    Align(
-                  alignment: Alignment.bottomLeft,
+          Align(
+                alignment: Alignment.bottomLeft,
                   child: Container(
                       padding: const EdgeInsets.only(left: 280.0, bottom: 10.0),
                       child: SizedBox(

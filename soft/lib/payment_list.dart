@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:soft/config/upload_url.dart';
@@ -78,7 +77,6 @@ addAmount(account){
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.red,
-             // border: Border.all(color: Colors.white, width: 1)
              ),
          
         ),

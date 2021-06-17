@@ -14,7 +14,6 @@ class _ContactDetailPageState extends State<ContactDetailPage> {
 
   @override
   void initState() {
-    print(this.widget.prod);
     super.initState();
   }
   @override
@@ -26,7 +25,6 @@ class _ContactDetailPageState extends State<ContactDetailPage> {
             child: Column(
               children: [
                 Container(
-                  
                   padding: const EdgeInsets.only(top:30.0,left: 15.0,),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -55,7 +53,6 @@ class _ContactDetailPageState extends State<ContactDetailPage> {
                           color: Colors.white,fontWeight: FontWeight.bold,fontSize: 28.0
                         ),),
                       )
-                      
                     ],
                   ),
                   VerticalDivider(color: Colors.white,
@@ -86,39 +83,34 @@ class _ContactDetailPageState extends State<ContactDetailPage> {
           Container(
             child:  
              DefaultTabController(
-                      length: 2,
-                      //initialIndex: 0,
-                      
-                      child: Column(
-                        children: [
-                        TabBar(
-                          indicatorColor: Colors.tealAccent.shade700,
-                          unselectedLabelColor: Colors.black,
-                          labelColor: Colors.tealAccent.shade700,
-                          tabs: [
-                            Tab(text: 'TRANSACTION'),
-                            Tab(text: 'DETAILS'),
-                          ],
-                        ),
-
-                        Container(
+                length: 2,
+               child: Column(
+               children: [
+                TabBar(
+                 indicatorColor: Colors.tealAccent.shade700,
+                  unselectedLabelColor: Colors.black,
+                   labelColor: Colors.tealAccent.shade700,
+                   tabs: [
+                    Tab(text: 'TRANSACTION'),
+                     Tab(text: 'DETAILS'),
+                     ],
+                   ),
+                  Container(
                           height: 400.0,
                           child: TabBarView(children: [
                             Container(
                               child: Text('dfghj'),
-                             
-                            ),
-                           
-                            SingleChildScrollView(
-                              child: Container(padding: const EdgeInsets.only(top:30.0),
-                                child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(padding: const EdgeInsets.only(bottom:30.0),
-                                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Column(
-                                            children: [
-                                               RawMaterialButton(
+                             ),
+                  SingleChildScrollView(
+                   child: Container(padding: const EdgeInsets.only(top:30.0),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    Container(padding: const EdgeInsets.only(bottom:30.0),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                     Column(
+                      children: [
+                      RawMaterialButton(
   onPressed: () {},
   elevation: 2.0,
   fillColor: Colors.tealAccent.shade700,
@@ -133,14 +125,11 @@ Container(padding: const EdgeInsets.only(top:10.0),
   child: Text('Mobile',style: TextStyle(
     color: Colors.tealAccent.shade700
   ),))
-                                        
-
-                                            ],
-
-                                          ),
-                                           Column(
-                                            children: [
-                                               RawMaterialButton(
+         ],
+ ),
+  Column(
+ children: [
+  RawMaterialButton(
   onPressed: () {},
   elevation: 2.0,
   fillColor: Colors.tealAccent.shade700,
@@ -156,14 +145,11 @@ Container(padding: const EdgeInsets.only(top:10.0),
   child: Text('Work Phone',style: TextStyle(
     color: Colors.tealAccent.shade700
   ),))
-                                        
-
-                                            ],
-
-                                          ),
-                                           Column(
-                                            children: [
-                                               RawMaterialButton(
+  ],
+ ),
+ Column(
+ children: [
+ RawMaterialButton(
   onPressed: () {},
   elevation: 2.0,
   fillColor: Colors.tealAccent.shade700,
@@ -177,16 +163,12 @@ Container(padding: const EdgeInsets.only(top:10.0),
   child: Text('Email',style: TextStyle(
     color: Colors.tealAccent.shade700
   ),))
-                                        
-
-                                            ],
-
-                                          ),
-                                         
-                                        ],
-                                      ),
-                                    ),
-                                  Divider(),
+  ],
+),
+ ],
+ ),
+ ),
+  Divider(),
                                   Container(padding: const EdgeInsets.only(left: 15.0,top: 15.0),
                                     child: Text('Address',style: TextStyle(
                                       fontWeight: FontWeight.bold

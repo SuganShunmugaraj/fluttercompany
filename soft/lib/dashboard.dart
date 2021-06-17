@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:charts_flutter/flutter.dart' as charts;
 
-
-
-
-
 class Dashboard extends StatefulWidget {
   Dashboard({Key key}) : super(key: key);
 
@@ -18,7 +14,6 @@ class DashboardState extends State<Dashboard> {
  
   static List<charts.Series<Sales, String>> _createRandomData() {
     final random = Random();
- 
     final desktopSalesData = [
       Sales('2015', random.nextInt(100)),
       Sales('2016', random.nextInt(100)),
@@ -110,24 +105,19 @@ class DashboardState extends State<Dashboard> {
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.red,
-             // border: Border.all(color: Colors.white, width: 1)
              ),
          
         ),
       ),
     ],
-  ),)
-                   // Icon(Icons.notifications)
-                  ],
+  ),)],
                 ),
               ),
-
-              Container(padding: const EdgeInsets.only(top: 20.0),
+        Container(padding: const EdgeInsets.only(top: 20.0),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('₹ 45,200',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30.0),),
-                   
-                    Container(
+                Container(
                       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                 Text('Current cash Balence',style: TextStyle(fontSize: 10.0,color: Colors.grey),),
@@ -137,7 +127,6 @@ class DashboardState extends State<Dashboard> {
                 Icon(Icons.circle,size: 12.0,color: Colors.tealAccent.shade700,),
                 Text(' Money In',
                   style: TextStyle(fontSize: 10.0
-                      // color: Color(0xff797979)
                   ),
                 ),
               ],
@@ -149,19 +138,14 @@ class DashboardState extends State<Dashboard> {
                 Icon(Icons.circle,size: 12.0,color: Colors.teal.shade100,),
                 Text(' Money Out',
                   style: TextStyle(fontSize: 10.0
-                      // color: Color(0xff797979)
                   ),
                 ),
               ],
             )
         ),
           ],),
-                    ),
-              
-
-                  ],
+                    ),],
                 )),
-              
            Container(
              height: 270.0,
         child: barChart(),
@@ -181,10 +165,8 @@ Container(
                        unselectedLabelColor: Colors.grey,
                       indicatorSize: TabBarIndicatorSize.tab,
                       indicator: BoxDecoration(
-                        
                         borderRadius: BorderRadius.circular(50),
                         color: Colors.tealAccent.shade700,
-                        
                         ),
                               tabs: [
                                 Tab(

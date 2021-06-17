@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
@@ -7,13 +6,18 @@ import 'package:http/http.dart' as http;
 import 'package:soft/config/upload_url.dart';
 
 class InvoiceAdd extends StatefulWidget {
+  InvoiceAdd({
+    this.prod,
+  });
+  
+  final Map prod;
   @override
   _InvoiceAddState createState() => _InvoiceAddState();
 }
 
 class _InvoiceAddState extends State<InvoiceAdd> {
   List customer = [];
-  List items;
+  List items = [];
   List selectedItems = [];
   dynamic amount;
   Map addEdit = {};
@@ -33,8 +37,20 @@ class _InvoiceAddState extends State<InvoiceAdd> {
         headers: {"Accept": "application/json"});
     this.setState(() {
       var itemsList = json.decode(response.body);
-      items = itemsList['data'];
+      itemsList['data'].forEach((datas) => {datas['quantity'] = 0, items.add(datas)});
     });
+  }
+
+  setSubtract(items) {
+    int index = selectedItems.indexWhere((element) {
+      return element['itemdetails'] == items['_id'];
+    });
+    if (index >= 0) {
+      setState(() {
+        selectedItems[index]['quantity'] -= 1;
+      });
+    }
+    getTotal();
   }
 
   setSelectedItems(items) {
@@ -55,39 +71,23 @@ class _InvoiceAddState extends State<InvoiceAdd> {
     });
 
     if (index >= 0) {
-      print('inside');
       setState(() {
         selectedItems[index]['quantity'] += 1;
       });
     } else {
-      print('out');
       setState(() {
         selectedItems.add(mockItem);
       });
     }
-    // print('----2----');
-    // print(selectedItems);
-    // print('----2----');
     getTotal();
   }
 
   getTotal() {
     var total = 0;
-
     selectedItems.forEach((element) {
-      print(int.parse(element['rate']) );
-      print(element['quantity'] );
-
-      total += int.parse(element['rate']) *  element['quantity'];
+      total += int.parse(element['rate']) * element['quantity'];
     });
-    setState(() {
-      amount = total;
-    });
-
-    print('----3----'); 
-    print(amount); 
-
-    print('----3----');
+    amount = total;
   }
 
   editTotalItems() {
@@ -121,9 +121,50 @@ class _InvoiceAddState extends State<InvoiceAdd> {
         'totalAmount': 56780,
         'totalwords': "fifty six thousand seven hundred and eighty rupee",
       };
-      print('......................');
-      print(addTotalEdit);
     });
+   
+  }
+
+var customerId;
+  onGenerateBill()async {
+   Map billMockup = {
+      "customerName": customerId,
+      "customerId": "",
+      "invoice": this.editInvoice['number'],
+      "reference": "1234",
+      "status": "Draft",
+      "invoiceDate": this.editInvoice['startDate'],
+      "expiryDate": this.editInvoice['endDate'],
+      "recurringstartDate": null,
+      "recurringendDate": null,
+      "salesPerson": null,
+      "projectName": null,
+      "subject": "hiii inviove",
+      "items": this.selectedItems,
+      "totalAmount": amount,
+      "customerNotes": "",
+      "terms": "",
+      "subTotal": amount,
+      "total": "",
+      "totalwords": "",
+      "adjust": "",
+      "recurringagreed": false,
+      "repeat": "",
+      "paymentterm": "",
+      "customrepeat": "",
+      "amountPaid": 0,
+      "adjustValue": 0,
+      "files": []
+    };
+final response = await http.post(Uri.parse(BaseUrl.addInvoice),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode(billMockup));
+    var res = response.body;
+    if (response.statusCode == 200) {
+      print('sucess');
+    } else {
+      print("Error :" + res);
+    }
   }
 
   editItems(expiryDate, invoiceDate, invoice, subject) async {
@@ -136,57 +177,184 @@ class _InvoiceAddState extends State<InvoiceAdd> {
       };
     });
   }
+Map editInvoice = {
+    'startDate': DateTime.now().toString(),
+    'endDate': DateTime(2021, 06, 25).toString(),
+    'number': 'INV0123',
+    'subject': 'Invoice Subject',
+  };
+ addItems() {
+    return showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                child: TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.search),
+                    suffixIcon: Icon(Icons.record_voice_over),
+                    icon: Icon(Icons.arrow_back),
+                    labelText: ' Search..',
+                  ),
+                ),
+              ),
+              Expanded(
+                  child: ListView.separated(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        return Stack(
+                          children: [
+                            Container(
+                              color: Colors.white,
+                              child: ListTile(
+                                title: Container(
+                                  child: Row(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        child: Container(
+                                          color: Colors.tealAccent.shade700,
+                                          width: 50,
+                                          height: 50,
+                                          child: Center(
+                                              child: Text(
+                                            '${this.items[index]['serviceName'].substring(0, 1)}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 30.0,
+                                                color: Colors.white),
+                                          )),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding:
+                                            const EdgeInsets.only(left: 15.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(this.items[index]
+                                                ['serviceName']),
+                                            Text(this.items[index]
+                                                ['serviceSaleSellingPrice']),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only( left: 250.0, right: 15.0, top: 15.0),
+                              child: Align(
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 20.0, top: 5.0, bottom: 5.0),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.tealAccent.shade700),
+                                  child: Row(
+                                    children: [
+                                      InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              setSubtract(this.items[index]);
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.remove,
+                                            color: Colors.white,
+                                            size: 16,
+                                          )),
+                                      Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 3),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 3, vertical: 2),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(3),
+                                              color: Colors.white),
+                                          child: Text(this.items[index]['quantity'].toString())
+                                      
+                                          ),
+                                      InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              this.items[index]['quantity'] += 1;
+                                              setSelectedItems( this.items[index]);
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                            size: 16,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return Divider();
+                      }))
+            ],
+          );
+        });
+  }
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      if(this.widget.prod!=null){
+        customerId=this.widget.prod['customerName'];
+        this.editInvoice['number']=this.widget.prod['invoice'];
+        this.editInvoice['startDate']=this.widget.prod['invoiceDate'];
+         this.editInvoice['endDate']=this.widget.prod['expiryDate'];
+       this.selectedItems=this.widget.prod['items'];
+      amount=this.widget.prod['totalAmount'];
+      amount=this.widget.prod['subTotal'];
+      }
+    });
     getCustomerData();
     getItems();
+    invoiceDate.text = this.editInvoice['startDate'];
+    expiryDate.text = this.editInvoice['endDate'];
+    invoice.text = this.editInvoice['number'];
+    subject.text = this.editInvoice['subject'];
+     
   }
 
-  String _chosenValue;
   String drop = 'Customer Name';
 
-  final expiryDate = TextEditingController();
   final invoiceDate = TextEditingController();
+  final expiryDate = TextEditingController();
   final invoice = TextEditingController();
   final subject = TextEditingController();
+  final counter = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.white, // Color for Android
-        statusBarBrightness:
-            Brightness.dark // Dark == white status bar -- for IOS.
+        statusBarColor: Colors.white, 
+        statusBarBrightness:Brightness.dark 
         ));
     return Scaffold(
         backgroundColor: Colors.white,
-        // appBar: AppBar(
-        //   backgroundColor: Colors.white,
-        //   title: Text(
-        //     'Create Bill/ Invoice',
-        //     style: TextStyle(color: Colors.black),
-        //   ),
-        //   leading: Icon(
-        //     Icons.arrow_back,
-        //     color: Colors.black,
-        //   ),
-        //   actions: [
-        //     Padding(
-        //       padding: const EdgeInsets.only(right: 15.0),
-        //       child: Icon(
-        //         Icons.save,
-        //         color: Colors.black,
-        //       ),
-        //     )
-        //   ],
-        // ),
-
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.only(
-              top: 20.0,
-            ),
+            padding: const EdgeInsets.only(top: 20.0,),
             child: Column(
               children: [
                 Container(
@@ -214,7 +382,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Invoice #H5',
+                            invoice.text,
                             style: TextStyle(color: Colors.tealAccent.shade700),
                           ),
                           GestureDetector(
@@ -242,68 +410,79 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                     left: 15.0),
                                                 child: Text('Invoice Date')),
                                             Container(
-                                              height: 40.0,
-                                              padding: const EdgeInsets.only(
-                                                  left: 15.0,
-                                                  right: 15.0,
-                                                  top: 5.0),
-                                              child: TextField(
-                                                controller: expiryDate,
-                                                decoration: InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  suffixIcon: IconButton(
-                                                      icon: Icon(Icons
-                                                          .calendar_today_outlined),
-                                                      onPressed: () {
-                                                        showDatePicker(
-                                                          context: context,
-                                                          initialDate:
-                                                              DateTime.now(),
-                                                          firstDate:
-                                                              DateTime(2015, 8),
-                                                          lastDate:
-                                                              DateTime(2101),
-                                                        );
-                                                      }),
-                                                  labelText: ' Invoice Date',
-                                                  hintText:
-                                                      'Enter Invoice Date',
-                                                ),
-                                              ),
-                                            ),
+                                                height: 40.0,
+                                                padding: const EdgeInsets.only(
+                                                    left: 15.0,
+                                                    right: 15.0,
+                                                    top: 5.0),
+                                                child: TextFormField(
+                                                  controller: invoiceDate,
+                                                  decoration: InputDecoration(
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                    labelText: "Invoice Date",
+                                                    suffixIcon: Icon(Icons
+                                                        .calendar_today_outlined),
+                                                  ),
+                                                  onTap: () async {
+                                                    DateTime date =
+                                                        DateTime(1900);
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                            new FocusNode());
+                                                    date = await showDatePicker(
+                                                        context: context,
+                                                        initialDate:
+                                                            (DateTime.now()),
+                                                        firstDate:
+                                                            DateTime(1900),
+                                                        lastDate:
+                                                            DateTime(2100));
+
+                                                    invoiceDate.text =
+                                                        dateFormat(date)
+                                                            .toString();
+                                                  },
+                                                )),
                                             Container(
                                                 padding: const EdgeInsets.only(
                                                     left: 15.0, top: 15.0),
                                                 child: Text('Due Date')),
                                             Container(
-                                              height: 40.0,
-                                              padding: const EdgeInsets.only(
-                                                  left: 15.0,
-                                                  right: 15.0,
-                                                  top: 5.0),
-                                              child: TextField(
-                                                controller: invoiceDate,
-                                                decoration: InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  suffixIcon: IconButton(
-                                                      icon: Icon(Icons
-                                                          .calendar_today_outlined),
-                                                      onPressed: () {
-                                                        showDatePicker(
-                                                          context: context,
-                                                          initialDate:
-                                                              DateTime.now(),
-                                                          firstDate:
-                                                              DateTime(2015, 8),
-                                                          lastDate:
-                                                              DateTime(2101),
-                                                        );
-                                                      }),
-                                                  labelText: ' Due Date',
-                                                  hintText: 'Enter Due Date',
-                                                ),
-                                              ),
-                                            ),
+                                                height: 40.0,
+                                                padding: const EdgeInsets.only(
+                                                    left: 15.0,
+                                                    right: 15.0,
+                                                    top: 5.0),
+                                                child: TextFormField(
+                                                  controller: expiryDate,
+                                                  decoration: InputDecoration(
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                    labelText: "Invoice Date",
+                                                    suffixIcon: Icon(Icons
+                                                        .calendar_today_outlined),
+                                                  ),
+                                                  onTap: () async {
+                                                    DateTime date =
+                                                        DateTime(1900);
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                            new FocusNode());
+                                                    date = await showDatePicker(
+                                                        context: context,
+                                                        initialDate:
+                                                            (DateTime.now()),
+                                                        firstDate:
+                                                            DateTime(1900),
+                                                        lastDate:
+                                                            DateTime(2100));
+
+                                                    expiryDate.text =
+                                                        dateFormat(date)
+                                                            .toString();
+                                                  },
+                                                )),
                                             Container(
                                                 padding: const EdgeInsets.only(
                                                     left: 15.0, top: 15.0),
@@ -315,7 +494,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                       child: CircleAvatar(
                                                         radius: 7.0,
                                                         backgroundColor:
-                                                            Colors.purple,
+                                                            Colors.tealAccent.shade700,
                                                         child: Icon(
                                                           Icons.close,
                                                           color: Colors.white,
@@ -332,7 +511,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                           'Remove Due Date',
                                                           style: TextStyle(
                                                               color: Colors
-                                                                  .purple),
+                                                                  .tealAccent.shade700),
                                                         )),
                                                   ],
                                                 )),
@@ -368,8 +547,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                           border:
                                                               OutlineInputBorder(),
                                                           labelText: ' Number',
-                                                          hintText:
-                                                              'Enter Number',
+                                                          // hintText: 'Enter Number',
                                                         ),
                                                       ),
                                                     ),
@@ -407,8 +585,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                           border:
                                                               OutlineInputBorder(),
                                                           labelText: ' Subject',
-                                                          hintText:
-                                                              'Enter Subject',
+                                                          //hintText:'Enter Subject',
                                                         ),
                                                       ),
                                                     ),
@@ -436,7 +613,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                             child: CircleAvatar(
                                                               radius: 7.0,
                                                               backgroundColor:
-                                                                  Colors.purple,
+                                                                  Colors.tealAccent.shade700,
                                                               child: Icon(
                                                                 Icons.close,
                                                                 color: Colors
@@ -455,15 +632,16 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                                 'Remove Prefix',
                                                                 style: TextStyle(
                                                                     color: Colors
-                                                                        .purple),
+                                                                        .tealAccent.shade700),
                                                               )),
                                                         ],
                                                       )),
                                                   Container(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                              left: 160.0,
-                                                              bottom: 15.0),
+                                                        left: 140.0,
+                                                        bottom: 15.0,
+                                                      ),
                                                       child: Text('(ex:h5,h6)'))
                                                 ],
                                               ),
@@ -477,16 +655,10 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                 children: [
                                                   RaisedButton(
                                                       onPressed: () {
-                                                        editItems(
-                                                            expiryDate.text,
-                                                            invoiceDate.text,
-                                                            invoice.text,
-                                                            subject.text);
-
-                                                        editTotalItems();
+                                                        print(editInvoice);
                                                       },
                                                       textColor: Colors.white,
-                                                      color: Colors.purple,
+                                                      color: Colors.tealAccent.shade700,
                                                       child: Text(
                                                         'Save',
                                                         style: TextStyle(
@@ -512,7 +684,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                           ),
                         ],
                       ),
-                      Text('Due Date'),
+                      Text(expiryDate.text),
                     ],
                   ),
                 ),
@@ -551,23 +723,26 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                       child: DropdownButton(
                                         dropdownColor:
                                             Colors.tealAccent.shade700,
-                                        value: _chosenValue,
                                         style: TextStyle(
                                             color: Colors.white,
                                             decorationColor: Colors.white),
                                         items: customer.map((value) {
                                           return DropdownMenuItem(
                                             value: value,
-                                            child: Text(
-                                              value['userName']['firstName'],
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                // fontSize: 20.0,
+                                            child: SizedBox(
+                                              width: 250.0,
+                                              child: Text(value['userName']['firstName'],
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           );
                                         }).toList(),
-                                        onChanged: (value) {},
+                                        onChanged: (value) {
+                                          customerId=value['_id'];
+                                          value['userName']['firstName']=value;
+                                        },
                                         hint: Text(this.drop.toString(),
                                             style: TextStyle(
                                               color: Colors.black,
@@ -582,23 +757,6 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                 )),
                           ),
                         ),
-
-                        // GestureDetector(
-
-                        //   onTap: () {},
-                        //   child: Container(
-                        //     padding:
-                        //         const EdgeInsets.only(right: 15.0, top: 15.0),
-                        //     child: Row(
-                        //       mainAxisAlignment: MainAxisAlignment.end,
-                        //       children: [
-                        //         Icon(Icons.add),
-                        //         Text('Mobile Number'),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ),
-
                         selectedItems.length > 0
                             ? Container(
                                 padding: const EdgeInsets.only(
@@ -611,214 +769,12 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text('ITEMS'),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Container(
-                                              padding: const EdgeInsets.only(
-                                                  left: 15.0,
-                                                  right: 15.0,
-                                                  bottom: 15.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.stretch,
-                                                children: [
-                                                  FlatButton(
-                                                      onPressed: () {
-                                                        showModalBottomSheet(
-                                                            context: context,
-                                                            builder:
-                                                                (BuildContext
-                                                                    context) {
-                                                              return ListView
-                                                                  .separated(
-                                                                      itemCount:
-                                                                          items
-                                                                              .length,
-                                                                      itemBuilder:
-                                                                          (context,
-                                                                              index) {
-                                                                        return SingleChildScrollView(
-                                                                            child: Container(
-                                                                                child: Column(children: [
-                                                                          Container(
-                                                                            padding:
-                                                                                const EdgeInsets.only(
-                                                                              left: 15.0,
-                                                                              right: 15.0,
-                                                                              top: 15.0,
-                                                                            ),
-                                                                            height:
-                                                                                60.0,
-                                                                            child:
-                                                                                TextField(
-                                                                              obscureText: true,
-                                                                              decoration: InputDecoration(
-                                                                                border: OutlineInputBorder(),
-                                                                                prefixIcon: Icon(Icons.search),
-                                                                                suffixIcon: Icon(Icons.record_voice_over),
-                                                                                icon: Icon(Icons.arrow_back),
-                                                                                labelText: ' Search..',
-                                                                                // hintText: 'Enter Party Name',
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          Divider(),
-                                                                          Container(
-                                                                            padding:
-                                                                                const EdgeInsets.only(
-                                                                              left: 15.0,
-                                                                              right: 15.0,
-                                                                              top: 15.0,
-                                                                            ),
-                                                                            child:
-                                                                                Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                              children: [
-//                          Container(
-
-//                            child: DropdownButton<String>(
-//   focusColor:Colors.white,
-//   value: _chosenValue,
-//   //elevation: 5,
-//   style: TextStyle(color: Colors.blue),
-//   iconEnabledColor:Colors.black,
-//   items: <String>[
-//     'Android',
-//     'IOS',
-//     'Flutter',
-//     'Node',
-//     'Java',
-//     'Python',
-//     'PHP',
-//   ].map<DropdownMenuItem<String>>((String value) {
-//     return DropdownMenuItem<String>(
-//       value: value,
-//       child: Text(value,style:TextStyle(color:Colors.black),),
-//     );
-//   }).toList(),
-//   hint:Text(
-//     "Add Category",
-//     style: TextStyle(
-//         color: Colors.black,
-//         fontSize: 14,
-//         fontWeight: FontWeight.w500),
-//   ),
-//   onChanged: (String value) {
-//     setState(() {
-//       _chosenValue = value;
-//     });
-//   },
-// ),
-//                          ),
-
-//               GestureDetector(
-//                                 onTap: (){
-
-//                                 },
-//                                     child: Container(
-
-//                                   child: Row(mainAxisAlignment: MainAxisAlignment.end,
-//                                     children: [
-//                                       Icon(Icons.add),
-//                                       Text('Mobile Number'),
-
-//                                     ],
-//                                   ),
-//                                 ),
-//                               ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Container(
-                                                                            child:
-                                                                                Row(
-                                                                              children: [
-                                                                                Container(
-                                                                                  padding: const EdgeInsets.only(
-                                                                                    left: 15.0,
-                                                                                  ),
-                                                                                  child: ClipRRect(
-                                                                                    borderRadius: BorderRadius.circular(5.0),
-                                                                                    child: Container(
-                                                                                      color: Colors.red,
-                                                                                      width: 50,
-                                                                                      height: 50,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                Container(
-                                                                                  padding: const EdgeInsets.only(
-                                                                                    left: 15.0,
-                                                                                  ),
-                                                                                  child: Column(
-                                                                                    children: [
-                                                                                      Text(this.items[index]['serviceName']),
-                                                                                      Text(this.items[index]['serviceSaleSellingPrice']),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                                Container(
-                                                                                    padding: const EdgeInsets.only(
-                                                                                      left: 50.0,
-                                                                                    ),
-                                                                                    child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                                                                                      TextButton(
-                                                                                          child: Row(
-                                                                                            children: [
-                                                                                              Text("ADD", style: TextStyle(color: Colors.purple)),
-                                                                                              Icon(Icons.add),
-                                                                                            ],
-                                                                                          ),
-                                                                                          style: ButtonStyle(padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(15)), foregroundColor: MaterialStateProperty.all<Color>(Colors.red), shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.purple)))),
-                                                                                          onPressed: () => {setSelectedItems(this.items[index])}),
-                                                                                    ])),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ])));
-                                                                      },
-                                                                      separatorBuilder:
-                                                                          (context,
-                                                                              index) {
-                                                                        return Divider();
-                                                                      });
-                                                            });
-                                                      },
-                                                      textColor: Colors.purple,
-                                                      color:
-                                                          Colors.purple.shade50,
-                                                      child: Text(
-                                                        'Add Items',
-                                                        style: TextStyle(
-                                                            fontSize: 20),
-                                                      )),
-                                                ],
-                                              ));
+                                      IconButton(
+                                        icon: Icon(Icons.add),
+                                        onPressed: () {
+                                          addItems();
                                         },
-                                        child: Container(
-                                          padding: const EdgeInsets.only(
-                                            right: 15.0,
-                                            top: 15.0,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Icon(
-                                                Icons.add,
-                                                color:
-                                                    Colors.tealAccent.shade700,
-                                              ),
-                                              Text(
-                                                'Items',
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .tealAccent.shade700),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                      )
                                     ],
                                   ),
                                   SizedBox(
@@ -832,6 +788,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                               selectedItems[index]['name'];
                                           var rate =
                                               selectedItems[index]['rate'];
+
                                           var quantity =
                                               selectedItems[index]['quantity'];
                                           var totalAmounts =
@@ -851,8 +808,8 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          Text(name),
-                                                          Text(rate +
+                                                          Text(name.toString()),
+                                                          Text(rate.toString() +
                                                               ' x ' +
                                                               quantity
                                                                   .toString()),
@@ -861,20 +818,6 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                       Text(totalAmounts
                                                           .toString()),
                                                     ]),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 15.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text('Sub Total'),
-                                                      Text(amount.toString()),
-                                                    ],
-                                                  ),
-                                                )
                                               ],
                                             ),
                                           );
@@ -883,53 +826,70 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                           return Divider();
                                         }),
                                   ),
-                                  Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Container(
-                                      padding: const EdgeInsets.only(
-                                          right: 15.0, top: 100.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 20.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text('Total Amount'),
-                                                Text(amount.toString()),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 165.0,
-                                            child: RaisedButton(
-                                              shape: RoundedRectangleBorder(
-                                                  //  borderRadius: BorderRadius.circular(28.0),
-                                                  ),
-                                              onPressed: () {},
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                      child: Text(
-                                                    ' Generate Bill',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 18.0),
-                                                  ))
-                                                ],
-                                              ),
-                                              color: Colors.tealAccent.shade700,
-                                              //elevation: 0,
-                                            ),
-                                          ),
-                                        ],
+                                  Column(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.only(
+                                            top: 15.0, right: 15.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('Sub Total'),
+                                            Text(amount.toString()),
+                                          ],
+                                        ),
                                       ),
-                                    ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Container(
+                                          padding: const EdgeInsets.only(
+                                              right: 15.0, top: 100.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 20.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text('Total Amount'),
+                                                    Text(amount.toString()),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 165.0,
+                                                child: RaisedButton(
+                                                  shape: RoundedRectangleBorder(
+                                                      ),
+                                                  onPressed: () {
+                                                   this.onGenerateBill();
+                                                  },
+                                                  child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Container(
+                                                          child: Text(
+                                                        ' Generate Bill',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 18.0),
+                                                      ))
+                                                    ],
+                                                  ),
+                                                  color: Colors
+                                                      .tealAccent.shade700,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ]),
                               )
@@ -942,117 +902,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                   children: [
                                     FlatButton(
                                         onPressed: () {
-                                          showModalBottomSheet(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 15.0,
-                                                              left: 15.0,
-                                                              right: 15.0),
-                                                      child: TextField(
-                                                        obscureText: true,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          border:
-                                                              OutlineInputBorder(),
-                                                          prefixIcon: Icon(
-                                                              Icons.search),
-                                                          suffixIcon: Icon(Icons
-                                                              .record_voice_over),
-                                                          icon: Icon(
-                                                              Icons.arrow_back),
-                                                          labelText:
-                                                              ' Search..',
-                                                          // hintText: 'Enter Party Name',
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                        child:
-                                                            ListView.separated(
-                                                                itemCount: items
-                                                                    .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return Container(
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            15.0,
-                                                                        top:
-                                                                            15.0),
-                                                                    child: Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                      children: [
-                                                                        ClipRRect(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(5.0),
-                                                                          child:
-                                                                              Container(
-                                                                            color:
-                                                                                Colors.red,
-                                                                            width:
-                                                                                50,
-                                                                            height:
-                                                                                50,
-                                                                          ),
-                                                                        ),
-                                                                        Container(
-                                                                          padding:
-                                                                              const EdgeInsets.only(
-                                                                            right:
-                                                                                90.0,
-                                                                          ),
-                                                                          child:
-                                                                              Column(
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              Text(this.items[index]['serviceName']),
-                                                                              Text(this.items[index]['serviceSaleSellingPrice']),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                        Container(
-                                                                          padding:
-                                                                              const EdgeInsets.only(
-                                                                            right:
-                                                                                15.0,
-                                                                          ),
-                                                                          child: TextButton(
-                                                                              child: Row(
-                                                                                children: [
-                                                                                  Text("ADD", style: TextStyle(color: Colors.purple)),
-                                                                                  Icon(Icons.add),
-                                                                                ],
-                                                                              ),
-                                                                              style: ButtonStyle(padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(15)), foregroundColor: MaterialStateProperty.all<Color>(Colors.red), shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.purple)))),
-                                                                              onPressed: () => {
-                                                                                    setSelectedItems(this.items[index]),
-                                                                                  
-                                                                                  }),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                                separatorBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return Divider();
-                                                                }))
-                                                  ],
-                                                );
-                                              });
+                                          addItems();
                                         },
                                         textColor: Colors.white,
                                         color: Colors.tealAccent.shade700,
@@ -1074,7 +924,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
 }
 
 dateFormat(dateFormat) {
-  return DateUtil().formattedDate(DateTime.parse(dateFormat));
+  return DateUtil().formattedDate(DateTime.parse(dateFormat.toString()));
 }
 
 class DateUtil {

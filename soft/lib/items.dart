@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:soft/category.dart';
 import 'package:soft/config/upload_url.dart';
 import 'package:soft/create_items.dart';
 import 'package:http/http.dart' as http;
 import 'package:soft/edit_items.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Items extends StatefulWidget {
   @override
@@ -61,8 +61,6 @@ removeContacts(index, id) async {
 
 
  createModal(context, type, data) {
-    print(data);
-
     if (type == "EDIT") {
       this.serviceName.text = data['serviceName'];
       this.serviceSaleSellingPrice.text = data['serviceSaleSellingPrice'];
@@ -196,7 +194,6 @@ final serviceId = TextEditingController();
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.red,
-             // border: Border.all(color: Colors.white, width: 1)
              ),
          
         ),
@@ -233,40 +230,63 @@ final serviceId = TextEditingController();
                       child: ListView.separated(
                                       itemCount: service.length,
                                       itemBuilder: (context, index) {
-                                        return  SingleChildScrollView(
-                  child: 
-                        Container(
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                                 Container( padding: const EdgeInsets.only(top:15.0,left: 10.0),
-                                   child: ClipRRect(
+                                        return Slidable(
+  actionPane: new SlidableBehindActionPane(),
+  actionExtentRatio: 0.25,
+  child: new
+   Container(
+    color: Colors.white,
+    child:  
+    ListTile(
+          title: Container( 
+                  child:Row(
+                      children: [ 
+                     ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),
-                  child: Container(
-                  color: Colors.grey.shade500,
-                  width: 50,
-                  height: 50,
-  ),
+                  child:Container(
+                    color: Colors.tealAccent.shade700,
+                 width: 50,
+                 height: 50,
+                    child: Center(
+                      child: Text('${service[index]['serviceName'].substring(0, 1)}',
+                      style: TextStyle(fontWeight:FontWeight.bold,
+                      fontSize: 30.0,
+                      color: Colors.white ),)),
+                  ),
                 ),
-                                 ), 
-                            
-                               Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                 
+                                 Container(padding: const EdgeInsets.only(left:10.0),
+                                   child:Column(crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(service[index]['serviceName']),
                                       Text(service[index]['serviceSaleSellingPrice']),
-                                     // Text('₹ 220')
+                                     
                                     ],
                                 ),
+                                 ),
                             
-             Container(padding: const EdgeInsets.only(left:70.0),
-               child: IconButton(icon: Icon(Icons.edit), onPressed: (){
-                                         Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) =>EditItems(
+                                                    ],
+                                                  ),
+                                          ),
+                                        ),
+                ),
+  secondaryActions: <Widget>[
+    new IconSlideAction(
+      caption: 'Edit',
+      color: Colors.grey,
+      icon: Icons.more_horiz,
+      onTap: () {
+         Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) =>CreateItems(
                                         items: this.service[index],
                                       )));
-                                      }),
-             ),
-                                     IconButton(icon: Icon(Icons.delete), 
-                                     onPressed: ()async{
+      }
+    ),
+    new IconSlideAction(
+      caption: 'Delete',
+      color: Colors.tealAccent.shade700,
+      icon: Icons.delete,
+      onTap: () async{
                                       await showDialog(context: context,builder:
                                                               (_) => AlertDialog(
                                                                     title: Text( 'Do you want Delete'),
@@ -306,33 +326,11 @@ final serviceId = TextEditingController();
                                                                     ],
                                                                   ));
                                      
-                                    }),
-                            ],
-                          ),
-                        ),
-                       
-                        // Container(
-                        //    child: Column(
-                        //      children: [
-                        //        Text('Add Multiple items at once'),
-                        //        GestureDetector(
-                        //             onTap: (){
+                                    }
+    ),
+  ],
 
-                        //             },
-                        //             child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                        //               children: [
-                        //                 Icon(Icons.add,color: Colors.purple,),
-                        //                 Text('Add Bulk Items',style: TextStyle(color:Colors.purple),)
-                        //               ],
-                        //             ),
-                        //        ),
-                        //      ],
-                        //    ),
-                        // ),
-                      
-                
-                                      );
-                                      }, separatorBuilder: (context, index) {
+          ); }, separatorBuilder: (context, index) {
                                         return Divider();
                                        } 
                                        ),

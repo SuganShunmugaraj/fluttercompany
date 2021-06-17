@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:soft/config/upload_url.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Category extends StatefulWidget {
   @override
@@ -11,15 +11,13 @@ class Category extends StatefulWidget {
 
 class _CategoryState extends State<Category> {
   List category = [];
-  List subCategory;
+  List subCategory=[];
   bool displayCategory = false;
   Map clientDetail;
-  
-  Map subDetail={};
+  Map subDetail;
   bool statusFAB = true;
 
   removeContacts(index, id) async {
-    print(index);
     setState(() {
       this.category.removeAt(index);
     });
@@ -29,11 +27,10 @@ class _CategoryState extends State<Category> {
   }
 
   editContacts(index) async {
-    print(index);
+   
   }
 
   removeCategory(index, id) async {
-    print(index);
     setState(() {
       this.subCategory.removeAt(index);
     });
@@ -64,16 +61,15 @@ class _CategoryState extends State<Category> {
 
 editSubCategory(subcategoryName, subcategoryDescription,id) async {
     setState(() {
-      this.subDetail['subcategoryName']=subcategoryName;
-      this.subDetail['subcategoryDescription']=subcategoryDescription;
-      
-     
+      this.subDetail={
+        'subcategoryName':subcategoryName,
+        'subcategoryDescription':subcategoryDescription,
+      };
     });
     final response = await http.put(Uri.parse(BaseUrl.subCategory+id),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(this.subDetail));
     var res = response.body;
-
     if (response.statusCode == 200) {
       print('sucess');
     } else {
@@ -101,24 +97,20 @@ editCategory(categoryName, categoryDescription,id) async {
       print("Error :" + res);
     }
   }
-
-
-
-  saveSubCategory(subcategoryName, subcategoryDescription) async {
+saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
     setState(() {
-    this.subDetail['subcategoryName'] = subcategoryName;
-    this.subDetail['subcategoryDescription']= subcategoryDescription;
+    this.subDetail={
+      'subcategoryCategory':{
+      'categoryName':drop},
+      'subcategoryName':subcategoryName,
+      'subcategoryDescription':subcategoryDescription
+    };
    subCategory.add(subDetail);
-       print('.................');
-      print(subDetail);
-      print(jsonEncode(this.subDetail));
-      print('.................');
     });
     final response = await http.post(Uri.parse(BaseUrl.subCategory),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(this.subDetail));
     var res = response.body;
-
     if (response.statusCode == 200) {
       print('sucess');
     } else {
@@ -128,6 +120,7 @@ editCategory(categoryName, categoryDescription,id) async {
   
   createSubModal(context,types,datas){
     if (types == "EDITS") {
+      this.drop = datas['subcategoryCategory']['categoryName'];
       this.subcategoryName.text = datas['subcategoryName'];
       this.subcategoryDescription.text = datas['subcategoryDescription'];
       this.subcategoryid.text = datas['_id'];
@@ -137,143 +130,124 @@ editCategory(categoryName, categoryDescription,id) async {
       this.subcategoryid.text = '';
     }
     return  SingleChildScrollView(
-                    child: Container(
-                                                      padding:const EdgeInsets.only(top: 15.0),
-                                                      child: Column(
-                                                        crossAxisAlignment:CrossAxisAlignment.start,
-                                                        children: [
-                                                          Container(
-                                                              padding:const EdgeInsets.only(left: 15.0,right: 15.0,),
-                                                              child: Text('Sub Category Name')),
-                                                          Container(
-                                                            height: 50.0,
-                                                            padding:const EdgeInsets.only(left: 15.0,right: 15.0,top: 5.0),
-                                                            child: TextField(
-                                                              decoration:InputDecoration(
-                                                                border:OutlineInputBorder(),
-                                                                labelText:'Name',
-                                                                //hintText:'Enter Name',
-                                                              ),
-                                                              controller: subcategoryName,
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                              padding:const EdgeInsets.only(left:15.0,right:15.0,top:20.0),
-                                                              child: Text('Description')),
-                                                          Container(
-                                                            padding:const EdgeInsets.only(left: 15.0,right: 15.0,top: 5.0),
-                                                            child: TextField(
-                                                              maxLines: null,
-                                                              keyboardType:TextInputType.multiline,
-                                                              decoration:InputDecoration(
-                                                                border:OutlineInputBorder(),
-                                                                labelText:' Description',
-                                                                hintText:'Description',
-                                                              ),
-                                                              controller:
-                                                                  subcategoryDescription,
-                                                            ),
-                                                          ),
-                                                          Container(
-                          padding: const EdgeInsets.only(
-                            top: 15.0,bottom: 15.0
-                          ),
-                          child: Center(
-                            child: Container(
-                                padding: const EdgeInsets.only(
-                                  left: 15.0,
-                                ),
-                                height: 40.0,
-                                width: 330.0,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey,),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                child: Row(
-                                  children: [
-                                  DropdownButtonHideUnderline(
-                                                              child: DropdownButton(
-                                                                dropdownColor:Colors.tealAccent.shade700,
-                                                                value:_chosenValue,
-                                                                style: TextStyle(
-                                                                    color: Colors .white,
-                                                                    decorationColor:Colors.white),
-                                                                items: this.category.map((
-                                                                    value) {                                                               return DropdownMenuItem(
-                                                                    value: value['_id'],
-                                                                    child: SizedBox(
-                                                                      width: 280.0,
-                                                                      child: Text( value['categoryName'],
-                                                                        style:TextStyle(
-                                                                          color: Colors.white,
-                                                                          fontSize: 20.0,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                }).toList(),
-                                                                onChanged: (value) {
-                                                                  print(this.subDetail);
-                                                                  this.subDetail['subcategoryCategory'] = value;
-                                                                  print(this.subDetail);
-                                                                },
-                                                                hint: Text(
-                                                                    this.drop.toString(),
-                                                                    style:TextStyle(
-                                                                      
-                                                                      fontSize:16.0,
-                                                                    )),
-                                                                icon: Icon(
-                                                                  Icons.arrow_drop_down,
-                                                                  //color: Colors.white,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                         ],
-                                )),
-                          ),
-                        ),
-                                                          Align(
-                                                              alignment: Alignment.bottomLeft,
-                                                              child: Container(
-                                                                padding: const EdgeInsets.only(left: 180.0,right:15.0),
-                                                                child: SizedBox(
-                                                                    width: 165.0,
-                                                                    child:RaisedButton(
-                                                                      onPressed:() {
-                                                                         if (types == "CREATES") {
-                                                                           saveSubCategory(
-                                                                          subcategoryName.text,
-                                                                          subcategoryDescription.text,
-                                                                          
-                                                                        );
-                                                                        }else  if (types == "EDITS"){
-                                                                            editSubCategory(
-                                                                              subcategoryName.text,
-                                                                          subcategoryDescription.text,
-                                                                          datas['_id'],);
-                                                                        }
-                                                                        subcategoryName.clear();
-                                                                        subcategoryDescription.clear();
-                                                                        Navigator.pop(context);
-                                                                      },
-                                                                      child:
-                                                                          Text("Save", ),
-                                                                      color: Colors.tealAccent.shade700,
-                                                                      textColor:Colors.white,
-                                                                    )),
-                                                              )),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
+     child: Container(
+     padding:const EdgeInsets.only(top: 15.0),
+     child: Column(
+      crossAxisAlignment:CrossAxisAlignment.start,
+       children: [
+       Container(
+         padding:const EdgeInsets.only(left: 15.0,right: 15.0,),
+          child: Text('Sub Category Name')),
+         Container(
+           height: 50.0,
+           padding:const EdgeInsets.only(left: 15.0,right: 15.0,top: 5.0),
+           child: TextField(
+           decoration:InputDecoration(
+            border:OutlineInputBorder(),
+            labelText:'Name',
+             ),
+          controller: subcategoryName,
+           ),
+            ),
+           Container(
+           padding:const EdgeInsets.only(left:15.0,right:15.0,top:20.0),
+            child: Text('Description')),
+            Container(
+              padding:const EdgeInsets.only(left: 15.0,right: 15.0,top: 5.0),
+              child: TextField(
+              maxLines: null,
+               keyboardType:TextInputType.multiline,
+                decoration:InputDecoration(
+                border:OutlineInputBorder(),
+                labelText:' Description',
+                hintText:'Description',
+                ),
+                controller: subcategoryDescription,
+              ),
+              ),
+         Container(
+           padding: const EdgeInsets.only(top: 15.0,bottom: 15.0),
+            child: Center(
+              child: Container(padding: const EdgeInsets.only(left: 15.0,),
+               height: 40.0,
+               width: 330.0,
+                decoration: BoxDecoration(
+                 border: Border.all(color: Colors.grey,),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+             ),
+             child: Row(
+              children: [
+             DropdownButtonHideUnderline(
+             child: DropdownButton(
+             dropdownColor:Colors.tealAccent.shade700,
+             style: TextStyle(
+              color: Colors .white,
+            decorationColor:Colors.white),
+              items: this.category.map((value) { 
+        return DropdownMenuItem(
+              value: value['categoryName'],
+              child: SizedBox(
+              width: 280.0,
+              child: Text( value['categoryName'],
+              style:TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+         ),
+        ),
+        ),
+        );
+        }).toList(),
+        onChanged: (value) {
+        datas['subcategoryCategory']['categoryName'] = value;
+        },
+         hint: Text(
+          this.drop.toString(),
+         style:TextStyle(
+             fontSize:16.0,
+           )),
+            icon: Icon(Icons.arrow_drop_down,),
+         ),
+       ),
+       ],
+       )),
+       ),
+       ),
+      Align(
+       alignment: Alignment.bottomLeft,
+        child: Container(padding: const EdgeInsets.only(left: 180.0,right:15.0),
+         child: SizedBox(
+         width: 165.0,
+         child:RaisedButton(
+           onPressed:() {
+            if (types == "CREATES") {
+             saveSubCategory(
+             drop.toString(),
+             subcategoryName.text,
+             subcategoryDescription.text,
+             );
+             }else  if (types == "EDITS"){
+             editSubCategory(
+             subcategoryName.text,
+             subcategoryDescription.text,
+             datas['_id'],);
+             }
+             subcategoryName.clear();
+             subcategoryDescription.clear();
+             Navigator.pop(context);
+             },
+             child:Text("Save",),
+              color: Colors.tealAccent.shade700,
+              textColor:Colors.white,
+              )),
+             )),
+             ],
+            ),
+           ),
+         );
                                                 
   }
 
   createModal(context, type, data) {
-    print(data);
-
     if (type == "EDIT") {
       this.categoryName.text = data['categoryName'];
       this.categoryDescription.text = data['categoryDescription'];
@@ -291,10 +265,7 @@ editCategory(categoryName, categoryDescription,id) async {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-                padding: const EdgeInsets.only(
-                  left: 15.0,
-                  right: 15.0,
-                ),
+                padding: const EdgeInsets.only(left: 15.0,right: 15.0,),
                 child: Text('Category Name')),
             Container(
               height: 50.0,
@@ -303,14 +274,12 @@ editCategory(categoryName, categoryDescription,id) async {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Name',
-                  //hintText: 'Enter Name',
                 ),
                 controller: categoryName,
               ),
             ),
             Container(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
+                padding:const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
                 child: Text('Description')),
             Container(
               padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0,bottom: 15.0),
@@ -371,7 +340,6 @@ editCategory(categoryName, categoryDescription,id) async {
       var categoryData = json.decode(response.body);
       category = categoryData['data'];
     });
-    print(category);
   }
 
   Future getSubCategory() async {
@@ -381,7 +349,6 @@ editCategory(categoryName, categoryDescription,id) async {
       var subCategoryData = json.decode(response.body);
       subCategory = subCategoryData['data'];
     });
-    print(subCategory);
   }
 
   @override
@@ -391,10 +358,8 @@ editCategory(categoryName, categoryDescription,id) async {
     super.initState();
   }
 
-  String _chosenValue;
   String drop = 'Select Category ';
   List fullinvoiceList;
-  List _invoice;
 
   final categoryName = TextEditingController();
   final categoryDescription = TextEditingController();
@@ -415,15 +380,6 @@ editCategory(categoryName, categoryDescription,id) async {
           Icons.arrow_back,
           color: Colors.black,
         ),
-        // actions: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(right: 15.0),
-        //     child: Icon(
-        //       Icons.settings,
-        //       color: Colors.black,
-        //     ),
-        //   )
-        // ],
       ),
       body: Stack(
         children: [
@@ -452,225 +408,199 @@ editCategory(categoryName, categoryDescription,id) async {
                           child: TabBarView(
                             children: [
                               Stack(children: [
+
                                 Container(
                                   padding: const EdgeInsets.only(bottom: 30.0,top: 15.0),
                                   child: ListView.separated(
                                     itemCount: category.length,
                                     itemBuilder: (context, index) {
-                                      return SingleChildScrollView(
-                                              child: Container(padding: const EdgeInsets.only(left:15.0,),
-                                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                      child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                             Text(category[index]['categoryName']),
-                                                            Text(category[index]['categoryDescription']),
-                                                            ],
-                                        ),
-                                                    ),
-                                                   
-                                            Row(
-                                              children: [
-                                                IconButton(
-                                                          icon: Icon(Icons.edit),
-                                                          onPressed: () async {
-                                                            await showModalBottomSheet(
-                                                                context: context,
-                                                                builder: (BuildContext
-                                                                    context) {
-                                                                  return this
-                                                                      .createModal(context,'EDIT', this.category[index]);
-                                                                });
-                                                          }),
-                                             
-                                           IconButton(
-                                                      icon: Icon(Icons.delete),
-                                                      onPressed: () async {
-                                                        await showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (_) => AlertDialog(
-                                                                      title: Text(
-                                                                          'Do you want Delete'),
-                                                                      actions: [
-                                                                        FlatButton(
-                                                                            onPressed:
-                                                                                () {
-                                                                              Navigator.of(context, rootNavigator: true)
-                                                                                  .pop(true);
-                                                                            },
-                                                                            child:
-                                                                                Text(
-                                                                              'No',
-                                                                              style:
-                                                                                  TextStyle(
-                                                                                color:
-                                                                                    Colors.tealAccent.shade700,
-                                                                              ),
-                                                                            )),
-                                                                        FlatButton(
-                                                                            onPressed:
-                                                                                () {
-                                                                              removeContacts(
-                                                                                  index,
-                                                                                  this.category[index]['_id']);
-                                                                              Navigator.of(context, rootNavigator: true)
-                                                                                  .pop(true);
-
-                                                                                      
-                                                                            },
-                                                                            child:
-                                                                                Text(
-                                                                              'Yes',
-                                                                              style:
-                                                                                  TextStyle(
-                                                                                color:
-                                                                                    Colors.tealAccent.shade700,
-                                                                              ),
-                                                                            ))
-                                                                      ],
-                                                                    ));
-                                                      }),
-                                          ],
-                                            ),
-                                                ],
-                                                ),
-                                              ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) {
-                                      return Divider();
-                                    },
-                                  ),
-                                ),
-                                //............................................................................
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 280.0, bottom: 10.0),
-                                      child: SizedBox(
-                                        width: 60.0,
-                                        child: FloatingActionButton(
-                                          backgroundColor: Colors.tealAccent.shade700,
-                                          onPressed: () {
-                                            showModalBottomSheet(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return this.createModal(
-                                                      context, 'CREATE', null);
-                                                });
-                                          },
-                                          child: Icon(Icons.add),
-                                        ),
-                                      )),
-                                ),
-                              
-                              ]),
-                              Stack(children: [
-                                Container(padding: const EdgeInsets.only(top: 15.0),
-                                  child: ListView.separated(
-                                    itemCount: subCategory.length,
-                                    itemBuilder: (context, index) {
-                                      return SingleChildScrollView(
-                                        child: Container(padding: const EdgeInsets.only(left:15.0,),
-                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [ 
-                                                    Text(subCategory[index]['subcategoryName']),
-                                                      Text(subCategory[index]['subcategoryCategory']['categoryName']),
-                                                  ],
-                                                ),
-                                              ),
-                                            Row(
-                                              children: [
-                                                IconButton(
-                                                        icon: Icon(Icons.edit),
-                                                        onPressed: () async {
-                                                          await showModalBottomSheet(
-                                                              context: context,
-                                                              builder: (BuildContext
-                                                                  context) {
-                                                                return this
-                                                                    .createSubModal(context,'EDITS', this.subCategory[index]);
-                                                              });
-                                                        }
-                                                        ),
-                                             IconButton(
-                                                    icon: Icon(Icons.delete),
-                                                    onPressed: () async {
-                                                      await showDialog(
-                                                          context: context,
-                                                          builder:
-                                                              (_) => AlertDialog(
-                                                                    title: Text(
-                                                                        'Do you want Delete'),
-                                                                    actions: [
-                                                                      FlatButton(
-                                                                          onPressed:() {
-                                                                            Navigator.of(context, rootNavigator: true).pop(true);
-                                                                          },
-                                                                          child:
-                                                                              Text('No',
-                                                                              style:TextStyle(color:Colors.tealAccent.shade700,
-                                                                            ),
-                                                                          )),
-                                                                      FlatButton(
-                                                                          onPressed:() {
-                                                                            removeCategory(index,this.subCategory[index]['_id']);
-                                                                            Navigator.of(context, rootNavigator: true).pop(true);
-                                                                          },
-                                                                          child:
-                                                                              Text('Yes',style:
-                                                                                TextStyle(
-                                                                              color:Colors.tealAccent.shade700,
-                                                                            ),
-                                                                          ))
-                                                                    ],
-                                                                  ));
-                                                    }),
-                                            ],
-                                            ),
-                                           ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) {
-                                      return Divider();
-                                    },
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Container(
-                                      padding: const EdgeInsets.only(left: 280.0, bottom: 10.0),
-                                      child: SizedBox(
-                                        width: 60.0,
-                                        child: FloatingActionButton(
-                                          backgroundColor: Colors.tealAccent.shade700,
-                                          onPressed: () {
-                                            showModalBottomSheet(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return this.createSubModal(
-                                                      context, 'CREATES', null);
-                                                 
-                                                });
-                                          },
-                                          child: Icon(Icons.add),
-                                        ),
-                                      )),
-                                ),
-                              ]),
-                            ],
-                          ),
-                        ),
-                      ])))
+                   return Slidable(
+                  actionPane: new SlidableBehindActionPane(),
+                  actionExtentRatio: 0.25,
+                 child: new Container(
+                 color: Colors.white,
+                   child: ListTile(
+               title:SingleChildScrollView(
+             child: Container(
+                 child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                 Text(category[index]['categoryName']),
+                  Text(category[index]['categoryDescription']),
+                   ],
+                  ),
+                  ),
+                  ),
+                ),
+    ),
+  
+  secondaryActions: <Widget>[
+    new IconSlideAction(
+      caption: 'Edit',
+      color: Colors.grey,
+      icon: Icons.more_horiz,
+      onTap: ()async {
+          await showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+          return this.createModal(context,'EDIT', this.category[index]);
+         });
+       }
+    ),
+    new IconSlideAction(
+      caption: 'Delete',
+      color: Colors.tealAccent.shade700,
+      icon: Icons.delete,
+      onTap: () async {
+      await showDialog(
+       context: context,
+        builder:(_) => AlertDialog(
+         title: Text('Do you want Delete'),
+          actions: [
+           FlatButton(
+            onPressed:() {
+             Navigator.of(context, rootNavigator: true).pop(true);
+            },
+             child:Text('No',style:TextStyle(
+                color: Colors.tealAccent.shade700,
+              ),
+              )),
+              FlatButton(
+                onPressed:() {
+                   removeContacts(index,this.category[index]['_id']);
+                    Navigator.of(context, rootNavigator: true).pop(true);
+                },
+                child:Text('Yes', style: TextStyle(
+                  color:Colors.tealAccent.shade700,
+                 ),
+                 ))
+                 ],
+                 ));
+                }),
+   
+  ],
+  );
+     },
+        separatorBuilder: (context, index) {
+          return Divider();
+          },
+            ),
+            ),
+             Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(padding: const EdgeInsets.only(left: 280.0, bottom: 10.0),
+                child: SizedBox(
+                  width: 60.0,
+                   child: FloatingActionButton(
+                    backgroundColor: Colors.tealAccent.shade700,
+                     onPressed: () {
+                     showModalBottomSheet(
+                      context: context,
+                      builder:(BuildContext context) {
+                       return this.createModal(context, 'CREATE', null);
+                     });
+                      },
+                      child: Icon(Icons.add),
+                       ),
+                      )),
+                    ),
+                       ]),
+               Stack(children: [
+                Container(padding: const EdgeInsets.only(top: 15.0),
+                 child: ListView.separated(
+                  itemCount: subCategory.length,
+                  itemBuilder: (context, index) {
+                   return Slidable(
+                     actionPane: new SlidableBehindActionPane(),
+                     actionExtentRatio: 0.25,
+                     child: new Container(
+                     color: Colors.white,
+                     child: ListTile(
+                     title:SingleChildScrollView(
+                     child:  Container(
+                       child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [ 
+                      Text(subCategory[index]['subcategoryName']),
+                      Text(subCategory[index]['subcategoryCategory']['categoryName']),
+                      ],
+                    ),
+                  ),),
+                ),
+    ),
+    secondaryActions: <Widget>[
+    new IconSlideAction(
+      caption: 'Edit',
+      color: Colors.grey,
+      icon: Icons.more_horiz,
+      onTap: ()async {
+      await showModalBottomSheet(
+         context: context,
+         builder: (BuildContext context) {
+         return this.createSubModal(context,'EDITS', this.subCategory[index]);
+       }
+        );
+       }
+    ),
+    new IconSlideAction(
+      caption: 'Delete',
+      color: Colors.tealAccent.shade700,
+      icon: Icons.delete,
+      onTap: () async {
+        await showDialog(
+         context: context,
+         builder:(_) => AlertDialog(
+         title: Text('Do you want Delete'),
+         actions: [
+          FlatButton(
+          onPressed:() {
+          Navigator.of(context, rootNavigator: true).pop(true);
+           },
+           child:Text('No',style:TextStyle(
+             color:Colors.tealAccent.shade700,
+           ),
+          )),
+           FlatButton(
+           onPressed:() {
+            removeCategory(index,this.subCategory[index]['_id']);
+             Navigator.of(context, rootNavigator: true).pop(true);
+           },
+             child:Text('Yes',style:TextStyle(
+              color:Colors.tealAccent.shade700,
+              ),
+            ))
+            ],
+            ));
+            } 
+             ),  
+  ], );
+          },
+          separatorBuilder: (context, index) {
+           return Divider();
+         },
+         ),
+           ),
+         Align(
+          alignment: Alignment.bottomLeft,
+          child: Container(padding: const EdgeInsets.only(left: 280.0, bottom: 10.0),
+          child: SizedBox(
+            width: 60.0,
+          child: FloatingActionButton(
+           backgroundColor: Colors.tealAccent.shade700,
+           onPressed: () {
+           showModalBottomSheet(
+           context: context,
+           builder: (BuildContext context) {
+           return this.createSubModal(context, 'CREATES', null);
+            });
+           },
+         child: Icon(Icons.add),
+         ),
+        )),
+         ),
+        ]),
+      ],
+       ),
+        ),
+        ])))
        
         ],
       ),

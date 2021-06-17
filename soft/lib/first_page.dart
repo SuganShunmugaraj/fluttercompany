@@ -1,14 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:soft/config/upload_url.dart';
 import 'package:soft/dashboard.dart';
 import 'package:soft/items.dart';
-import 'package:soft/payment.dart';
 import 'package:soft/payment_list.dart';
-import 'package:soft/contact_detail.dart';
 import 'package:soft/string.dart';
 import 'package:soft/contacts.dart';
-import 'package:http/http.dart' as http;
 import 'package:soft/signin.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soft/upload.dart';
@@ -49,10 +45,7 @@ class _FirstPageState extends State<FirstPage> {
                       icon: Icon(Icons.upload_file),
                       onPressed: () {
                         Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) =>ChartsDemo(
-                                   
-                                   
-                                  )));
+                                  MaterialPageRoute(builder: (context) =>ChartsDemo()));
                       },
                     ),
                   )
@@ -229,12 +222,10 @@ class _FirstPageState extends State<FirstPage> {
 
                                GestureDetector(
                                 onTap: (){
-                                 Scaffold.of(context)
-                                            .openEndDrawer();
+                                 Scaffold.of(context).openEndDrawer();
                                 },
-                                    child: Container(
-                                  
-                                  child: Column(
+                                 child: Container(
+                                 child: Column(
                                     children: [
                                      Icon(Icons.settings,color: Colors.grey,),
                                      Text('Settings',
