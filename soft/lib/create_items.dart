@@ -34,24 +34,66 @@ List subCategory;
 
  
   
-  addContact(categoryDescription,drop,serviceName,subcategoryDescription,title,serviceSaleSellingPrice,)async{
- print(drop);
-   setState(() {
-      this.subDetail['serviceCategory']['categoryDescription']=categoryDescription;
-      this.subDetail['serviceCategory']['categoryName']=drop;
-       this.subDetail['serviceName']=serviceName;
-      this.subDetail['serviceSubCategory']['subcategoryDescription']=subcategoryDescription;
-       this.subDetail['serviceSubCategory']['subcategoryName']=title;
-     
-      this.subDetail['serviceSaleSellingPrice']=serviceSaleSellingPrice;
-      //   'serviceCategory':{'categoryDescription':categoryDescription,},
-      //  'serviceSubCategory':{'subcategoryDescription':subcategoryDescription,},
-      //   'serviceName':serviceName,
-      //   'serviceSaleSellingPrice':serviceSaleSellingPrice,
-      
-     service.add(this.subDetail);
+editContact(categoryDescription,
+                     drop,
+                     serviceName, 
+                     serviceSaleSellingPrice,
+                     subcategoryDescription,
+                     title,
+                     _id,)async{
+                        setState(() {
+     this.subDetail={
+// 'serviceCategory': {
+'categoryDescription': categoryDescription,
+ 'categoryName': drop,
+//},
+'serviceName': serviceName,
+'serviceSaleSellingPrice': serviceSaleSellingPrice,
+// 'serviceSubCategory': {
+'subcategoryDescription': subcategoryDescription,
+ 'subcategoryName': title,
+//},
+};
+     service.add(this.subDetail);print(this.subDetail);
      }
-    ); final response = await http.post(Uri.parse(BaseUrl.service),
+    );
+         final response = await http.put(Uri.parse(BaseUrl.service+_id),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode(this.subDetail));
+       var res = response.body;
+
+    if (response.statusCode == 200) {
+      print('sucess');
+    } else {
+      print("Error :" + res);
+     }} 
+   
+  
+  
+  addContact(categoryDescription,
+                     drop,
+                     serviceName, 
+                     serviceSaleSellingPrice,
+                     subcategoryDescription,
+                     title,
+                     )async{
+   setState(() {
+     this.subDetail={
+// 'serviceCategory': {
+'categoryDescription': categoryDescription,
+ 'categoryName': drop,
+//},
+'serviceName': serviceName,
+'serviceSaleSellingPrice': serviceSaleSellingPrice,
+// 'serviceSubCategory': {
+'subcategoryDescription': subcategoryDescription,
+ 'subcategoryName': title,
+//},
+};
+     service.add(this.subDetail);print(this.subDetail);
+     }
+    );
+        final response = await http.post(Uri.parse(BaseUrl.service),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(this.subDetail));
        var res = response.body;
@@ -61,7 +103,10 @@ List subCategory;
     } else {
       print("Error :" + res);
     }
+    
+   
   }
+  
   
 
    Future getCategory() async {
@@ -81,6 +126,7 @@ List subCategory;
       subCategory = subCategoryData['data'];
     });
   }
+  
   @override
   void initState() {
     if(this.widget.items!=null){
@@ -159,7 +205,7 @@ List subCategory;
                                 decorationColor:Colors.white),
                               items:this.category.map((pageon) {
                                 return DropdownMenuItem(
-                                 value: pageon['_id'],
+                                 value: pageon['categoryName'],
                                   child: SizedBox(
                                     width: 280.0,
                                     child: Text(pageon['categoryName'],
@@ -172,7 +218,7 @@ List subCategory;
                                   }).toList(),
                                    onChanged: (value) {
                                      setState(() {
-                                       drop =value;print('............');print(value);
+                                       drop =value;
                                      });
                                    },
                                      hint: Text(this.drop.toString(),
@@ -202,7 +248,7 @@ List subCategory;
                     child: DropdownButton(dropdownColor:Colors.tealAccent.shade700,
                                 style: TextStyle(color: Colors .white,
                                  decorationColor:Colors.white),
-                                 items:subCategory.map((pagesubCategory) {
+                                 items:this.subCategory.map((pagesubCategory) {
                                  return DropdownMenuItem(
                                  value: pagesubCategory['subcategoryName'],
                                  child: SizedBox(
@@ -365,14 +411,28 @@ List subCategory;
             children: <Widget>[
                SizedBox(width: 165.0,
                  child: RaisedButton(onPressed: () {
-                   addContact(
+                   if(this.widget.items!=null){
+                     
+                   editContact(
+                     categoryDescription.text,
                      drop.toString(),
-                   title.toString(),
                      serviceName.text, 
                      serviceSaleSellingPrice.text,
+                     subcategoryDescription.text,
+                     title.toString(),
+                     this.widget.items['_id'],
+                     );
+                      }else{
+                         addContact(
                      categoryDescription.text,
-                     subcategoryDescription.text
-                     );Navigator.pop(context);
+                     drop.toString(),
+                     serviceName.text, 
+                     serviceSaleSellingPrice.text,
+                     subcategoryDescription.text,
+                     title.toString(), 
+                     );
+                      }
+                  Navigator.pop(context);
                  },child: Text("Save"),color: Colors.tealAccent.shade700,textColor: Colors.white,)),
             ],
           ),

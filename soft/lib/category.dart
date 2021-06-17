@@ -81,6 +81,7 @@ editSubCategory(subcategoryName, subcategoryDescription,id) async {
 editCategory(categoryName, categoryDescription,id) async {
     setState(() {
       this.clientDetail = {
+         'subcategoryCategory':{'categoryName':drop},
         'categoryName': categoryName,
         'categoryDescription': categoryDescription,
       };
@@ -100,8 +101,7 @@ editCategory(categoryName, categoryDescription,id) async {
 saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
     setState(() {
     this.subDetail={
-      'subcategoryCategory':{
-      'categoryName':drop},
+      'subcategoryCategory':{'categoryName':drop},
       'subcategoryName':subcategoryName,
       'subcategoryDescription':subcategoryDescription
     };
@@ -183,12 +183,12 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
              style: TextStyle(
               color: Colors .white,
             decorationColor:Colors.white),
-              items: this.category.map((value) { 
+              items: this.subCategory.map((value) { 
         return DropdownMenuItem(
-              value: value['categoryName'],
+              value: value['subcategoryCategory']['categoryName'],
               child: SizedBox(
               width: 280.0,
-              child: Text( value['categoryName'],
+              child: Text( value['subcategoryCategory']['categoryName'],
               style:TextStyle(
               color: Colors.white,
               fontSize: 20.0,
@@ -198,7 +198,7 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
         );
         }).toList(),
         onChanged: (value) {
-        datas['subcategoryCategory']['categoryName'] = value;
+        drop = value;print(value);
         },
          hint: Text(
           this.drop.toString(),
