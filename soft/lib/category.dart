@@ -62,6 +62,7 @@ class _CategoryState extends State<Category> {
 editSubCategory(subcategoryName, subcategoryDescription,id) async {
     setState(() {
       this.subDetail={
+         'subcategoryCategory':{'categoryName':drop},
         'subcategoryName':subcategoryName,
         'subcategoryDescription':subcategoryDescription,
       };
@@ -81,7 +82,6 @@ editSubCategory(subcategoryName, subcategoryDescription,id) async {
 editCategory(categoryName, categoryDescription,id) async {
     setState(() {
       this.clientDetail = {
-         'subcategoryCategory':{'categoryName':drop},
         'categoryName': categoryName,
         'categoryDescription': categoryDescription,
       };
@@ -101,7 +101,6 @@ editCategory(categoryName, categoryDescription,id) async {
 saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
     setState(() {
     this.subDetail={
-      'subcategoryCategory':{'categoryName':drop},
       'subcategoryName':subcategoryName,
       'subcategoryDescription':subcategoryDescription
     };
@@ -198,7 +197,7 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
         );
         }).toList(),
         onChanged: (value) {
-        drop = value;print(value);
+        drop = value;
         },
          hint: Text(
           this.drop.toString(),

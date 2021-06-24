@@ -53,6 +53,8 @@ class _InvoiceAddState extends State<InvoiceAdd> {
     getTotal();
   }
 
+  
+
   setSelectedItems(items) {
     var mockItem = {
       'itemdetails': items['_id'],
@@ -282,7 +284,7 @@ Map editInvoice = {
                                               borderRadius:
                                                   BorderRadius.circular(3),
                                               color: Colors.white),
-                                          child: Text(this.items[index]['quantity'].toString())
+                                              child: Text(this.items[index]['quantity'].toString())
                                       
                                           ),
                                       InkWell(
