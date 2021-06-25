@@ -32,6 +32,7 @@ removeContacts(index,id)async{
         print(response);
 }
 
+
   @override
   void initState() {
    getData();
@@ -131,7 +132,7 @@ removeContacts(index,id)async{
                    children: [
                    Column(crossAxisAlignment: CrossAxisAlignment.start,
                    children: [
-                   Text(contacts[index]['userName']['firstName'],
+                   Text("${contacts[index]['userName']['firstName'][0].toUpperCase()}${contacts[index]['userName']['firstName'].substring(1)}",
                     style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0),),
                    Text(contacts[index]['phone']['primaryContact'],
                     style: TextStyle(color: Colors.grey,

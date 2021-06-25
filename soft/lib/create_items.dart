@@ -17,9 +17,8 @@ class CreateItems extends StatefulWidget {
 
 class _CreateItemsState extends State<CreateItems> {
   String _chosenValue;
-  Map subDetail = {};
-  Map editDetail = {};
-  List service = [];
+  Map subDetail ;
+  List service ;
   List category;
   List subCategory;
 
@@ -33,34 +32,29 @@ class _CreateItemsState extends State<CreateItems> {
   }
 
   editContact(
+    categoryDropDownId,
+    subCategoryDropDownId,
     categoryDescription,
-    drop,
     serviceName,
     serviceSaleSellingPrice,
-    subcategoryDescription,
-    title,
     _id,
   ) async {
     setState(() {
-      this.editDetail = {
-        //'serviceCategory': {
-        'categoryDescription': categoryDescription,
-        'categoryName': drop,
-//},
-        'serviceName': serviceName,
-        'serviceSaleSellingPrice': serviceSaleSellingPrice,
-// 'serviceSubCategory': {
-        'subcategoryDescription': subcategoryDescription,
-        'subcategoryName': title,
-        '_id': _id,
-//},
-      };
+      
+      this.widget.items['serviceCategory']['_id'] = categoryDropDownId;
+      this.widget.items['serviceSubCategory']['_id'] = subCategoryDropDownId;
+      this.widget.items['serviceSaleDescription'] = categoryDescription;
+       this.widget.items['serviceName'] = serviceName;
+        this.widget.items['serviceSaleSellingPrice'] = serviceSaleSellingPrice;
+      this.widget.items['_id'] = _id;
     });
+    
+   // print( this.widget);
+    print(categoryDropDownId);
     final response = await http.put(Uri.parse(BaseUrl.service + _id),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode(this.editDetail));
+        body: jsonEncode( this.widget.items));
     var res = response.body;
-
     if (response.statusCode == 200) {
       print('sucess');
     } else {
@@ -70,25 +64,19 @@ class _CreateItemsState extends State<CreateItems> {
 
   addContact(
     categoryDescription,
-    drop,
+    categoryDropDownId,
     serviceName,
     serviceSaleSellingPrice,
-    subcategoryDescription,
-    title,
+    subCategoryDropDownId,
   ) async {
    
     setState(() {
       this.subDetail = {
-        'serviceCategory': {
-          'categoryDescription': categoryDescription,
-          'categoryName': drop,
-        },
+     'serviceCategory': { '_id': categoryDropDownId, },
         'serviceName': serviceName,
         'serviceSaleSellingPrice': serviceSaleSellingPrice,
-        'serviceSubCategory': {
-          'subcategoryDescription': subcategoryDescription,
-          'subcategoryName': title,
-        },
+        'serviceSaleDescription':categoryDescription,
+      'serviceSubCategory': { '_id': subCategoryDropDownId, },
       };
       service.add(this.subDetail);
       print(this.subDetail);
@@ -127,18 +115,11 @@ class _CreateItemsState extends State<CreateItems> {
   void initState() {
     if (this.widget.items != null) {
       setState(() {
-        drop = this.widget.items['serviceCategory']['categoryName'].toString();
-        title = this
-            .widget
-            .items['serviceSubCategory']['subcategoryName']
-            .toString();
+        categoryDropDownName = this.widget.items['serviceCategory']['categoryName'].toString();
+        subCategoryDropDownName = this.widget.items['serviceSubCategory']['subcategoryName'].toString();
         serviceName.text = this.widget.items['serviceName'];
-        serviceSaleSellingPrice.text =
-            this.widget.items['serviceSaleSellingPrice'];
-        categoryDescription.text =
-            this.widget.items['serviceCategory']['categoryDescription'];
-        subcategoryDescription.text =
-            this.widget.items['serviceSubCategory']['subcategoryDescription'];
+        serviceSaleSellingPrice.text =this.widget.items['serviceSaleSellingPrice'];
+        categoryDescription.text =this.widget.items['serviceSaleDescription'];
       });
     }
 
@@ -151,12 +132,13 @@ class _CreateItemsState extends State<CreateItems> {
   final categoryName = TextEditingController();
   final categoryDescription = TextEditingController();
   final subcategoryName = TextEditingController();
-  final subcategoryDescription = TextEditingController();
   final categoryid = TextEditingController();
   final serviceName = TextEditingController();
   final serviceSaleSellingPrice = TextEditingController();
-  String drop = 'Select Category ';
-  String title = 'Select Subcategory';
+  String categoryDropDownName = 'Select Category ';
+   String categoryDropDownId = 'Select Category ';
+   String subCategoryDropDownName = 'Select Category ';
+   String subCategoryDropDownId = 'Select Category ';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,10 +148,12 @@ class _CreateItemsState extends State<CreateItems> {
           'Create New Item',
           style: TextStyle(color: Colors.black),
         ),
-        leading: Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-        ),
+        leading:IconButton(
+          icon: Icon(Icons.arrow_back,
+          color: Colors.black,), 
+          onPressed: (){
+          Navigator.pop(context);
+        })
       ),
       body: Stack(children: [
         SingleChildScrollView(
@@ -196,9 +180,7 @@ class _CreateItemsState extends State<CreateItems> {
               ),
               child: Center(
                 child: Container(
-                    padding: const EdgeInsets.only(
-                      left: 15.0,
-                    ),
+                    padding: const EdgeInsets.only( left: 15.0,),
                     height: 40.0,
                     width: 330.0,
                     decoration: BoxDecoration(
@@ -208,7 +190,7 @@ class _CreateItemsState extends State<CreateItems> {
                       borderRadius: BorderRadius.all(Radius.circular(5.0)),
                     ),
                     child: Row(
-                      children: [
+                      children: [ 
                         DropdownButtonHideUnderline(
                           child: DropdownButton(
                             dropdownColor: Colors.tealAccent.shade700,
@@ -218,7 +200,7 @@ class _CreateItemsState extends State<CreateItems> {
                                 decorationColor: Colors.white),
                             items: this.category.map((pageon) {
                               return DropdownMenuItem(
-                                value: pageon['categoryName'],
+                                value: pageon['_id'],
                                 child: SizedBox(
                                   width: 280.0,
                                   child: Text(
@@ -231,15 +213,18 @@ class _CreateItemsState extends State<CreateItems> {
                                 ),
                               );
                             }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                drop = value;
-                              });
+                            onChanged: (values) {
+                             
+                            setState(() { 
+                              List selectedcatagory;
+                              selectedcatagory =  this.category.where((cat) => cat['_id'] == values).toList();
+                            print(selectedcatagory[0]['categoryName']);
+                              this.categoryDropDownName  = selectedcatagory[0]['categoryName'];
+                              this.categoryDropDownId  = selectedcatagory[0]['_id'];
+                            });
                             },
-                            hint: Text(this.drop.toString(),
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                )),
+                            hint: Text(this.categoryDropDownName.toString(),
+                                style: TextStyle(fontSize: 16.0,)),
                             icon: Icon(
                               Icons.arrow_drop_down,
                             ),
@@ -276,7 +261,7 @@ class _CreateItemsState extends State<CreateItems> {
                                 decorationColor: Colors.white),
                             items: this.subCategory.map((pagesubCategory) {
                               return DropdownMenuItem(
-                                value: pagesubCategory['subcategoryName'],
+                                value: pagesubCategory['_id'],
                                 child: SizedBox(
                                   width: 280.0,
                                   child: Text(
@@ -291,10 +276,13 @@ class _CreateItemsState extends State<CreateItems> {
                             }).toList(),
                             onChanged: (value) {
                               setState(() {
-                                title = value;
+                               List selectedSubcatagory;
+                              selectedSubcatagory =  this.subCategory.where((subcat) => subcat['_id'] == value).toList();
+                              this.subCategoryDropDownName  = selectedSubcatagory[0]['subcategoryName'];
+                              this.subCategoryDropDownId  = selectedSubcatagory[0]['_id'];
                               });
                             },
-                            hint: Text(this.title.toString(),
+                            hint: Text(this.subCategoryDropDownName.toString(),
                                 style: TextStyle(
                                   fontSize: 16.0,
                                 )),
@@ -322,23 +310,6 @@ class _CreateItemsState extends State<CreateItems> {
                   hintText: 'Description',
                 ),
                 controller: categoryDescription,
-              ),
-            ),
-            Container(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                child: Text('Subcategory Description')),
-            Container(
-              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-              child: TextField(
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: ' Description',
-                  hintText: 'Description',
-                ),
-                controller: subcategoryDescription,
               ),
             ),
             DefaultTabController(
@@ -387,11 +358,6 @@ class _CreateItemsState extends State<CreateItems> {
                                         items: <String>[
                                           'Android',
                                           'IOS',
-                                          'Flutter',
-                                          'Node',
-                                          'Java',
-                                          'Python',
-                                          'PHP',
                                         ].map<DropdownMenuItem<String>>(
                                             (String value) {
                                           return DropdownMenuItem<String>(
@@ -466,22 +432,20 @@ class _CreateItemsState extends State<CreateItems> {
                         onPressed: () {
                           if (this.widget.items != null) {
                             editContact(
+                              categoryDropDownId,
+                              subCategoryDropDownId,
                               categoryDescription.text,
-                              drop.toString(),
                               serviceName.text,
                               serviceSaleSellingPrice.text,
-                              subcategoryDescription.text,
-                              title.toString(),
                               this.widget.items['_id'],
                             );
                           } else {
                             addContact(
                               categoryDescription.text,
-                              drop.toString(),
+                              categoryDropDownId.toString(),
                               serviceName.text,
                               serviceSaleSellingPrice.text,
-                              subcategoryDescription.text,
-                              title.toString(),
+                              subCategoryDropDownId.toString(),
                             );
                           }
                           Navigator.pop(context);

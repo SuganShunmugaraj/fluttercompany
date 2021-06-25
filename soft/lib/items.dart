@@ -248,7 +248,7 @@ final serviceId = TextEditingController();
                  width: 50,
                  height: 50,
                     child: Center(
-                      child: Text('${service[index]['serviceName'].substring(0, 1)}',
+                      child: Text('${service[index]['serviceName'].toUpperCase().substring(0, 1)}',
                       style: TextStyle(fontWeight:FontWeight.bold,
                       fontSize: 30.0,
                       color: Colors.white ),)),
@@ -258,7 +258,7 @@ final serviceId = TextEditingController();
                                  Container(padding: const EdgeInsets.only(left:10.0),
                                    child:Column(crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(service[index]['serviceName']),
+                                      Text("${service[index]['serviceName'][0].toUpperCase()}${service[index]['serviceName'].substring(1)}"),
                                       Text(service[index]['serviceSaleSellingPrice']),
                                      
                                     ],

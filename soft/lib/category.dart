@@ -59,13 +59,14 @@ class _CategoryState extends State<Category> {
     }
   }
 
-editSubCategory(subcategoryName, subcategoryDescription,id) async {
+editSubCategory(subcategoryDropDownId,subcategoryName, subcategoryDescription,id) async {
     setState(() {
       this.subDetail={
-         'subcategoryCategory':{'categoryName':drop},
+         'subcategoryCategory':{'_id': subcategoryDropDownId},
         'subcategoryName':subcategoryName,
         'subcategoryDescription':subcategoryDescription,
-      };
+       
+      };print( this.subDetail);
     });
     final response = await http.put(Uri.parse(BaseUrl.subCategory+id),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
@@ -98,13 +99,24 @@ editCategory(categoryName, categoryDescription,id) async {
       print("Error :" + res);
     }
   }
-saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
+saveSubCategory(subcategoryDropDownId,subcategoryName, subcategoryDescription) async {
     setState(() {
     this.subDetail={
       'subcategoryName':subcategoryName,
-      'subcategoryDescription':subcategoryDescription
+      'subcategoryDescription':subcategoryDescription,
+       'subcategoryCategory': subcategoryDropDownId,
     };
-   subCategory.add(subDetail);
+
+    Map mockSubcategoryForUI = {
+      'subcategoryName':subcategoryName,
+      'subcategoryDescription':subcategoryDescription,
+       'subcategoryCategory': {
+         '_id': subcategoryDropDownId,
+         'categoryName': this.subcategoryDropDownName   
+       },
+    };
+    print(mockSubcategoryForUI);
+   subCategory.add(mockSubcategoryForUI);
     });
     final response = await http.post(Uri.parse(BaseUrl.subCategory),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
@@ -119,7 +131,7 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
   
   createSubModal(context,types,datas){
     if (types == "EDITS") {
-      this.drop = datas['subcategoryCategory']['categoryName'];
+      this.subcategoryDropDownName = datas['subcategoryCategory']['categoryName'];
       this.subcategoryName.text = datas['subcategoryName'];
       this.subcategoryDescription.text = datas['subcategoryDescription'];
       this.subcategoryid.text = datas['_id'];
@@ -184,7 +196,7 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
             decorationColor:Colors.white),
               items: this.subCategory.map((value) { 
         return DropdownMenuItem(
-              value: value['subcategoryCategory']['categoryName'],
+              value: value['_id'],
               child: SizedBox(
               width: 280.0,
               child: Text( value['subcategoryCategory']['categoryName'],
@@ -197,10 +209,14 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
         );
         }).toList(),
         onChanged: (value) {
-        drop = value;
+        setState(() { 
+          List selectedcatagory;
+          selectedcatagory =  this.subCategory.where((subcat) => subcat['_id']== value).toList();
+           this.subcategoryDropDownName  = selectedcatagory[0]['subcategoryCategory']['categoryName'];
+           this.subcategoryDropDownId  = selectedcatagory[0]['subcategoryCategory']['_id'];
+                            });
         },
-         hint: Text(
-          this.drop.toString(),
+         hint: Text(subcategoryDropDownName.toString(),
          style:TextStyle(
              fontSize:16.0,
            )),
@@ -220,12 +236,13 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
            onPressed:() {
             if (types == "CREATES") {
              saveSubCategory(
-             drop.toString(),
+             subcategoryDropDownId.toString(),
              subcategoryName.text,
              subcategoryDescription.text,
              );
              }else  if (types == "EDITS"){
              editSubCategory(
+            subcategoryDropDownId.toString(),
              subcategoryName.text,
              subcategoryDescription.text,
              datas['_id'],);
@@ -357,7 +374,8 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
     super.initState();
   }
 
-  String drop = 'Select Category ';
+  String subcategoryDropDownId = 'Select Category ';
+  String subcategoryDropDownName = 'Select Category ';
   List fullinvoiceList;
 
   final categoryName = TextEditingController();
@@ -423,8 +441,8 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
              child: Container(
                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                  children: [
-                 Text(category[index]['categoryName']),
-                  Text(category[index]['categoryDescription']),
+                 Text("${category[index]['categoryName'][0].toUpperCase()}${category[index]['categoryName'].substring(1)}"),
+                  Text("${category[index]['categoryDescription'][0].toUpperCase()}${category[index]['categoryDescription'].substring(1)}"),
                    ],
                   ),
                   ),
@@ -518,8 +536,8 @@ saveSubCategory(drop,subcategoryName, subcategoryDescription) async {
                      child:  Container(
                        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                       children: [ 
-                      Text(subCategory[index]['subcategoryName']),
-                      Text(subCategory[index]['subcategoryCategory']['categoryName']),
+                      Text("${subCategory[index]['subcategoryName'][0].toUpperCase()}${subCategory[index]['subcategoryName'].substring(1)}"),
+                      Text("${subCategory[index]['subcategoryCategory']['categoryName'][0].toUpperCase()}${subCategory[index]['subcategoryCategory']['categoryName'].substring(1)}"),
                       ],
                     ),
                   ),),
