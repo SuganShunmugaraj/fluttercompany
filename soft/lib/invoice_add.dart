@@ -9,7 +9,7 @@ class InvoiceAdd extends StatefulWidget {
   InvoiceAdd({
     this.prod,
   });
-  
+
   final Map prod;
   @override
   _InvoiceAddState createState() => _InvoiceAddState();
@@ -20,8 +20,10 @@ class _InvoiceAddState extends State<InvoiceAdd> {
   List items = [];
   List selectedItems = [];
   dynamic amount;
+  dynamic test = 2;
   Map addEdit = {};
   Map addTotalEdit = {};
+  String pageType;
 
   Future getCustomerData() async {
     var response = await http.get(Uri.parse(BaseUrl.contacts),
@@ -37,7 +39,8 @@ class _InvoiceAddState extends State<InvoiceAdd> {
         headers: {"Accept": "application/json"});
     this.setState(() {
       var itemsList = json.decode(response.body);
-      itemsList['data'].forEach((datas) => {datas['quantity'] = 0, items.add(datas)});
+      itemsList['data']
+          .forEach((datas) => {datas['quantity'] = 0, items.add(datas)});
     });
   }
 
@@ -53,21 +56,19 @@ class _InvoiceAddState extends State<InvoiceAdd> {
     getTotal();
   }
 
-  
-
   setSelectedItems(items) {
     var mockItem = {
       'itemdetails': items['_id'],
-      'quantity': 0,
+      'quantity': 1,
       'name': items['serviceName'],
       'rate': items['serviceSaleSellingPrice'],
       'discount': 0,
       'percentage': 0
     };
 
-    setState(() {
-      selectedItems.add(mockItem);
-    });
+    // setState(() {
+    //   selectedItems.add(mockItem);
+    // });
     int index = selectedItems.indexWhere((element) {
       return element['itemdetails'] == items['_id'];
     });
@@ -99,7 +100,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
         'adjustValue': 0,
         'amountPaid': 0,
         'customerId': "",
-        'customerName': "60b330832b24111e58827185",
+        'customerName': invoiceDropDownId,
         'customerNotes': "",
         'customrepeat': "",
         'expiryDate': addEdit['expiryDate'],
@@ -124,13 +125,11 @@ class _InvoiceAddState extends State<InvoiceAdd> {
         'totalwords': "fifty six thousand seven hundred and eighty rupee",
       };
     });
-   
   }
 
-var customerId;
-  onGenerateBill()async {
-   Map billMockup = {
-      "customerName": customerId,
+  onGenerateBill() async {
+    Map billMockup = {
+      "customerName": invoiceDropDownId,
       "customerId": "",
       "invoice": this.editInvoice['number'],
       "reference": "1234",
@@ -158,7 +157,25 @@ var customerId;
       "adjustValue": 0,
       "files": []
     };
-final response = await http.post(Uri.parse(BaseUrl.addInvoice),
+    print(pageType);
+    if(this.pageType =='EDIT'){
+     
+      billMockup['_id'] = this.widget.prod['_id'];
+      billMockup['customerName'] = this.widget.prod['customerName'];
+       print(billMockup);
+      final response = await http.put(Uri.parse(BaseUrl.addInvoice + this.widget.prod['_id']),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode(billMockup));
+    var res = response.body;  
+print(response);
+    if (response.statusCode == 200) {
+      print('sucess');
+    } else {
+      print("Error :" + res);
+    }
+
+    }else if (this.pageType =='CREATE'){
+      final response = await http.post(Uri.parse(BaseUrl.addInvoice),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(billMockup));
     var res = response.body;
@@ -167,6 +184,7 @@ final response = await http.post(Uri.parse(BaseUrl.addInvoice),
     } else {
       print("Error :" + res);
     }
+    }print(billMockup);
   }
 
   editItems(expiryDate, invoiceDate, invoice, subject) async {
@@ -177,141 +195,158 @@ final response = await http.post(Uri.parse(BaseUrl.addInvoice),
         'invoice': invoice,
         'subject': subject
       };
+      print(this.addEdit);
     });
   }
-Map editInvoice = {
-    'startDate': DateTime.now().toString(),
-    'endDate': DateTime(2021, 06, 25).toString(),
+
+  Map editInvoice = {
+    'startDate': dateFormat(DateTime.now()).toString(),
+    'endDate': dateFormat(DateTime(2021, 06, 25)).toString(),
     'number': 'INV0123',
     'subject': 'Invoice Subject',
   };
- addItems() {
+  addItems() {
     return showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-                child: TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.search),
-                    suffixIcon: Icon(Icons.record_voice_over),
-                    icon: Icon(Icons.arrow_back),
-                    labelText: ' Search..',
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                  child: TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
+                      suffixIcon: Icon(Icons.record_voice_over),
+                      icon: Icon(Icons.arrow_back),
+                      labelText: ' Search..',
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                  child: ListView.separated(
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        return Stack(
-                          children: [
-                            Container(
-                              color: Colors.white,
-                              child: ListTile(
-                                title: Container(
-                                  child: Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        child: Container(
-                                          color: Colors.tealAccent.shade700,
-                                          width: 50,
-                                          height: 50,
-                                          child: Center(
-                                              child: Text(
-                                            '${this.items[index]['serviceName'].substring(0, 1)}',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 30.0,
-                                                color: Colors.white),
-                                          )),
-                                        ),
-                                      ),
-                                      Container(
-                                        padding:
-                                            const EdgeInsets.only(left: 15.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(this.items[index]
-                                                ['serviceName']),
-                                            Text(this.items[index]
-                                                ['serviceSaleSellingPrice']),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only( left: 250.0, right: 15.0, top: 15.0),
-                              child: Align(
-                                child: Container(
-                                  padding: EdgeInsets.only(left: 20.0, top: 5.0, bottom: 5.0),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.tealAccent.shade700),
-                                  child: Row(
-                                    children: [
-                                      InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              setSubtract(this.items[index]);
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.remove,
-                                            color: Colors.white,
-                                            size: 16,
-                                          )),
-                                      Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 3),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 3, vertical: 2),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(3),
-                                              color: Colors.white),
-                                              child: Text(this.items[index]['quantity'].toString())
-                                      
+                Expanded(
+                    child: ListView.separated(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return Stack(
+                            children: [
+                              Container(
+                                color: Colors.white,
+                                child: ListTile(
+                                  title: Container(
+                                    child: Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                          child: Container(
+                                            color: Colors.tealAccent.shade700,
+                                            width: 50,
+                                            height: 50,
+                                            child: Center(
+                                                child: Text(
+                                              '${this.items[index]['serviceName'].substring(0, 1)}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 30.0,
+                                                  color: Colors.white),
+                                            )),
                                           ),
-                                      InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              this.items[index]['quantity'] += 1;
-                                              setSelectedItems( this.items[index]);
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.add,
-                                            color: Colors.white,
-                                            size: 16,
-                                          )),
-                                    ],
+                                        ),
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(left: 15.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(this.items[index]
+                                                  ['serviceName']),
+                                              Text(this.items[index]
+                                                  ['serviceSaleSellingPrice']),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            )
-                          ],
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return Divider();
-                      }))
-            ],
-          );
+                              Container(
+                                padding: const EdgeInsets.only(
+                                    left: 250.0, right: 15.0, top: 15.0),
+                                child: Align(
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        left: 20.0, top: 5.0, bottom: 5.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.tealAccent.shade700),
+                                    child: Row(
+                                      children: [
+                                        InkWell(
+                                            onTap: () {
+                                              if (this.items[index]
+                                                      ['quantity'] !=
+                                                  0)
+                                                setState(() {
+                                                  this.items[index]
+                                                      ['quantity'] -= 1;
+                                                  setSubtract(
+                                                      this.items[index]);
+                                                });
+                                            },
+                                            child: Icon(
+                                              Icons.remove,
+                                              color: Colors.white,
+                                              size: 16,
+                                            )),
+                                        Container(
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 3),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 3, vertical: 2),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(3),
+                                                color: Colors.white),
+                                            child: Text(this
+                                                .items[index]['quantity']
+                                                .toString())),
+                                        InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                this.items[index]['quantity'] +=
+                                                    1;
+                                                //  this.test += 1;
+                                                //  print(this.test);
+                                                setSelectedItems(
+                                                    this.items[index]);
+                                              });
+                                            },
+                                            child: Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 16,
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        }))
+              ],
+            );
+          });
         });
   }
 
@@ -319,14 +354,17 @@ Map editInvoice = {
   void initState() {
     super.initState();
     setState(() {
-      if(this.widget.prod!=null){
-        customerId=this.widget.prod['customerName'];
-        this.editInvoice['number']=this.widget.prod['invoice'];
-        this.editInvoice['startDate']=this.widget.prod['invoiceDate'];
-         this.editInvoice['endDate']=this.widget.prod['expiryDate'];
-       this.selectedItems=this.widget.prod['items'];
-      amount=this.widget.prod['totalAmount'];
-      amount=this.widget.prod['subTotal'];
+      if (this.widget.prod != null) {
+        this.pageType = 'EDIT';
+        this.invoiceDropDownName = this.widget.prod['customerName']['userName']['firstName'].toString();
+        this.editInvoice['number'] = this.widget.prod['invoice'];
+        this.editInvoice['startDate'] =dateFormat(this.widget.prod['invoiceDate']);
+        this.editInvoice['endDate'] =dateFormat(this.widget.prod['expiryDate']);
+        this.selectedItems = this.widget.prod['items'];
+        amount = this.widget.prod['totalAmount'];
+        amount = this.widget.prod['subTotal'];
+      }else{
+         this.pageType = 'CREATE';
       }
     });
     getCustomerData();
@@ -335,10 +373,10 @@ Map editInvoice = {
     expiryDate.text = this.editInvoice['endDate'];
     invoice.text = this.editInvoice['number'];
     subject.text = this.editInvoice['subject'];
-     
   }
 
-  String drop = 'Customer Name';
+  String invoiceDropDownName = 'Customer Name';
+  String invoiceDropDownId = 'Customer Name';
 
   final invoiceDate = TextEditingController();
   final expiryDate = TextEditingController();
@@ -349,14 +387,14 @@ Map editInvoice = {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.white, 
-        statusBarBrightness:Brightness.dark 
-        ));
+        statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
     return Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.only(top: 20.0,),
+            padding: const EdgeInsets.only(
+              top: 20.0,
+            ),
             child: Column(
               children: [
                 Container(
@@ -495,8 +533,9 @@ Map editInvoice = {
                                                           Alignment.center,
                                                       child: CircleAvatar(
                                                         radius: 7.0,
-                                                        backgroundColor:
-                                                            Colors.tealAccent.shade700,
+                                                        backgroundColor: Colors
+                                                            .tealAccent
+                                                            .shade700,
                                                         child: Icon(
                                                           Icons.close,
                                                           color: Colors.white,
@@ -513,7 +552,8 @@ Map editInvoice = {
                                                           'Remove Due Date',
                                                           style: TextStyle(
                                                               color: Colors
-                                                                  .tealAccent.shade700),
+                                                                  .tealAccent
+                                                                  .shade700),
                                                         )),
                                                   ],
                                                 )),
@@ -615,7 +655,9 @@ Map editInvoice = {
                                                             child: CircleAvatar(
                                                               radius: 7.0,
                                                               backgroundColor:
-                                                                  Colors.tealAccent.shade700,
+                                                                  Colors
+                                                                      .tealAccent
+                                                                      .shade700,
                                                               child: Icon(
                                                                 Icons.close,
                                                                 color: Colors
@@ -634,7 +676,8 @@ Map editInvoice = {
                                                                 'Remove Prefix',
                                                                 style: TextStyle(
                                                                     color: Colors
-                                                                        .tealAccent.shade700),
+                                                                        .tealAccent
+                                                                        .shade700),
                                                               )),
                                                         ],
                                                       )),
@@ -657,10 +700,15 @@ Map editInvoice = {
                                                 children: [
                                                   RaisedButton(
                                                       onPressed: () {
-                                                        print(editInvoice);
+                                                        editItems(
+                                                            expiryDate.text,
+                                                            invoiceDate.text,
+                                                            invoice.text,
+                                                            subject.text);
                                                       },
                                                       textColor: Colors.white,
-                                                      color: Colors.tealAccent.shade700,
+                                                      color: Colors
+                                                          .tealAccent.shade700,
                                                       child: Text(
                                                         'Save',
                                                         style: TextStyle(
@@ -730,10 +778,11 @@ Map editInvoice = {
                                             decorationColor: Colors.white),
                                         items: customer.map((value) {
                                           return DropdownMenuItem(
-                                            value: value,
+                                            value: value['_id'],
                                             child: SizedBox(
                                               width: 250.0,
-                                              child: Text(value['userName']['firstName'],
+                                              child: Text(
+                                                value['userName']['firstName'],
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                 ),
@@ -742,10 +791,19 @@ Map editInvoice = {
                                           );
                                         }).toList(),
                                         onChanged: (value) {
-                                          customerId=value['_id'];
-                                          value['userName']['firstName']=value;
+                                          List setDropDown;
+                                          setDropDown = customer
+                                              .where((subcat) =>
+                                                  subcat['_id'] == value)
+                                              .toList();
+                                          this.invoiceDropDownName =
+                                              setDropDown[0]['userName']
+                                                  ['firstName'];
+                                          this.invoiceDropDownId =
+                                              setDropDown[0]['_id'];
                                         },
-                                        hint: Text(this.drop.toString(),
+                                        hint: Text(
+                                            this.invoiceDropDownName.toString(),
                                             style: TextStyle(
                                               color: Colors.black,
                                             )),
@@ -867,12 +925,16 @@ Map editInvoice = {
                                               SizedBox(
                                                 width: 165.0,
                                                 child: RaisedButton(
-                                                  shape: RoundedRectangleBorder(
-                                                      ),
+                                                  shape:
+                                                      RoundedRectangleBorder(),
                                                   onPressed: () {
-                                                   this.onGenerateBill();
+                                                    this.onGenerateBill();
+                                                    Navigator.pop(context);
                                                   },
-                                                  child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Container(
                                                           child: Text(

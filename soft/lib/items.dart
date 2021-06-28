@@ -4,7 +4,6 @@ import 'package:soft/category.dart';
 import 'package:soft/config/upload_url.dart';
 import 'package:soft/create_items.dart';
 import 'package:http/http.dart' as http;
-import 'package:soft/edit_items.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Items extends StatefulWidget {
@@ -158,7 +157,10 @@ final serviceId = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body:service== null?
+    Container(child: Center(
+      child: CircularProgressIndicator(),
+      )): Stack(
               children: [ 
                  Column(
                         children: [

@@ -17,7 +17,7 @@ class CreateItems extends StatefulWidget {
 
 class _CreateItemsState extends State<CreateItems> {
   String _chosenValue;
-  Map subDetail ;
+  Map subDetail;
   List service ;
   List category;
   List subCategory;
@@ -32,25 +32,22 @@ class _CreateItemsState extends State<CreateItems> {
   }
 
   editContact(
+   categoryDescription,
     categoryDropDownId,
-    subCategoryDropDownId,
-    categoryDescription,
     serviceName,
     serviceSaleSellingPrice,
+    subCategoryDropDownId,
     _id,
   ) async {
     setState(() {
-      
       this.widget.items['serviceCategory']['_id'] = categoryDropDownId;
-      this.widget.items['serviceSubCategory']['_id'] = subCategoryDropDownId;
-      this.widget.items['serviceSaleDescription'] = categoryDescription;
        this.widget.items['serviceName'] = serviceName;
         this.widget.items['serviceSaleSellingPrice'] = serviceSaleSellingPrice;
+      this.widget.items['serviceSaleDescription'] = categoryDescription;
+      this.widget.items['serviceSubCategory']['_id'] = subCategoryDropDownId;
       this.widget.items['_id'] = _id;
     });
-    
-   // print( this.widget);
-    print(categoryDropDownId);
+    print(subCategoryDropDownId);
     final response = await http.put(Uri.parse(BaseUrl.service + _id),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode( this.widget.items));
@@ -69,7 +66,6 @@ class _CreateItemsState extends State<CreateItems> {
     serviceSaleSellingPrice,
     subCategoryDropDownId,
   ) async {
-   
     setState(() {
       this.subDetail = {
      'serviceCategory': { '_id': categoryDropDownId, },
@@ -79,7 +75,6 @@ class _CreateItemsState extends State<CreateItems> {
       'serviceSubCategory': { '_id': subCategoryDropDownId, },
       };
       service.add(this.subDetail);
-      print(this.subDetail);
     });
     final response = await http.post(Uri.parse(BaseUrl.service),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
@@ -115,14 +110,13 @@ class _CreateItemsState extends State<CreateItems> {
   void initState() {
     if (this.widget.items != null) {
       setState(() {
-        categoryDropDownName = this.widget.items['serviceCategory']['categoryName'].toString();
-        subCategoryDropDownName = this.widget.items['serviceSubCategory']['subcategoryName'].toString();
+        categoryDropDownName = this.widget.items['serviceCategory']['categoryName'];
+        subCategoryDropDownName = this.widget.items['serviceSubCategory']['subcategoryName'];
         serviceName.text = this.widget.items['serviceName'];
         serviceSaleSellingPrice.text =this.widget.items['serviceSaleSellingPrice'];
         categoryDescription.text =this.widget.items['serviceSaleDescription'];
       });
     }
-
     getData();
     getCategory();
     getSubCategory();
@@ -202,7 +196,7 @@ class _CreateItemsState extends State<CreateItems> {
                               return DropdownMenuItem(
                                 value: pageon['_id'],
                                 child: SizedBox(
-                                  width: 280.0,
+                                  width: 267.0,
                                   child: Text(
                                     pageon['categoryName'],
                                     style: TextStyle(
@@ -214,17 +208,15 @@ class _CreateItemsState extends State<CreateItems> {
                               );
                             }).toList(),
                             onChanged: (values) {
-                             
                             setState(() { 
                               List selectedcatagory;
                               selectedcatagory =  this.category.where((cat) => cat['_id'] == values).toList();
-                            print(selectedcatagory[0]['categoryName']);
                               this.categoryDropDownName  = selectedcatagory[0]['categoryName'];
                               this.categoryDropDownId  = selectedcatagory[0]['_id'];
                             });
                             },
                             hint: Text(this.categoryDropDownName.toString(),
-                                style: TextStyle(fontSize: 16.0,)),
+                                style: TextStyle(fontSize: 16.0,color: Colors.black)),
                             icon: Icon(
                               Icons.arrow_drop_down,
                             ),
@@ -255,7 +247,7 @@ class _CreateItemsState extends State<CreateItems> {
                       children: [
                         DropdownButtonHideUnderline(
                           child: DropdownButton(
-                            dropdownColor: Colors.tealAccent.shade700,
+                            dropdownColor: Colors.white,
                             style: TextStyle(
                                 color: Colors.white,
                                 decorationColor: Colors.white),
@@ -263,11 +255,11 @@ class _CreateItemsState extends State<CreateItems> {
                               return DropdownMenuItem(
                                 value: pagesubCategory['_id'],
                                 child: SizedBox(
-                                  width: 280.0,
+                                  width: 267.0,
                                   child: Text(
                                     pagesubCategory['subcategoryName'],
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.tealAccent.shade700,
                                       fontSize: 20.0,
                                     ),
                                   ),
@@ -284,7 +276,7 @@ class _CreateItemsState extends State<CreateItems> {
                             },
                             hint: Text(this.subCategoryDropDownName.toString(),
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: 16.0,color: Colors.black
                                 )),
                             icon: Icon(
                               Icons.arrow_drop_down,
@@ -385,7 +377,7 @@ class _CreateItemsState extends State<CreateItems> {
                                     ),
                                   ),
                                   labelText: ' ₹',
-                                  hintText: 'Enter price',
+                                  //hintText: 'Enter price',
                                 ),
                               ),
                             ),
@@ -432,11 +424,11 @@ class _CreateItemsState extends State<CreateItems> {
                         onPressed: () {
                           if (this.widget.items != null) {
                             editContact(
+                             categoryDescription.text,
                               categoryDropDownId,
-                              subCategoryDropDownId,
-                              categoryDescription.text,
                               serviceName.text,
                               serviceSaleSellingPrice.text,
+                              subCategoryDropDownId,
                               this.widget.items['_id'],
                             );
                           } else {

@@ -219,7 +219,8 @@ class _EditState extends State<Edit> {
           'city': city,
           'state': state,
           'zipCode': zipCode,
-          'phone1': phone1
+          'phone1': phone1,
+          'fax':fax
         },
         'contactPerson': this.contactPersonList,
         'remarks': {'remarkstext': remarkstext},
@@ -429,7 +430,7 @@ class _EditState extends State<Edit> {
                                 ],
                               ),
                               Container(
-                                  height: 550,
+                                  height: 600,
                                   child: TabBarView(children: [
                                     Container(
                                         child: Column(children: [
@@ -487,8 +488,7 @@ class _EditState extends State<Edit> {
                                         controller: twitter,
                                       ),
                                     ])),
-                                    SingleChildScrollView(
-                                      child: Container(
+                                    Container(
                                         child: Column(
                                           children: [
                                             TextFormField(
@@ -638,7 +638,7 @@ class _EditState extends State<Edit> {
                                           ],
                                         ),
                                       ),
-                                    ),
+                                  
                                     this.widget.prod != null
                                         ? Container(
                                             child: SingleChildScrollView(
@@ -958,6 +958,7 @@ class _EditState extends State<Edit> {
                                                     ),
                                                   ),
                                                 ),
+                                                if(displayForm==false)
                                                 Text('No Data Found'),
                                                 Padding(
                                                   padding:
@@ -1018,6 +1019,7 @@ class _EditState extends State<Edit> {
                                                                     );Navigator.pop(context);
                                                                     emailAddress.clear();
                                                                     mobile.clear();
+                                                                    displayForm=true;
                                                               }},color: Colors.white,
                                                               ),
                                                         ]),

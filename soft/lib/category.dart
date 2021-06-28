@@ -65,8 +65,7 @@ editSubCategory(subcategoryDropDownId,subcategoryName, subcategoryDescription,id
          'subcategoryCategory':{'_id': subcategoryDropDownId},
         'subcategoryName':subcategoryName,
         'subcategoryDescription':subcategoryDescription,
-       
-      };print( this.subDetail);
+      };
     });
     final response = await http.put(Uri.parse(BaseUrl.subCategory+id),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
