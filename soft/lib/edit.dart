@@ -249,8 +249,8 @@ class _EditState extends State<Edit> {
           backgroundColor: Colors.tealAccent.shade700,
           leading: IconButton(
               icon: Icon(Icons.arrow_back_sharp),
-              onPressed: () {
-                Navigator.pushNamed(context, MYAPP_PAGE);
+              onPressed: () { 
+                Navigator.pop(context);
               }),
           title: Text('Contacts'),
         ),
@@ -329,7 +329,7 @@ class _EditState extends State<Edit> {
                               TextFormField(
                                 validator: (value) {
                                   if (value.isEmpty) {
-                                    return 'Enter something';
+                                    return null;
                                   } else if (RegExp(r'[a-zA-Z]+|\s')
                                       .hasMatch(value)) {
                                     return null;
@@ -381,7 +381,7 @@ class _EditState extends State<Edit> {
                               TextFormField(
                                 validator: (value) {
                                   if (value.isEmpty) {
-                                    return 'Enter something';
+                                    return null;
                                   } else if (RegExp(r'(^(?:[+0]9)?[0-9]{10}$)')
                                       .hasMatch(value)) {
                                     return null;
@@ -494,7 +494,7 @@ class _EditState extends State<Edit> {
                                             TextFormField(
                                               validator: (value) {
                                                 if (value.isEmpty) {
-                                                  return 'Enter something';
+                                                  return null;
                                                 } else if (RegExp(
                                                         r'^[a-zA-Z0-9&%=]+$')
                                                     .hasMatch(value)) {
@@ -512,7 +512,7 @@ class _EditState extends State<Edit> {
                                             TextFormField(
                                               validator: (value) {
                                                 if (value.isEmpty) {
-                                                  return 'Enter something';
+                                                  return null;
                                                 } else if (RegExp(
                                                         r'^[a-zA-Z0-9&%=]+$')
                                                     .hasMatch(value)) {
@@ -530,7 +530,7 @@ class _EditState extends State<Edit> {
                                             TextFormField(
                                               validator: (value) {
                                                 if (value.isEmpty) {
-                                                  return 'Enter something';
+                                                  return null;
                                                 } else if (RegExp(
                                                         r'^[a-zA-Z0-9&%=]+$')
                                                     .hasMatch(value)) {
@@ -548,7 +548,7 @@ class _EditState extends State<Edit> {
                                             TextFormField(
                                               validator: (value) {
                                                 if (value.isEmpty) {
-                                                  return 'Enter something';
+                                                  return null;
                                                 } else if (RegExp(
                                                         r'^[a-zA-Z0-9&%=]+$')
                                                     .hasMatch(value)) {
@@ -566,7 +566,7 @@ class _EditState extends State<Edit> {
                                             TextFormField(
                                               validator: (value) {
                                                 if (value.isEmpty) {
-                                                  return 'Enter something';
+                                                  return null;
                                                 } else if (RegExp(
                                                         r'^[a-zA-Z0-9&%=]+$')
                                                     .hasMatch(value)) {
@@ -584,7 +584,7 @@ class _EditState extends State<Edit> {
                                             TextFormField(
                                               validator: (value) {
                                                 if (value.isEmpty) {
-                                                  return 'Enter something';
+                                                  return null;
                                                 } else if (RegExp(
                                                         r'(^(?:[+0]9)?[0-9]{6}$)')
                                                     .hasMatch(value)) {
@@ -602,7 +602,7 @@ class _EditState extends State<Edit> {
                                             TextFormField(
                                               validator: (value) {
                                                 if (value.isEmpty) {
-                                                  return 'Enter something';
+                                                  return null;
                                                 } else if (RegExp(
                                                         r'(^(?:[+0]9)?[0-9]{10}$)')
                                                     .hasMatch(value)) {
@@ -620,7 +620,7 @@ class _EditState extends State<Edit> {
                                             TextFormField(
                                               validator: (value) {
                                                 if (value.isEmpty) {
-                                                  return 'Enter something';
+                                                  return null;
                                                 } else if (RegExp(
                                                         r'(^(?:[+0]9)?[0-9]{6}$)')
                                                     .hasMatch(value)) {
@@ -1044,11 +1044,11 @@ class _EditState extends State<Edit> {
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
-              padding: EdgeInsets.only(left: 225, bottom: 10, top: 10),
+              padding: EdgeInsets.only(right: 15.0, bottom: 10, top: 10),
               height: 60,
               width: double.infinity,
               color: Colors.white,
-              child: Row(
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
                     width: 15,
@@ -1057,13 +1057,19 @@ class _EditState extends State<Edit> {
                     width: 15,
                   ),
                   RaisedButton(
+                    color: Colors.white,
+                    child: Text('Cancel',style: TextStyle(color: Colors.tealAccent.shade700),),
+                    onPressed: (){
+                        Navigator.pop(context);
+                  }),
+                  RaisedButton(
                       color: Colors.tealAccent.shade700,
                       child: Text(textChange(),
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: () {
                         if (formKey.currentState.validate()) {
-                          Navigator.pushNamed(context, MYAPP_PAGE);
+                          Navigator.pop(context);
                           if (this.widget.prod != null) {
                             updateDetails(
                               firstName.text,

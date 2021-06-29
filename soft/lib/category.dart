@@ -128,17 +128,18 @@ saveSubCategory(subcategoryDropDownId,subcategoryName, subcategoryDescription) a
     }
   }
   
-  createSubModal(context,types,datas){
+createSubModal(context,types,datas){
     if (types == "EDITS") {
       this.subcategoryDropDownName = datas['subcategoryCategory']['categoryName'];
       this.subcategoryName.text = datas['subcategoryName'];
       this.subcategoryDescription.text = datas['subcategoryDescription'];
       this.subcategoryid.text = datas['_id'];
-    } else {
-      this.subcategoryName.text = '';
-      this.subcategoryDescription.text = '';
-      this.subcategoryid.text = '';
-    }
+    } 
+    // else {
+    //   this.subcategoryName.text = '';
+    //   this.subcategoryDescription.text = '';
+    //   this.subcategoryid.text = '';
+    // }
     return  SingleChildScrollView(
      child: Container(
      padding:const EdgeInsets.only(top: 15.0),
@@ -267,11 +268,12 @@ saveSubCategory(subcategoryDropDownId,subcategoryName, subcategoryDescription) a
       this.categoryName.text = data['categoryName'];
       this.categoryDescription.text = data['categoryDescription'];
       this.categoryid.text = data['_id'];
-    } else {
-      this.categoryName.text = '';
-      this.categoryDescription.text = '';
-      this.categoryid.text = '';
     }
+    //  else {
+    //   this.categoryName.text = '';
+    //   this.categoryDescription.text = '';
+    //   this.categoryid.text = '';
+    // }
 
     return SingleChildScrollView(
       child: Container(
