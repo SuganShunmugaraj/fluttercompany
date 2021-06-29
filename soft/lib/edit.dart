@@ -119,6 +119,7 @@ class _EditState extends State<Edit> {
   }
 
   updateDetails(
+      selectName,
       firstName,
       lastName,
       companyName,
@@ -140,6 +141,7 @@ class _EditState extends State<Edit> {
       remarkstext,
       _id) async {
     setState(() {
+      this.widget.prod['userName']['salutation']['name']= selectName;
       this.widget.prod['userName']['firstName'] = firstName;
       this.widget.prod['userName']['lastName'] = lastName;
       this.widget.prod['companyName'] = companyName;
@@ -1070,6 +1072,7 @@ class _EditState extends State<Edit> {
                           Navigator.pop(context);
                           if (this.widget.prod != null) {
                             updateDetails(
+                              selectName,
                               firstName.text,
                               lastName.text,
                               companyName.text,

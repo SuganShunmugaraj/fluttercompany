@@ -106,6 +106,15 @@ class _CreateItemsState extends State<CreateItems> {
     });
   }
 
+
+itemAppBar(){
+if (this.widget.items != null) {
+  return 'Edit Item';
+}else{
+  return 'Create Item';
+}
+
+}
   @override
   void initState() {
     if (this.widget.items != null) {
@@ -129,17 +138,19 @@ class _CreateItemsState extends State<CreateItems> {
   final categoryid = TextEditingController();
   final serviceName = TextEditingController();
   final serviceSaleSellingPrice = TextEditingController();
+
+   final formKey = GlobalKey<FormState>();
+
   String categoryDropDownName = 'Select Category ';
    String categoryDropDownId = 'Select Category ';
-   String subCategoryDropDownName = 'Select Category ';
-   String subCategoryDropDownId = 'Select Category ';
+   String subCategoryDropDownName = 'Select SubCategory ';
+   String subCategoryDropDownId = 'Select SubCategory ';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(
-          'Create New Item',
+        title: Text(itemAppBar(),
           style: TextStyle(color: Colors.black),
         ),
         leading:IconButton(
@@ -149,307 +160,341 @@ class _CreateItemsState extends State<CreateItems> {
           Navigator.pop(context);
         })
       ),
-      body: Stack(children: [
-        SingleChildScrollView(
-            child: Container(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-                padding: const EdgeInsets.only(left: 15.0, top: 15.0),
-                child: Text('Service Name')),
-            Container(
-              height: 40.0,
-              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: ' Service Name',
-                ),
-                controller: serviceName,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(
-                top: 15.0,
-              ),
-              child: Center(
-                child: Container(
-                    padding: const EdgeInsets.only( left: 15.0,),
-                    height: 40.0,
-                    width: 330.0,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    ),
-                    child: Row(
-                      children: [ 
-                        DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            dropdownColor: Colors.tealAccent.shade700,
-                            value: _chosenValue,
-                            style: TextStyle(
-                                color: Colors.white,
-                                decorationColor: Colors.white),
-                            items: this.category.map((pageon) {
-                              return DropdownMenuItem(
-                                value: pageon['_id'],
-                                child: SizedBox(
-                                  width: 267.0,
-                                  child: Text(
-                                    pageon['categoryName'],
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20.0,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (values) {
-                            setState(() { 
-                              List selectedcatagory;
-                              selectedcatagory =  this.category.where((cat) => cat['_id'] == values).toList();
-                              this.categoryDropDownName  = selectedcatagory[0]['categoryName'];
-                              this.categoryDropDownId  = selectedcatagory[0]['_id'];
-                            });
-                            },
-                            hint: Text(this.categoryDropDownName.toString(),
-                                style: TextStyle(fontSize: 16.0,color: Colors.black)),
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(
-                top: 15.0,
-              ),
-              child: Center(
-                child: Container(
-                    padding: const EdgeInsets.only(
-                      left: 15.0,
-                    ),
-                    height: 40.0,
-                    width: 330.0,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    ),
-                    child: Row(
-                      children: [
-                        DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            dropdownColor: Colors.white,
-                            style: TextStyle(
-                                color: Colors.white,
-                                decorationColor: Colors.white),
-                            items: this.subCategory.map((pagesubCategory) {
-                              return DropdownMenuItem(
-                                value: pagesubCategory['_id'],
-                                child: SizedBox(
-                                  width: 267.0,
-                                  child: Text(
-                                    pagesubCategory['subcategoryName'],
-                                    style: TextStyle(
-                                      color: Colors.tealAccent.shade700,
-                                      fontSize: 20.0,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                               List selectedSubcatagory;
-                              selectedSubcatagory =  this.subCategory.where((subcat) => subcat['_id'] == value).toList();
-                              this.subCategoryDropDownName  = selectedSubcatagory[0]['subcategoryName'];
-                              this.subCategoryDropDownId  = selectedSubcatagory[0]['_id'];
-                              });
-                            },
-                            hint: Text(this.subCategoryDropDownName.toString(),
-                                style: TextStyle(
-                                  fontSize: 16.0,color: Colors.black
-                                )),
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
-              ),
-            ),
-            Container(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                child: Text('Description')),
-            Container(
-              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-              child: TextField(
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: ' Description',
-                  hintText: 'Description',
-                ),
-                controller: categoryDescription,
-              ),
-            ),
-            DefaultTabController(
-              length: 1,
-              initialIndex: 0,
-              child: Column(
-                children: [
-                  TabBar(
-                    indicatorColor: Colors.tealAccent.shade700,
-                    isScrollable: true,
-                    unselectedLabelColor: Colors.black,
-                    labelColor: Colors.tealAccent.shade700,
-                    tabs: [
-                      Tab(text: 'Pricing'),
-                    ],
+      body: Form(
+        key: formKey,
+        child: Stack(children: [
+          SingleChildScrollView(
+              child: Container(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                  padding: const EdgeInsets.only(left: 15.0, top: 15.0),
+                  child: Text('Service Name')),
+              Container( 
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                child: TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty) {
+                      return 'Enter something';
+                      } else if (RegExp(r'[a-zA-Z]+|\s').hasMatch(value)) {
+                         return null;
+                      } else {
+                     return 'Enter valid Name';
+                     }
+                   },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: ' Service Name',
                   ),
-                  Container(
-                    height: 550,
-                    child: TabBarView(children: [
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                                padding: const EdgeInsets.only(
-                                  left: 15.0,
-                                  right: 15.0,
-                                ),
-                                child: Text('Sales Price')),
-                            Container(
-                              height: 40.0,
-                              padding: const EdgeInsets.only(
-                                  left: 15.0, right: 15.0, top: 5.0),
-                              child: TextField(
-                                controller: serviceSaleSellingPrice,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  suffixIcon: Container(
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton<String>(
-                                        focusColor: Colors.white,
-                                        value: _chosenValue,
-                                        //elevation: 5,
-                                        style: TextStyle(color: Colors.blue),
-                                        iconEnabledColor: Colors.black,
-                                        items: <String>[
-                                          'Android',
-                                          'IOS',
-                                        ].map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(
-                                              value,
-                                              style: TextStyle(
-                                                  color: Colors.black),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        hint: Text(
-                                          "Add Unit",
+                  controller: serviceName,
+                ),
+              ),
+              Container(
+                  padding: const EdgeInsets.only(left: 15.0, top: 5.0),
+                  child: Text('Category')),
+              // Container(
+              //   padding: const EdgeInsets.only(top: 5.0,),
+              //   child: Center(
+              //     child: Container(
+              //         padding: const EdgeInsets.only( left: 15.0,),
+              //         height: 40.0,
+              //         width: 330.0,
+                      // decoration: BoxDecoration(
+                      //   border: Border.all(
+                      //     color: Colors.grey,
+                      //   ),
+                      //   borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      // ),
+                       
+                         Center(
+                           child: Container(
+                             width: 330.0,
+                             padding: const EdgeInsets.only(left: 15.0,),
+                           decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Colors.grey,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                             child: DropdownButtonHideUnderline(
+                                child: DropdownButtonFormField(
+                                  decoration: InputDecoration(
+                                 enabledBorder: InputBorder.none,
+                                   ),
+                                  dropdownColor: Colors.tealAccent.shade700,
+                                  value: _chosenValue,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      decorationColor: Colors.white),
+                                  items: this.category.map((pageon) {
+                                    return DropdownMenuItem(
+                                      value: pageon['_id'],
+                                      child: SizedBox(
+                                        width: 267.0,
+                                        child: Text(
+                                          pageon['categoryName'],
                                           style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500),
+                                            color: Colors.white,
+                                            fontSize: 20.0,
+                                          ),
                                         ),
-                                        onChanged: (String value) {
-                                          setState(() {
-                                            _chosenValue = value;
-                                          });
-                                        },
+                                      ),
+                                    );
+                                  }).toList(),
+                                   validator: (value) {
+                      if (value.isEmpty) {
+                      return 'Enter something';
+                      } else {
+                         return null;
+                      } 
+                   },
+                                  onChanged: (values) {
+                                  setState(() { 
+                                    List selectedcatagory;
+                                    selectedcatagory =  this.category.where((cat) => cat['_id'] == values).toList();
+                                    this.categoryDropDownName  = selectedcatagory[0]['categoryName'];
+                                    this.categoryDropDownId  = selectedcatagory[0]['_id'];
+                                  });
+                                  },
+                                  hint: Text(this.categoryDropDownName.toString(),
+                                      style: TextStyle(fontSize: 16.0,color: Colors.black)),
+                                  icon: Icon(
+                                    Icons.arrow_drop_down,
+                                  ),
+                                ),
+                              ),
+                           ),
+                         ),
+               Container(
+                  padding: const EdgeInsets.only(left: 15.0, top: 5.0),
+                  child: Text('Sub Category')),
+             Center(
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 15.0,),
+                      width: 330.0,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                         child: DropdownButtonHideUnderline(
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                             enabledBorder: InputBorder.none,
+                                  ),
+                              dropdownColor: Colors.white,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  decorationColor: Colors.white),
+                              items: this.subCategory.map((pagesubCategory) {
+                                return DropdownMenuItem(
+                                  value: pagesubCategory['_id'],
+                                  child: SizedBox(
+                                    width: 267.0,
+                                    child: Text(
+                                      pagesubCategory['subcategoryName'],
+                                      style: TextStyle(
+                                        color: Colors.tealAccent.shade700,
+                                        fontSize: 20.0,
                                       ),
                                     ),
                                   ),
-                                  labelText: ' ₹',
-                                  //hintText: 'Enter price',
+                                );
+                              }).toList(),
+                               validator: (value) {
+                      if (value.isEmpty) {
+                      return 'Enter something';
+                      } else {
+                         return null;
+                      } 
+                   },
+                              onChanged: (value) {
+                                setState(() {
+                                 List selectedSubcatagory;
+                                selectedSubcatagory =  this.subCategory.where((subcat) => subcat['_id'] == value).toList();
+                                this.subCategoryDropDownName  = selectedSubcatagory[0]['subcategoryName'];
+                                this.subCategoryDropDownId  = selectedSubcatagory[0]['_id'];
+                                });
+                              },
+                              hint: Text(this.subCategoryDropDownName.toString(),
+                                  style: TextStyle(
+                                    fontSize: 16.0,color: Colors.black
+                                  )),
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                              ),
+                            ),
+                          ),
+                       ),
+                ),
+              Container(
+                  padding:
+                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                  child: Text('Description')),
+              Container(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                child: TextField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    labelText: ' Description',
+                    hintText: 'Description',
+                    border: OutlineInputBorder(),
+                    
+                  ),
+                  controller: categoryDescription,
+                ),
+              ),
+              DefaultTabController(
+                length: 1,
+                initialIndex: 0,
+                child: Column(
+                  children: [
+                    TabBar(
+                      indicatorColor: Colors.tealAccent.shade700,
+                      isScrollable: true,
+                      unselectedLabelColor: Colors.black,
+                      labelColor: Colors.tealAccent.shade700,
+                      tabs: [
+                        Tab(text: 'Pricing'),
+                      ],
+                    ),
+                    Container(
+                      height: 200,
+                      child: TabBarView(children: [
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  padding: const EdgeInsets.only(
+                                    left: 15.0,
+                                    right: 15.0,
+                                  ),
+                                  child: Text('Sales Price')),
+                              Container(
+                                height: 40.0,
+                                padding: const EdgeInsets.only(
+                                    left: 15.0, right: 15.0, top: 5.0),
+                                child: TextField(
+                                  controller: serviceSaleSellingPrice,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    // suffixIcon: Container(
+                                    //   child: DropdownButtonHideUnderline(
+                                    //     child: DropdownButton<String>(
+                                    //       focusColor: Colors.white,
+                                    //       value: _chosenValue,
+                                    //       //elevation: 5,
+                                    //       style: TextStyle(color: Colors.blue),
+                                    //       iconEnabledColor: Colors.black,
+                                    //       items: <String>[
+                                    //         'Android',
+                                    //         'IOS',
+                                    //       ].map<DropdownMenuItem<String>>(
+                                    //           (String value) {
+                                    //         return DropdownMenuItem<String>(
+                                    //           value: value,
+                                    //           child: Text(
+                                    //             value,
+                                    //             style: TextStyle(
+                                    //                 color: Colors.black),
+                                    //           ),
+                                    //         );
+                                    //       }).toList(),
+                                    //       hint: Text(
+                                    //         "Add Unit",
+                                    //         style: TextStyle(
+                                    //             color: Colors.black,
+                                    //             fontSize: 14,
+                                    //             fontWeight: FontWeight.w500),
+                                    //       ),
+                                    //       onChanged: (String value) {
+                                    //         setState(() {
+                                    //           _chosenValue = value;
+                                    //         });
+                                    //       },
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    labelText: ' ₹',
+                                    //hintText: 'Enter price',
+                                  ),
                                 ),
                               ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(
-                                left: 15.0,
-                                right: 15.0,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.add,
-                                    color: Colors.tealAccent.shade700,
-                                    size: 18,
-                                  ),
-                                  Text(
-                                    'Add GST & Tax Details',
-                                    style: TextStyle(
-                                        color: Colors.tealAccent.shade700),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
+                             
+                              // Container(
+                              //   padding: const EdgeInsets.only(
+                              //     left: 15.0,
+                              //     right: 15.0,
+                              //   ),
+                              //   child: Row(
+                              //     children: [
+                              //       Icon(
+                              //         Icons.add,
+                              //         color: Colors.tealAccent.shade700,
+                              //         size: 18,
+                              //       ),
+                              //       // Text(
+                              //       //   'Add GST & Tax Details',
+                              //       //   style: TextStyle(
+                              //       //       color: Colors.tealAccent.shade700),
+                              //       // )
+                              //     ],
+                              //   ),
+                              // ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ]),
-                  ),
-                ],
+                      ]),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ]),
-        )),
-        Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  SizedBox(
-                      width: 165.0,
-                      child: RaisedButton(
-                        onPressed: () {
-                          if (this.widget.items != null) {
-                            editContact(
-                             categoryDescription.text,
-                              categoryDropDownId,
-                              serviceName.text,
-                              serviceSaleSellingPrice.text,
-                              subCategoryDropDownId,
-                              this.widget.items['_id'],
-                            );
-                          } else {
-                            addContact(
-                              categoryDescription.text,
-                              categoryDropDownId.toString(),
-                              serviceName.text,
-                              serviceSaleSellingPrice.text,
-                              subCategoryDropDownId.toString(),
-                            );
-                          }
-                          Navigator.pop(context);
-                        },
-                        child: Text("Save"),
-                        color: Colors.tealAccent.shade700,
-                        textColor: Colors.white,
-                      )),
-                ],
-              ),
-            )),
-      ]),
+            ]),
+          )),
+          Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    SizedBox(
+                        width: 165.0,
+                        child: RaisedButton(
+                          onPressed: () {
+                        if (formKey.currentState.validate()) {
+                            if (this.widget.items != null) {
+                              editContact(
+                               categoryDescription.text,
+                                categoryDropDownId,
+                                serviceName.text,
+                                serviceSaleSellingPrice.text,
+                                subCategoryDropDownId,
+                                this.widget.items['_id'],
+                              );
+                            } else {
+                              addContact(
+                                categoryDescription.text,
+                                categoryDropDownId.toString(),
+                                serviceName.text,
+                                serviceSaleSellingPrice.text,
+                                subCategoryDropDownId.toString(),
+                              );
+                            }
+                            Navigator.pop(context);
+                          }},
+                          child: Text("Save"),
+                          color: Colors.tealAccent.shade700,
+                          textColor: Colors.white,
+                        )),
+                  ],
+                ),
+              )),
+        ]),
+      ),
     );
   }
 }

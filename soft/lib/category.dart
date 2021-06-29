@@ -135,11 +135,11 @@ createSubModal(context,types,datas){
       this.subcategoryDescription.text = datas['subcategoryDescription'];
       this.subcategoryid.text = datas['_id'];
     } 
-    // else {
-    //   this.subcategoryName.text = '';
-    //   this.subcategoryDescription.text = '';
-    //   this.subcategoryid.text = '';
-    // }
+    else {
+      this.subcategoryName.text = '';
+      this.subcategoryDescription.text = '';
+      this.subcategoryid.text = '';
+    }
     return  SingleChildScrollView(
      child: Container(
      padding:const EdgeInsets.only(top: 15.0),
@@ -223,6 +223,7 @@ createSubModal(context,types,datas){
             icon: Icon(Icons.arrow_drop_down,),
          ),
        ),
+       
        ],
        )),
        ),
@@ -269,11 +270,11 @@ createSubModal(context,types,datas){
       this.categoryDescription.text = data['categoryDescription'];
       this.categoryid.text = data['_id'];
     }
-    //  else {
-    //   this.categoryName.text = '';
-    //   this.categoryDescription.text = '';
-    //   this.categoryid.text = '';
-    // }
+     else {
+      this.categoryName.text = '';
+      this.categoryDescription.text = '';
+      this.categoryid.text = '';
+    }
 
     return SingleChildScrollView(
       child: Container(
@@ -432,19 +433,27 @@ createSubModal(context,types,datas){
                                   child: ListView.separated(
                                     itemCount: category.length,
                                     itemBuilder: (context, index) {
-                   return Slidable(
+                   return GestureDetector(
+                   onTap: ()async {
+          await showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+          return this.createModal(context,'EDIT', this.category[index]);
+         });
+       },
+                   child: Slidable(
                   actionPane: new SlidableBehindActionPane(),
                   actionExtentRatio: 0.25,
                  child: new Container(
                  color: Colors.white,
-                   child: ListTile(
+                     child: ListTile(
                title:SingleChildScrollView(
              child: Container(
                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                  children: [
                  Text("${category[index]['categoryName'][0].toUpperCase()}${category[index]['categoryName'].substring(1)}"),
                   Text("${category[index]['categoryDescription'][0].toUpperCase()}${category[index]['categoryDescription'].substring(1)}"),
-                   ],
+                     ],
                   ),
                   ),
                   ),
@@ -484,8 +493,8 @@ createSubModal(context,types,datas){
               )),
               FlatButton(
                 onPressed:() {
-                   removeContacts(index,this.category[index]['_id']);
-                    Navigator.of(context, rootNavigator: true).pop(true);
+                     removeContacts(index,this.category[index]['_id']);
+                      Navigator.of(context, rootNavigator: true).pop(true);
                 },
                 child:Text('Yes', style: TextStyle(
                   color:Colors.tealAccent.shade700,
@@ -496,7 +505,8 @@ createSubModal(context,types,datas){
                 }),
    
   ],
-  );
+  ),
+                   );
      },
         separatorBuilder: (context, index) {
           return Divider();
@@ -527,20 +537,29 @@ createSubModal(context,types,datas){
                  child: ListView.separated(
                   itemCount: subCategory.length,
                   itemBuilder: (context, index) {
-                   return Slidable(
-                     actionPane: new SlidableBehindActionPane(),
-                     actionExtentRatio: 0.25,
-                     child: new Container(
-                     color: Colors.white,
-                     child: ListTile(
-                     title:SingleChildScrollView(
-                     child:  Container(
-                       child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [ 
-                      Text("${subCategory[index]['subcategoryName'][0].toUpperCase()}${subCategory[index]['subcategoryName'].substring(1)}"),
-                      Text("${subCategory[index]['subcategoryCategory']['categoryName'][0].toUpperCase()}${subCategory[index]['subcategoryCategory']['categoryName'].substring(1)}"),
-                      ],
-                    ),
+                   return GestureDetector(
+                     onTap: ()async {
+      await showModalBottomSheet(
+         context: context,
+         builder: (BuildContext context) {
+         return this.createSubModal(context,'EDITS', this.subCategory[index]);
+       }
+        );
+       },
+                      child: Slidable(
+                       actionPane: new SlidableBehindActionPane(),
+                       actionExtentRatio: 0.25,
+                       child: new Container(
+                       color: Colors.white,
+                       child: ListTile(
+                       title:SingleChildScrollView(
+                       child:  Container(
+                         child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [ 
+                        Text("${subCategory[index]['subcategoryName'][0].toUpperCase()}${subCategory[index]['subcategoryName'].substring(1)}"),
+                        Text("${subCategory[index]['subcategoryCategory']['categoryName'][0].toUpperCase()}${subCategory[index]['subcategoryCategory']['categoryName'].substring(1)}"),
+                        ],
+                      ),
                   ),),
                 ),
     ),
@@ -589,7 +608,8 @@ createSubModal(context,types,datas){
             ));
             } 
              ),  
-  ], );
+  ], ),
+                   );
           },
           separatorBuilder: (context, index) {
            return Divider();

@@ -32,8 +32,7 @@ removeContacts(index,id)async{
         print(response);
 }
 
-
-  @override
+@override
   void initState() {
    getData();
     super.initState();
@@ -112,38 +111,39 @@ removeContacts(index,id)async{
         child: ListView.separated(
         itemCount: contacts.length,
         itemBuilder: (context, index) {
-          return  Slidable(
-  actionPane: new SlidableBehindActionPane(),
-  actionExtentRatio: 0.25,
-  child: new Container(
-    color: Colors.white,
-    child:  
-    ListTile(
-          title: Container( 
-                  child:GestureDetector(
+          return GestureDetector(
                    onTap: (){
                     Navigator.push(context,
                      MaterialPageRoute(builder: (context) =>ContactDetailPage(
                      prod: contacts[index],
                      )));
                    },
-                  child:Container( 
-                   child: Row(
-                   children: [
-                   Column(crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                   Text("${contacts[index]['userName']['firstName'][0].toUpperCase()}${contacts[index]['userName']['firstName'].substring(1)}",
-                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0),),
-                   Text(contacts[index]['phone']['primaryContact'],
-                    style: TextStyle(color: Colors.grey,
-                   fontWeight: FontWeight.bold),)
-                   ],
-                    ),
-                    ],
-                 ),
-                 ),
+                      child: Slidable(
+  actionPane: new SlidableBehindActionPane(),
+  actionExtentRatio: 0.25,
+  child: new Container(
+    color: Colors.white,
+    child:  
+    ListTile(
+            title: Container( 
+                    
+                    child:Container( 
+                     child: Row(
+                     children: [
+                     Column(crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+                     Text("${contacts[index]['userName']['firstName'][0].toUpperCase()}${contacts[index]['userName']['firstName'].substring(1)}",
+                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0),),
+                     Text(contacts[index]['phone']['primaryContact'],
+                      style: TextStyle(color: Colors.grey,
+                     fontWeight: FontWeight.bold),)
+                     ],
+                      ),
+                      ],
+                   ),
+                   ),
+                  
                   ),
-                ),
     ),
     
   ),
@@ -162,32 +162,33 @@ removeContacts(index,id)async{
       icon: Icons.delete,
       onTap: ()async{
         await showDialog(context: context,builder:(_) => AlertDialog(
-                 title: Text( 'Do you want Delete'),
-                 actions: [
-                  FlatButton(
-                     onPressed:() {
-                      Navigator.of(context, rootNavigator: true).pop(true);
-                         }, child: Text('No',
-                         style:TextStyle(
-                           color:  Colors.tealAccent.shade700,
-                                ),
-                                                  )),
-                            FlatButton(
-                               onPressed:() {
-                                    removeContacts(index,this.contacts[index]['_id']);
-                                    Navigator.of(context, rootNavigator: true).pop(true);
-                                     },
-                                      child:Text('Yes',
-                                      style:TextStyle(color:Colors.tealAccent.shade700,
-                                                                            ),
-                                                                          ))
-                                                                    ],
-                                                                  ));
-                                     
+                   title: Text( 'Do you want Delete'),
+                   actions: [
+                    FlatButton(
+                       onPressed:() {
+                        Navigator.of(context, rootNavigator: true).pop(true);
+                           }, child: Text('No',
+                           style:TextStyle(
+                             color:  Colors.tealAccent.shade700,
+                                  ),
+                                                    )),
+                              FlatButton(
+                                 onPressed:() {
+                                      removeContacts(index,this.contacts[index]['_id']);
+                                      Navigator.of(context, rootNavigator: true).pop(true);
+                                       },
+                                        child:Text('Yes',
+                                        style:TextStyle(color:Colors.tealAccent.shade700,
+                                                                              ),
+                                                                            ))
+                                                                      ],
+                                                                    ));
+                                       
       },
     ),
   ],
 
+            ),
           );
         },separatorBuilder: (context, index) {
                       return Divider();

@@ -232,7 +232,14 @@ final serviceId = TextEditingController();
                       child: ListView.separated(
                                       itemCount: service.length,
                                       itemBuilder: (context, index) {
-                                        return Slidable(
+                                        return GestureDetector(
+                                           onTap: (){
+                    Navigator.push(context,
+                     MaterialPageRoute(builder: (context) =>CreateItems(
+                       items: this.service[index],
+                     )));
+                   },
+                                         child: Slidable(
   actionPane: new SlidableBehindActionPane(),
   actionExtentRatio: 0.25,
   child: new
@@ -261,16 +268,16 @@ final serviceId = TextEditingController();
                                    child:Column(crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text("${service[index]['serviceName'][0].toUpperCase()}${service[index]['serviceName'].substring(1)}"),
-                                      Text(service[index]['serviceSaleSellingPrice']),
+                                      Text('₹ '+ service[index]['serviceSaleSellingPrice']),
                                      
                                     ],
                                 ),
                                  ),
                             
-                                                    ],
-                                                  ),
+                                                      ],
+                                                    ),
+                                            ),
                                           ),
-                                        ),
                 ),
   secondaryActions: <Widget>[
     new IconSlideAction(
@@ -280,7 +287,7 @@ final serviceId = TextEditingController();
       onTap: () {
          Navigator.push(context,
                                       MaterialPageRoute(builder: (context) =>CreateItems(
-                                        items: this.service[index],
+                                          items: this.service[index],
                                       )));
       }
     ),
@@ -290,49 +297,50 @@ final serviceId = TextEditingController();
       icon: Icons.delete,
       onTap: () async{
                                       await showDialog(context: context,builder:
-                                                              (_) => AlertDialog(
-                                                                    title: Text( 'Do you want Delete'),
-                                                                    actions: [
-                                                                      FlatButton(
-                                                                          onPressed:
-                                                                              () {
-                                                                            Navigator.of(context, rootNavigator: true)
-                                                                                .pop(true);
-                                                                          },
-                                                                          child:
-                                                                              Text(
-                                                                            'No',
-                                                                            style:
-                                                                                TextStyle(
-                                                                              color:
-                                                                                  Colors.tealAccent.shade700,
-                                                                            ),
-                                                                          )),
-                                                                      FlatButton(
-                                                                          onPressed:
-                                                                              () {
-                                                                              removeContacts(index,this.service[index]['_id']);
-                                                                            Navigator.of(context, rootNavigator: true)
-                                                                                .pop(true);
-                                                                                 
-                                                                          },
-                                                                          child:
-                                                                              Text(
-                                                                            'Yes',
-                                                                            style:
-                                                                                TextStyle(
-                                                                              color:
-                                                                                  Colors.tealAccent.shade700,
-                                                                            ),
-                                                                          ))
-                                                                    ],
-                                                                  ));
+                                                                (_) => AlertDialog(
+                                                                      title: Text( 'Do you want Delete'),
+                                                                      actions: [
+                                                                        FlatButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              Navigator.of(context, rootNavigator: true)
+                                                                                  .pop(true);
+                                                                            },
+                                                                            child:
+                                                                                Text(
+                                                                              'No',
+                                                                              style:
+                                                                                  TextStyle(
+                                                                                color:
+                                                                                    Colors.tealAccent.shade700,
+                                                                              ),
+                                                                            )),
+                                                                        FlatButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                                removeContacts(index,this.service[index]['_id']);
+                                                                              Navigator.of(context, rootNavigator: true)
+                                                                                  .pop(true);
+                                                                                   
+                                                                            },
+                                                                            child:
+                                                                                Text(
+                                                                              'Yes',
+                                                                              style:
+                                                                                  TextStyle(
+                                                                                color:
+                                                                                    Colors.tealAccent.shade700,
+                                                                              ),
+                                                                            ))
+                                                                      ],
+                                                                    ));
                                      
                                     }
     ),
   ],
 
-          ); }, separatorBuilder: (context, index) {
+          ),
+                                        ); }, separatorBuilder: (context, index) {
                                         return Divider();
                                        } 
                                        ),
