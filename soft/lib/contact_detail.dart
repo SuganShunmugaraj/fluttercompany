@@ -184,13 +184,13 @@ Container(padding: const EdgeInsets.only(top:10.0),
                                     ),),
                                             Text(this.widget.prod['userName']['salutation']['name']+''+
                                             this.widget.prod['userName']['firstName']+ ' '+
-                                            this.widget.prod['userName']['lastName'],),
-                                    Text(this.widget.prod['billingAddress']['Street1']!=null?this.widget.prod['billingAddress']['Street1']:''),
-                                    Text(this.widget.prod['billingAddress']['city']!=null?this.widget.prod['billingAddress']['city']:''),
-                                     Text(this.widget.prod['billingAddress']['state']!=null?this.widget.prod['billingAddress']['state']:''),
-                                    Text(this.widget.prod['billingAddress']['zipCode']!=null?this.widget.prod['billingAddress']['zipCode']:''),
-                                     Text(this.widget.prod['billingAddress']['phone1']!=null?this.widget.prod['billingAddress']['phone1']:''),
-                                    Text(this.widget.prod['billingAddress']['countryRegion']!=null?this.widget.prod['billingAddress']['countryRegion']:'')
+                                            this.widget.prod['userName']['lastName'].toString()),
+                                    Text(this.widget.prod['billingAddress']['Street1']!=null?this.widget.prod['billingAddress']['Street1'].toString():''),
+                                    Text(this.widget.prod['billingAddress']['city']!=null?this.widget.prod['billingAddress']['city'].toString():''),
+                                     Text(this.widget.prod['billingAddress']['state']!=null?this.widget.prod['billingAddress']['state'].toString():''),
+                                    Text(this.widget.prod['billingAddress']['zipCode']!=null?this.widget.prod['billingAddress']['zipCode'].toString():''),
+                                     Text(this.widget.prod['billingAddress']['phone1']!=null?this.widget.prod['billingAddress']['phone1'].toString():''),
+                                    Text(this.widget.prod['billingAddress']['countryRegion']!=null?this.widget.prod['billingAddress']['countryRegion'].toString():'')
                                           ],
                                         ),
                                         Column(
@@ -200,13 +200,13 @@ Container(padding: const EdgeInsets.only(top:10.0),
                                             fontWeight: FontWeight.bold),),
                                             Text(this.widget.prod['userName']['salutation']['name']+''+
                                             this.widget.prod['userName']['firstName']+ ' '+
-                                            this.widget.prod['userName']['lastName'],),
-                                     Text(this.widget.prod['shippingAddress']['Street1']!=null?this.widget.prod['shippingAddress']['Street1']:''),
-                                    Text(this.widget.prod['shippingAddress']['city']!=null?this.widget.prod['shippingAddress']['city']:''),
-                                      Text(this.widget.prod['shippingAddress']['state']!=null?this.widget.prod['shippingAddress']['state']:''),
-                                     Text(this.widget.prod['shippingAddress']['zipCode']!=null?this.widget.prod['shippingAddress']['zipCode']:''),
-                                      Text(this.widget.prod['shippingAddress']['phone1']!=null?this.widget.prod['shippingAddress']['phone1']:''),
-                                     Text(this.widget.prod['shippingAddress']['countryRegion']!=null?this.widget.prod['shippingAddress']['countryRegion']:'')
+                                            this.widget.prod['userName']['lastName'].toString()),
+                                    //  Text(this.widget.prod['shippingAddress']['Street1']!=null?this.widget.prod['shippingAddress']['Street1']:''),
+                                    // Text(this.widget.prod['shippingAddress']['city']!=null?this.widget.prod['shippingAddress']['city']:''),
+                                    //   Text(this.widget.prod['shippingAddress']['state']!=null?this.widget.prod['shippingAddress']['state']:''),
+                                    //  Text(this.widget.prod['shippingAddress']['zipCode']!=null?this.widget.prod['shippingAddress']['zipCode']:''),
+                                    //   Text(this.widget.prod['shippingAddress']['phone1']!=null?this.widget.prod['shippingAddress']['phone1']:''),
+                                    //  Text(this.widget.prod['shippingAddress']['countryRegion']!=null?this.widget.prod['shippingAddress']['countryRegion']:'')
                                           ],
                                         )
                                       ],
@@ -221,13 +221,12 @@ Container(padding: const EdgeInsets.only(top:10.0),
                                      
                                    Text(this.widget.prod['userName']['salutation']['name']+''+
                                             this.widget.prod['userName']['firstName']+ ' '+
-                                            this.widget.prod['userName']['lastName'],),
-                                     Text(this.widget.prod['otherDetails']['currency']!=null?this.widget.prod['otherDetails']['currency']:''),
-                                      Text(this.widget.prod['otherDetails']['openingBalance']!=null?this.widget.prod['otherDetails']['openingBalance']:''),
-                                     Text(this.widget.prod['otherDetails']['portalLanguage']!=null?this.widget.prod['otherDetails']['portalLanguage']:''),
-                                      Text(this.widget.prod['otherDetails']['facebook']!=null?this.widget.prod['otherDetails']['facebook']:''),
-                                     Text(this.widget.prod['otherDetails']['twitter']!=null?this.widget.prod['otherDetails']['twitter']:''),
-                                    Text(this.widget.prod['otherDetails']['enablePortal']!=null?this.widget.prod['otherDetails']['enablePortal']:''),
+                                            this.widget.prod['userName']['lastName'].toString()),
+                                     Text(this.widget.prod['otherDetails']['currency']!=null?this.widget.prod['otherDetails']['currency'].toString():''),
+                                      Text(this.widget.prod['otherDetails']['openingBalance']!=null?this.widget.prod['otherDetails']['openingBalance'].toString():''),
+                                    Text(this.widget.prod['otherDetails']['portalLanguage']!=null?this.widget.prod['otherDetails']['portalLanguage'].toString():''),
+                                      Text(this.widget.prod['otherDetails']['facebook']!=null?this.widget.prod['otherDetails']['facebook'].toString():''),
+                                     Text(this.widget.prod['otherDetails']['twitter']!=null?this.widget.prod['otherDetails']['twitter'].toString():''),
                                       ],
                                     ),
 

@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:soft/config/upload_url.dart';
-import 'package:soft/string.dart';
 
 class Edit extends StatefulWidget {
   Edit({
@@ -107,8 +106,7 @@ class _EditState extends State<Edit> {
             this.widget.prod['otherDetails']['openingBalance'];
         this.twitter.text = this.widget.prod['otherDetails']['twitter'];
         this.attention.text = this.widget.prod['billingAddress']['attention'];
-        this.countryRegion.text =
-            this.widget.prod['billingAddress']['countryRegion'];
+        this.countryRegion.text = this.widget.prod['billingAddress']['countryRegion'];
         this.street1.text = this.widget.prod['billingAddress']['Street1'];
         this.city.text = this.widget.prod['billingAddress']['city'];
         this.state.text = this.widget.prod['billingAddress']['state'];
