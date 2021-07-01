@@ -6,11 +6,9 @@ import 'package:soft/config/upload_url.dart';
 
 class CreateItems extends StatefulWidget {
   CreateItems({
-    this.items,
+    this.item,
   });
-
-  final Map items;
-
+  final Map item;
   @override
   _CreateItemsState createState() => _CreateItemsState();
 }
@@ -18,7 +16,7 @@ class CreateItems extends StatefulWidget {
 class _CreateItemsState extends State<CreateItems> {
   String _chosenValue;
   Map subDetail;
-  List service ;
+  List service=[] ;
   List category;
   List subCategory;
 
@@ -32,25 +30,24 @@ class _CreateItemsState extends State<CreateItems> {
   }
 
   editContact(
-   categoryDescription,
     categoryDropDownId,
     serviceName,
+   categoryDescription,
     serviceSaleSellingPrice,
     subCategoryDropDownId,
     _id,
   ) async {
     setState(() {
-      this.widget.items['serviceCategory']['_id'] = categoryDropDownId;
-       this.widget.items['serviceName'] = serviceName;
-        this.widget.items['serviceSaleSellingPrice'] = serviceSaleSellingPrice;
-      this.widget.items['serviceSaleDescription'] = categoryDescription;
-      this.widget.items['serviceSubCategory']['_id'] = subCategoryDropDownId;
-      this.widget.items['_id'] = _id;
+      this.widget.item['serviceCategory']['_id'] = categoryDropDownId;
+      this.widget.item['serviceName'] = serviceName;
+      this.widget.item['serviceSaleDescription'] = categoryDescription;
+      this.widget.item['serviceSaleSellingPrice'] = serviceSaleSellingPrice;
+      this.widget.item['serviceSubCategory']['_id'] = subCategoryDropDownId;
+      this.widget.item['_id'] = _id;
     });
-    print(subCategoryDropDownId);
     final response = await http.put(Uri.parse(BaseUrl.service + _id),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode( this.widget.items));
+        body: jsonEncode( this.widget.item));
     var res = response.body;
     if (response.statusCode == 200) {
       print('sucess');
@@ -74,7 +71,7 @@ class _CreateItemsState extends State<CreateItems> {
         'serviceSaleDescription':categoryDescription,
       'serviceSubCategory': { '_id': subCategoryDropDownId, },
       };
-      service.add(this.subDetail);
+      service.add(subDetail);
     });
     final response = await http.post(Uri.parse(BaseUrl.service),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
@@ -108,28 +105,27 @@ class _CreateItemsState extends State<CreateItems> {
 
 
 itemAppBar(){
-if (this.widget.items != null) {
+if (this.widget.item != null) {
   return 'Edit Item';
 }else{
   return 'Create Item';
 }
-
 }
+
   @override
   void initState() {
-    if (this.widget.items != null) {
+    super.initState();
       setState(() {
-        categoryDropDownName = this.widget.items['serviceCategory']['categoryName'];
-        subCategoryDropDownName = this.widget.items['serviceSubCategory']['subcategoryName'];
-        serviceName.text = this.widget.items['serviceName'];
-        serviceSaleSellingPrice.text =this.widget.items['serviceSaleSellingPrice'];
-        categoryDescription.text =this.widget.items['serviceSaleDescription'];
-      });
-    }
+        if (this.widget.item != null) {
+        categoryDropDownName = this.widget.item['serviceCategory']['categoryName'];
+        subCategoryDropDownName = this.widget.item['serviceSubCategory']['subcategoryName'];
+        serviceName.text = this.widget.item['serviceName'];
+        serviceSaleSellingPrice.text =this.widget.item['serviceSaleSellingPrice'];
+        categoryDescription.text =this.widget.item['serviceSaleDescription'];
+       }});
     getData();
     getCategory();
     getSubCategory();
-    super.initState();
   }
 
   final categoryName = TextEditingController();
@@ -221,12 +217,8 @@ if (this.widget.items != null) {
                                   decoration: InputDecoration(
                                  enabledBorder: InputBorder.none,
                                    ),
-                                  dropdownColor: Colors.tealAccent.shade700,
-                                  value: _chosenValue,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      decorationColor: Colors.white),
-                                  items: this.category.map((pageon) {
+                                  dropdownColor: Colors.white,
+                                  items: this.category?.map((pageon) {
                                     return DropdownMenuItem(
                                       value: pageon['_id'],
                                       child: SizedBox(
@@ -234,13 +226,12 @@ if (this.widget.items != null) {
                                         child: Text(
                                           pageon['categoryName'],
                                           style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20.0,
+                                            color: Colors.black,
                                           ),
                                         ),
                                       ),
                                     );
-                                  }).toList(),
+                                  })?.toList() ?? [],
                                    validator: (value) {
                       if (value.isEmpty) {
                       return 'Enter something';
@@ -284,10 +275,7 @@ if (this.widget.items != null) {
                              enabledBorder: InputBorder.none,
                                   ),
                               dropdownColor: Colors.white,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  decorationColor: Colors.white),
-                              items: this.subCategory.map((pagesubCategory) {
+                              items: this.subCategory?.map((pagesubCategory) {
                                 return DropdownMenuItem(
                                   value: pagesubCategory['_id'],
                                   child: SizedBox(
@@ -295,13 +283,12 @@ if (this.widget.items != null) {
                                     child: Text(
                                       pagesubCategory['subcategoryName'],
                                       style: TextStyle(
-                                        color: Colors.tealAccent.shade700,
-                                        fontSize: 20.0,
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ),
                                 );
-                              }).toList(),
+                              })?.toList() ?? [],
                                validator: (value) {
                       if (value.isEmpty) {
                       return 'Enter something';
@@ -465,17 +452,17 @@ if (this.widget.items != null) {
                         width: 165.0,
                         child: RaisedButton(
                           onPressed: () {
-                        if (formKey.currentState.validate()) {
-                            if (this.widget.items != null) {
+                            if (this.widget.item != null) {
                               editContact(
-                               categoryDescription.text,
                                 categoryDropDownId,
                                 serviceName.text,
+                               categoryDescription.text,
                                 serviceSaleSellingPrice.text,
                                 subCategoryDropDownId,
-                                this.widget.items['_id'],
+                                this.widget.item['_id'],
                               );
                             } else {
+                            if (formKey.currentState.validate()) {
                               addContact(
                                 categoryDescription.text,
                                 categoryDropDownId.toString(),
@@ -483,9 +470,11 @@ if (this.widget.items != null) {
                                 serviceSaleSellingPrice.text,
                                 subCategoryDropDownId.toString(),
                               );
-                            }
+                             } }categoryDescription.clear();
+                            serviceName.clear();
+                            serviceSaleSellingPrice.clear();
                             Navigator.pop(context);
-                          }},
+                          },
                           child: Text("Save"),
                           color: Colors.tealAccent.shade700,
                           textColor: Colors.white,

@@ -193,22 +193,23 @@ Container(padding: const EdgeInsets.only(top:10.0),
                                     Text(this.widget.prod['billingAddress']['countryRegion']!=null?this.widget.prod['billingAddress']['countryRegion'].toString():'')
                                           ],
                                         ),
-                                        Column(
-                                          children: [
-                                            Text('Shipping Address',
-                                            style: TextStyle(color: Colors.grey,
-                                            fontWeight: FontWeight.bold),),
-                                            Text(this.widget.prod['userName']['salutation']['name']+''+
-                                            this.widget.prod['userName']['firstName']+ ' '+
-                                            this.widget.prod['userName']['lastName'].toString()),
-                                    //  Text(this.widget.prod['shippingAddress']['Street1']!=null?this.widget.prod['shippingAddress']['Street1']:''),
-                                    // Text(this.widget.prod['shippingAddress']['city']!=null?this.widget.prod['shippingAddress']['city']:''),
-                                    //   Text(this.widget.prod['shippingAddress']['state']!=null?this.widget.prod['shippingAddress']['state']:''),
-                                    //  Text(this.widget.prod['shippingAddress']['zipCode']!=null?this.widget.prod['shippingAddress']['zipCode']:''),
-                                    //   Text(this.widget.prod['shippingAddress']['phone1']!=null?this.widget.prod['shippingAddress']['phone1']:''),
-                                    //  Text(this.widget.prod['shippingAddress']['countryRegion']!=null?this.widget.prod['shippingAddress']['countryRegion']:'')
-                                          ],
-                                        )
+                                    //     Column(
+                                    //       children: [
+                                    //         Text('Shipping Address',
+                                    //         style: TextStyle(color: Colors.grey,
+                                    //         fontWeight: FontWeight.bold),),
+                                    //         Text(this.widget.prod['userName']['salutation']['name']+''+
+                                    //         this.widget.prod['userName']['firstName']+ ' '+
+                                    //         this.widget.prod['userName']['lastName'].toString()),
+                                    // //  Text(this.widget.prod['shippingAddress']['Street1']!=null?this.widget.prod['shippingAddress']['Street1']:''),
+                                    // // Text(this.widget.prod['shippingAddress']['city']!=null?this.widget.prod['shippingAddress']['city']:''),
+                                    // //   Text(this.widget.prod['shippingAddress']['state']!=null?this.widget.prod['shippingAddress']['state']:''),
+                                    // //  Text(this.widget.prod['shippingAddress']['zipCode']!=null?this.widget.prod['shippingAddress']['zipCode']:''),
+                                    // //   Text(this.widget.prod['shippingAddress']['phone1']!=null?this.widget.prod['shippingAddress']['phone1']:''),
+                                    // //  Text(this.widget.prod['shippingAddress']['countryRegion']!=null?this.widget.prod['shippingAddress']['countryRegion']:'')
+                                    //       ],
+                                    //     )
+                                      
                                       ],
                                     ),
                                   ),

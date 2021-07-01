@@ -65,10 +65,6 @@ class _InvoiceAddState extends State<InvoiceAdd> {
       'discount': 0,
       'percentage': 0
     };
-
-    // setState(() {
-    //   selectedItems.add(mockItem);
-    // });
     int index = selectedItems.indexWhere((element) {
       return element['itemdetails'] == items['_id'];
     });
@@ -428,7 +424,7 @@ print(response);
                           GestureDetector(
                             onTap: () {
                               showModalBottomSheet(
-                                  context: context,
+                                  context: context,isScrollControlled: true,
                                   builder: (BuildContext context) {
                                     return SingleChildScrollView(
                                       child: Container(

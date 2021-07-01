@@ -21,12 +21,13 @@ Map clientDetail;
 
 removeContacts(index, id) async {
     setState(() {
-    service.remove(index);
+    service.removeAt(index);
     });
     var response = await http.delete(Uri.parse(BaseUrl.service + id),
         headers: {"Accept": "application/json"});
     print(response);
   }
+
   Future getData() async {                                 
     var response = await http.get(Uri.parse(BaseUrl.service),
         headers: {"Accept": "application/json"});
@@ -236,7 +237,7 @@ final serviceId = TextEditingController();
                                            onTap: (){
                     Navigator.push(context,
                      MaterialPageRoute(builder: (context) =>CreateItems(
-                       items: this.service[index],
+                       item: this.service[index],
                      )));
                    },
                                          child: Slidable(
@@ -287,7 +288,7 @@ final serviceId = TextEditingController();
       onTap: () {
          Navigator.push(context,
                                       MaterialPageRoute(builder: (context) =>CreateItems(
-                                          items: this.service[index],
+                                          item: this.service[index],
                                       )));
       }
     ),

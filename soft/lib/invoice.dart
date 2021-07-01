@@ -37,7 +37,7 @@ class _InvoiceState extends State<Invoice> {
 
 removeInvoice(index,id)async{
  setState(() {
-    invoiceList.remove(index);
+    invoiceList.removeAt(index);
     });
     var response = await http.delete(Uri.parse(BaseUrl.addInvoice + id),
         headers: {"Accept": "application/json"});

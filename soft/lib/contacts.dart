@@ -25,7 +25,7 @@ class _ContactsState extends State<Contacts> {
   }
 removeContacts(index,id)async{
  setState(() {
-    contacts.remove(index);
+    contacts.removeAt(index);
     });
     var response = await http.delete(Uri.parse(BaseUrl.contacts + id),
         headers: {"Accept": "application/json"});
@@ -93,18 +93,23 @@ removeContacts(index,id)async{
         Container(
            height: 40.0,
            width: 330.0,
-  decoration: BoxDecoration(
-    border: Border.all(color: Colors.grey
-    ),
-    borderRadius: BorderRadius.all(
-        Radius.circular(5.0) 
-    ),
-  ),child: Row(mainAxisAlignment: MainAxisAlignment.end,
-    children: [
-      Container(padding: const EdgeInsets.only(right: 5.0),
-        child: Icon(Icons.search))
-    ],
-  ),),
+   child: 
+   TextField(
+                    //obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      //prefixIcon: Icon(Icons.search),
+                      suffixIcon: IconButton(icon: Icon(Icons.search), onPressed: (){print(contacts[0]);
+                       showSearch(context: context, delegate: SearchBox(
+                        searchItem: contacts[0]
+
+                       ));
+                      }),
+                      labelText: ' Search..',
+                    ),
+                  ),
+  ),
+  
    ],
      ), 
       Container(padding: const EdgeInsets.only(top: 120.0),
@@ -220,4 +225,42 @@ removeContacts(index,id)async{
         ]) 
     );
   }
+}
+
+
+
+class SearchBox extends SearchDelegate<String> {
+  SearchBox({
+    this.searchItem,
+  });
+  
+  final Map searchItem;
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [IconButton(icon: Icon(Icons.clear), onPressed: (){
+
+      })];
+  }
+  @override
+  Widget buildLeading(BuildContext context) {
+    return  IconButton(icon: Icon(Icons.arrow_back), onPressed: (){
+    }
+    );
+}
+@override
+  Widget buildResults(BuildContext context) {
+    return IconButton(icon: Icon(Icons.arrow_back), onPressed: (){
+        
+      }
+    );
+}
+
+
+@override
+  Widget buildSuggestions(BuildContext context) {
+    return  Text(searchItem['userName']['firstName']);
+   
+}
+
+
 }

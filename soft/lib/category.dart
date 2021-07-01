@@ -26,9 +26,6 @@ class _CategoryState extends State<Category> {
     print(response);
   }
 
-  editContacts(index) async {
-   
-  }
 
   removeCategory(index, id) async {
     setState(() {
@@ -65,6 +62,7 @@ editSubCategory(subcategoryDropDownId,subcategoryName, subcategoryDescription,id
          'subcategoryCategory':{'_id': subcategoryDropDownId},
         'subcategoryName':subcategoryName,
         'subcategoryDescription':subcategoryDescription,
+        '_id':id,
       };
     });
     final response = await http.put(Uri.parse(BaseUrl.subCategory+id),
@@ -128,6 +126,7 @@ saveSubCategory(subcategoryDropDownId,subcategoryName, subcategoryDescription) a
     }
   }
   
+  
 createSubModal(context,types,datas){
     if (types == "EDITS") {
       this.subcategoryDropDownName = datas['subcategoryCategory']['categoryName'];
@@ -135,11 +134,11 @@ createSubModal(context,types,datas){
       this.subcategoryDescription.text = datas['subcategoryDescription'];
       this.subcategoryid.text = datas['_id'];
     } 
-    else {
-      this.subcategoryName.text = '';
-      this.subcategoryDescription.text = '';
-      this.subcategoryid.text = '';
-    }
+    // else {
+    //   this.subcategoryName.text = '';
+    //   this.subcategoryDescription.text = '';
+    //   this.subcategoryid.text = '';
+    // }
     return  SingleChildScrollView(
      child: Container(
      padding:const EdgeInsets.only(top: 15.0),
@@ -216,7 +215,7 @@ createSubModal(context,types,datas){
            this.subcategoryDropDownId  = selectedcatagory[0]['subcategoryCategory']['_id'];
                             });
         },
-         hint: Text(subcategoryDropDownName.toString(),
+         hint: Text(this.subcategoryDropDownName.toString(),
          style:TextStyle(
              fontSize:16.0,
            )),
@@ -243,13 +242,14 @@ createSubModal(context,types,datas){
              );
              }else  if (types == "EDITS"){
              editSubCategory(
-            subcategoryDropDownId.toString(),
+             subcategoryDropDownId.toString(),
              subcategoryName.text,
              subcategoryDescription.text,
              datas['_id'],);
              }
              subcategoryName.clear();
              subcategoryDescription.clear();
+             subcategoryDropDownName='Select Category';
              Navigator.pop(context);
              },
              child:Text("Save",),
@@ -271,9 +271,9 @@ createSubModal(context,types,datas){
       this.categoryid.text = data['_id'];
     }
      else {
-      this.categoryName.text = '';
-      this.categoryDescription.text = '';
-      this.categoryid.text = '';
+      this.categoryName.text='';
+      this.categoryDescription.text='';
+      this.categoryid.text='';
     }
 
     return SingleChildScrollView(
@@ -333,7 +333,6 @@ createSubModal(context,types,datas){
                                data['_id'],
                             );
                           }
-
                           categoryName.clear();
                           categoryDescription.clear();
                           Navigator.pop(context);
@@ -436,10 +435,12 @@ createSubModal(context,types,datas){
                    return GestureDetector(
                    onTap: ()async {
           await showModalBottomSheet(
-          context: context,
+          context: context,isScrollControlled: true,
           builder: (BuildContext context) {
+             return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
           return this.createModal(context,'EDIT', this.category[index]);
-         });
+         });});
        },
                    child: Slidable(
                   actionPane: new SlidableBehindActionPane(),
@@ -467,10 +468,12 @@ createSubModal(context,types,datas){
       icon: Icons.more_horiz,
       onTap: ()async {
           await showModalBottomSheet(
-          context: context,
+          context: context,isScrollControlled: true,
           builder: (BuildContext context) {
+             return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
           return this.createModal(context,'EDIT', this.category[index]);
-         });
+         });});
        }
     ),
     new IconSlideAction(
@@ -522,10 +525,12 @@ createSubModal(context,types,datas){
                     backgroundColor: Colors.tealAccent.shade700,
                      onPressed: () {
                      showModalBottomSheet(
-                      context: context,
+                      context: context,isScrollControlled: true,
                       builder:(BuildContext context) {
+             return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
                        return this.createModal(context, 'CREATE', null);
-                     });
+                     });});
                       },
                       child: Icon(Icons.add),
                        ),
@@ -540,11 +545,13 @@ createSubModal(context,types,datas){
                    return GestureDetector(
                      onTap: ()async {
       await showModalBottomSheet(
-         context: context,
+         context: context,isScrollControlled: true,
          builder: (BuildContext context) {
+             return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
          return this.createSubModal(context,'EDITS', this.subCategory[index]);
        }
-        );
+        );});
        },
                       child: Slidable(
                        actionPane: new SlidableBehindActionPane(),
@@ -570,11 +577,13 @@ createSubModal(context,types,datas){
       icon: Icons.more_horiz,
       onTap: ()async {
       await showModalBottomSheet(
-         context: context,
+         context: context,isScrollControlled: true,
          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
          return this.createSubModal(context,'EDITS', this.subCategory[index]);
        }
-        );
+        );});
        }
     ),
     new IconSlideAction(
@@ -625,9 +634,12 @@ createSubModal(context,types,datas){
            backgroundColor: Colors.tealAccent.shade700,
            onPressed: () {
            showModalBottomSheet(
-           context: context,
+           context: context,isScrollControlled: true,
            builder: (BuildContext context) {
+             return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
            return this.createSubModal(context, 'CREATES', null);
+              });
             });
            },
          child: Icon(Icons.add),

@@ -785,7 +785,7 @@ class _EditState extends State<Edit> {
                                                         icon: Icon(Icons.add),
                                                         onPressed: () async {
                                                           await showModalBottomSheet(
-                                                              context: context,
+                                                              context: context,isScrollControlled: true,
                                                               builder:(BuildContext context) {
                                                                 return SingleChildScrollView(
                                                                   child:Container(
@@ -970,7 +970,7 @@ class _EditState extends State<Edit> {
                                                           icon: Icon(Icons.add,color: Colors.tealAccent.shade700,),
                                                           onPressed: ()async {
                                                           await showModalBottomSheet(
-                                                              context: context,
+                                                              context: context,isScrollControlled: true,
                                                               builder:(BuildContext context) {
                                                                 return  Form(
                                                                   key: contactformKey,
