@@ -12,6 +12,8 @@ class Payment extends StatefulWidget {
 class _PaymentState extends State<Payment> {
   List customer=[];
   List payment=[];
+  Map addEdit={};
+  var paymentMode;
     Future getData() async {
     var response = await http.get(Uri.parse(BaseUrl.contacts),
         headers: {"Accept": "application/json"});
@@ -33,10 +35,76 @@ class _PaymentState extends State<Payment> {
 
 
   addAmount(amount){
-    this.payment.forEach((element) { 
-      
-    });}
+    var receivedAmount = amount;
 
+    this.payment.forEach((element) { 
+      print(element['subTotal']);
+     var test =   int.parse(amount) - element['subTotal'] ;
+     if(test > 0){
+       test  =   test - element['subTotal'];
+     }else{
+       return false;
+     }
+     print(test);
+      // if(element['subTotal'] > amount ){ 
+      //       element['amountPaid'] = element['subTotal'] - amount;
+      // }
+     
+    });
+    
+    }
+
+
+  savePaymentDetails()async{
+    Map addPayment={
+        'accountCompanyName':payment[0]['customerName']['companyName'],
+'accounts': [{
+'accountsinvoice': payment[0]['invoice'],
+'accountsinvoiceDate': dateFormat(payment[0]['createdAt']),
+'amountPaid': payment[0]['amountPaid'],
+'balanceAmount': payment[0]['subTotal']-payment[0]['amountPaid'],
+'dueAmount': 650,
+'invoiceAmount': payment[0]['subTotal'],
+'invoiceId': payment[0]['_id'],
+'paymentAmount': payment[0]['amountPaid'],
+'staticPaymentAmount': null
+}],
+'accountsCompanyId': payment[0]['customerName']['_id'],
+'accountsDate': this.addEdit['paymentDate'],
+'accountscustomerName': payment[0]['customerName']['userName']['firstName'],
+'paymentCount': this.addEdit['paymentCount'],
+'paymentMode':this.paymentMode,
+      };
+      final response = await http.post(Uri.parse(BaseUrl.payment),
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+          body: jsonEncode(addPayment));
+      var res = response.body;
+      if (response.statusCode == 200) {
+        print('sucess');
+      } else {
+        print("Error :" + res);
+      }print(addPayment);
+    }
+    
+
+editPayment(paymentDate,paymentCount){
+   setState(() {
+      this.addEdit = {
+        'paymentDate': paymentDate,
+        'paymentCount': paymentCount,
+      };
+    });
+}
+
+setPaymentMode(paidMethod){
+  setState(() {
+  paymentMode= paidMethod;
+  });
+}
+
+
+final paymentCount = TextEditingController();
+  final paymentDate = TextEditingController();
     @override
   void initState() {
     super.initState();
@@ -56,8 +124,7 @@ class _PaymentState extends State<Payment> {
         ),),
         leading: Icon(Icons.arrow_back,color: Colors.black,),
         ),
-      body: payment.length>0?
-      Stack(children: [
+      body:Stack(children: [
         SingleChildScrollView(
           child: Container(  padding: const EdgeInsets.only(bottom:65.0),
             child: Column(
@@ -71,14 +138,151 @@ class _PaymentState extends State<Payment> {
                             padding: const EdgeInsets.only(left:15.0,top: 15.0,bottom: 15.0),
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                               Text('Received Payment #4', style: TextStyle(color: Colors.purple),),
+                               Text(this.addEdit['paymentCount'].toString(), style: TextStyle(color: Colors.purple),),
                               Container(padding: const EdgeInsets.only(top:7.0),
-                                child: Text('21 May 2021',style: TextStyle(color: Colors.grey.shade500),))
+                                child: Text(this.addEdit['paymentDate'].toString(),style: TextStyle(color: Colors.grey.shade500),))
                             ],
                             ),
                           ),
                           Container(padding: const EdgeInsets.only(right:15.0),
-                           child: Text('Edit',style: TextStyle(color: Colors.purple),),
+                           child:GestureDetector(
+                             onTap: (){
+                               showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (BuildContext context) {
+                                    return SingleChildScrollView(
+                                      child:Container(
+                                         child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                child: Text(
+                                                  'Edit Payment Date & Count',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )),
+                                            Container(
+                                                padding: const EdgeInsets.only(
+                                                    left: 15.0),
+                                                child: Text('Payment Date')),
+                                            Container(
+                                                height: 40.0,
+                                                padding: const EdgeInsets.only(
+                                                    left: 15.0,
+                                                    right: 15.0,
+                                                    top: 5.0),
+                                                child: TextFormField(
+                                                  controller: paymentDate,
+                                                  decoration: InputDecoration(
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                    labelText: "Payment Date",
+                                                    suffixIcon: Icon(Icons
+                                                        .calendar_today_outlined),
+                                                  ),
+                                                  onTap: () async {
+                                                    DateTime date =
+                                                        DateTime(1900);
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                            new FocusNode());
+                                                    date = await showDatePicker(
+                                                        context: context,
+                                                        initialDate:
+                                                            (DateTime.now()),
+                                                        firstDate:
+                                                            DateTime(1900),
+                                                        lastDate:
+                                                            DateTime(2100));
+
+                                                    paymentDate.text =
+                                                        dateFormat(date)
+                                                            .toString();
+                                                  },
+                                                )),
+                                         
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          top: 15.0,
+                                                          left: 5.0,
+                                                        ),
+                                                        child: Text(
+                                                            'Payment Count')),
+                                                    Container(
+                                                      height: 40.0,
+                                                      width: 340.0,
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 5.0,
+                                                              top: 5.0,
+                                                              right: 5.0),
+                                                      child: TextField(
+                                                        controller: paymentCount,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border:
+                                                              OutlineInputBorder(),
+                                                          labelText: ' Payment Count',
+                                                          // hintText: 'Enter Number',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                         
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 15.0, right: 15.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
+                                                children: [
+                                                  RaisedButton(
+                                                      onPressed: () {
+                                                        editPayment(
+                                                          paymentDate.text,
+                                                          paymentCount.text,
+                                                          );Navigator.pop(context);
+                                                      },
+                                                      textColor: Colors.white,
+                                                      color: Colors
+                                                          .tealAccent.shade700,
+                                                      child: Text(
+                                                        'Save',
+                                                        style: TextStyle(
+                                                            fontSize: 20),
+                                                      )),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      
+                                      )
+                                    );
+                                    }
+                                    );
+
+                             },child: Text('Edit',style: TextStyle(color: Colors.purple),),
+                           ) 
+                           //Text('Edit',style: TextStyle(color: Colors.purple),),
                           ),
                           
                         ],
@@ -99,9 +303,10 @@ class _PaymentState extends State<Payment> {
                                      Text('PARTY NAME',style: TextStyle(
                                fontWeight:FontWeight.bold
                              ), ),
-                                      Container( padding: const EdgeInsets.only(left: 80.0),
+                                      Container( padding: const EdgeInsets.only(left: 15.0),
                                         child: Text('Current Balence: ',style: TextStyle(color: Colors.grey.shade500),)),
-                                  Text('₹ 12124',style: TextStyle(color: Colors.green),)
+                                  Container(padding: const EdgeInsets.only(right: 15.0),
+                                    child: Text('₹ 12124',style: TextStyle(color: Colors.green),))
                               ],
                   ),
                          Container( 
@@ -117,8 +322,7 @@ class _PaymentState extends State<Payment> {
                               items: customer.map((value) {
                                 return DropdownMenuItem(
                                   value: value,
-                                  child: Text(
-                                    value['userName']['firstName'],
+                                  child: Text(value['userName']['firstName'],
                                     style: TextStyle(
                                       color: Colors.white,
                                      // fontSize: 20.0,
@@ -127,7 +331,7 @@ class _PaymentState extends State<Payment> {
                                 );
                               }).toList(),
                               onChanged: (value) {
-                                 getId( value['_id']);
+                                getId(value['_id']);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
                               },
                               hint: Text(this.drop.toString(),
                                   style: TextStyle(
@@ -194,17 +398,17 @@ class _PaymentState extends State<Payment> {
 
 
                              Container(padding: const EdgeInsets.only(top: 15.0,),
-                               child: Row(
+                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                  children: [
-                                   Container(
-                                     child: Checkbox(
-                      value: _afternoonOutdoor,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _afternoonOutdoor = value;
-                        });
-                      }),
-                       ),
+                      //              Container(
+                      //                child: Checkbox(
+                      // value: _afternoonOutdoor,
+                      // onChanged: (bool value) {
+                      //   setState(() {
+                      //     _afternoonOutdoor = value;
+                      //   });
+                      // }),
+                      //  ),
                         Container(
                                   child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -257,8 +461,10 @@ class _PaymentState extends State<Payment> {
                                   shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28.0),
         ),
-                                  color: Colors.grey.shade300,
-                                  onPressed: (){}, child: Text('Cash',)),
+                                  color:paymentMode=='Cash'?Colors.tealAccent.shade700:Colors.grey.shade300,
+                                  onPressed: (){
+                                    setPaymentMode('Cash');
+                                  }, child: Text('Cash',)),
                                     ),
                                    Container(height: 25.0,width: 90.0,
                                      padding: const EdgeInsets.only(left:5.0,),
@@ -266,8 +472,11 @@ class _PaymentState extends State<Payment> {
                                   shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28.0),
         ),
-                                  color: Colors.grey.shade300,
-                                  onPressed: (){}, child: Text('Cheque',)),
+                                  color:paymentMode=='Cheque'?Colors.tealAccent.shade700:Colors.grey.shade300,
+                                  onPressed: (){
+                                    setPaymentMode('Cheque');
+
+                                  }, child: Text('Cheque',)),
                                    ),
                                    Container(height: 25.0,width: 80.0,
                                      padding: const EdgeInsets.only(left:5.0,),
@@ -275,8 +484,11 @@ class _PaymentState extends State<Payment> {
                                   shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28.0),
         ),
-                                  color: Colors.grey.shade300,
-                                  onPressed: (){}, child: Text('Online',)),
+                                  color:paymentMode=='Online'?Colors.tealAccent.shade700:Colors.grey.shade300,
+                                  onPressed: (){
+                                     setPaymentMode('Online');
+
+                                  }, child: Text('Online',)),
                                    ),
                                  ],
                                ),
@@ -323,7 +535,11 @@ class _PaymentState extends State<Payment> {
                    child:
               SizedBox(
                 width: 165.0,
-                child: RaisedButton(onPressed: () {},child: Text("Save",),color: Colors.purple,textColor: Colors.white,)),
+                child: RaisedButton(
+                  onPressed: () {
+                   savePaymentDetails();Navigator.pop(context);
+                },
+                child: Text("Save",),color: Colors.tealAccent.shade700,textColor: Colors.white,)),
            
         )
                     
@@ -333,16 +549,14 @@ class _PaymentState extends State<Payment> {
           ),
         ),
       ],
-      ):
-      
-      Container(child:Text('dilip'))
+      )
     );
   }
 }
 
 
 dateFormat(dateFormat) {
-  return DateUtil().formattedDate(DateTime.parse(dateFormat));
+  return DateUtil().formattedDate(DateTime.parse(dateFormat.toString()));
 }
 
 class DateUtil {

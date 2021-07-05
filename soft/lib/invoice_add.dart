@@ -39,8 +39,27 @@ class _InvoiceAddState extends State<InvoiceAdd> {
         headers: {"Accept": "application/json"});
     this.setState(() {
       var itemsList = json.decode(response.body);
-      itemsList['data']
-          .forEach((datas) => {datas['quantity'] = 0, items.add(datas)});
+      if (this.widget.prod != null) {
+        var editSelectedItems = this.widget.prod['items'];
+        List selectedData;
+        itemsList['data'].forEach((datas) => {
+              selectedData = editSelectedItems
+                  .where((item) => item['itemdetails'] == datas['_id'])
+                  .toList(),
+              if (selectedData.length > 0)
+                {datas['quantity'] = selectedData[0]['quantity']}
+              else
+                {
+                  datas['quantity'] = 0,
+                },
+              items.add(datas)
+            });
+      }else{
+           itemsList['data'].forEach((datas) => {
+              datas['quantity'] = 0,
+              items.add(datas)
+            });
+      }
     });
   }
 
@@ -60,7 +79,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
     var mockItem = {
       'itemdetails': items['_id'],
       'quantity': 1,
-      'name': items['serviceName'],
+      'itemName': items['serviceName'],
       'rate': items['serviceSaleSellingPrice'],
       'discount': 0,
       'percentage': 0
@@ -153,34 +172,30 @@ class _InvoiceAddState extends State<InvoiceAdd> {
       "adjustValue": 0,
       "files": []
     };
-    print(pageType);
-    if(this.pageType =='EDIT'){
-     
+    if (this.pageType == 'EDIT') {
       billMockup['_id'] = this.widget.prod['_id'];
       billMockup['customerName'] = this.widget.prod['customerName'];
-       print(billMockup);
-      final response = await http.put(Uri.parse(BaseUrl.addInvoice + this.widget.prod['_id']),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode(billMockup));
-    var res = response.body;  
-print(response);
-    if (response.statusCode == 200) {
-      print('sucess');
-    } else {
-      print("Error :" + res);
-    }
-
-    }else if (this.pageType =='CREATE'){
+      final response = await http.put(
+          Uri.parse(BaseUrl.addInvoice + this.widget.prod['_id']),
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+          body: jsonEncode(billMockup));
+      var res = response.body;
+      if (response.statusCode == 200) {
+        print('sucess');
+      } else {
+        print("Error :" + res);
+      }
+    } else if (this.pageType == 'CREATE') {
       final response = await http.post(Uri.parse(BaseUrl.addInvoice),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode(billMockup));
-    var res = response.body;
-    if (response.statusCode == 200) {
-      print('sucess');
-    } else {
-      print("Error :" + res);
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+          body: jsonEncode(billMockup));
+      var res = response.body;
+      if (response.statusCode == 200) {
+        print('sucess');
+      } else {
+        print("Error :" + res);
+      }
     }
-    }print(billMockup);
   }
 
   editItems(expiryDate, invoiceDate, invoice, subject) async {
@@ -191,7 +206,6 @@ print(response);
         'invoice': invoice,
         'subject': subject
       };
-      print(this.addEdit);
     });
   }
 
@@ -346,25 +360,39 @@ print(response);
         });
   }
 
+  heading() {
+    if (this.widget.prod != null) {
+      return 'Edit Bill/ Invoice';
+    } else {
+      return 'Create Bill/ Invoice';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    getItems();
+    getCustomerData();
     setState(() {
       if (this.widget.prod != null) {
         this.pageType = 'EDIT';
-        this.invoiceDropDownName = this.widget.prod['customerName']['userName']['firstName'].toString();
+        this.invoiceDropDownName = this
+            .widget
+            .prod['customerName']['userName']['firstName']
+            .toString();
         this.editInvoice['number'] = this.widget.prod['invoice'];
-        this.editInvoice['startDate'] =dateFormat(this.widget.prod['invoiceDate']);
-        this.editInvoice['endDate'] =dateFormat(this.widget.prod['expiryDate']);
+        this.editInvoice['startDate'] =
+            dateFormat(this.widget.prod['invoiceDate']);
+        this.editInvoice['endDate'] =
+            dateFormat(this.widget.prod['expiryDate']);
         this.selectedItems = this.widget.prod['items'];
         amount = this.widget.prod['totalAmount'];
         amount = this.widget.prod['subTotal'];
-      }else{
-         this.pageType = 'CREATE';
+      } else {
+        this.pageType = 'CREATE';
       }
     });
-    getCustomerData();
-    getItems();
+
     invoiceDate.text = this.editInvoice['startDate'];
     expiryDate.text = this.editInvoice['endDate'];
     invoice.text = this.editInvoice['number'];
@@ -403,7 +431,7 @@ print(response);
                           ),
                           onPressed: () {}),
                       Text(
-                        'Edit Bill/ Invoice',
+                        heading(),
                         style: TextStyle(color: Colors.black),
                       ),
                     ],
@@ -424,7 +452,8 @@ print(response);
                           GestureDetector(
                             onTap: () {
                               showModalBottomSheet(
-                                  context: context,isScrollControlled: true,
+                                  context: context,
+                                  isScrollControlled: true,
                                   builder: (BuildContext context) {
                                     return SingleChildScrollView(
                                       child: Container(
@@ -841,7 +870,7 @@ print(response);
                                         itemBuilder:
                                             (BuildContext ctxt, int index) {
                                           var name =
-                                              selectedItems[index]['name'];
+                                              selectedItems[index]['itemName'];
                                           var rate =
                                               selectedItems[index]['rate'];
 

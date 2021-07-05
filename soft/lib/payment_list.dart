@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:soft/config/upload_url.dart';
 import 'package:soft/payment.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 class PaymentList extends StatefulWidget {
   @override
   _PaymentListState createState() => _PaymentListState();
@@ -18,7 +19,7 @@ class _PaymentListState extends State<PaymentList> {
     this.setState(() {
    var paymentList = json.decode(response.body);
       payment = paymentList['data'];
-    });
+    });print(payment[0]['accounts']);
   }
 
 addAmount(account){
@@ -31,8 +32,8 @@ addAmount(account){
 }
  @override
   void initState() {
-    getData();
   super.initState();
+   getData();
   }
   @override
   Widget build(BuildContext context) {
@@ -110,46 +111,122 @@ addAmount(account){
                         ],
                       ),         
              
-             ListView.separated(
+             Container(padding: const EdgeInsets.only(top: 120.0),
+               child: ListView.separated(
         itemCount: payment.length,
         itemBuilder: (context, index) {
-          return Container( 
-            child:GestureDetector(
-                                  onTap: (){
-                                     Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) =>Payment(
-                                   
-                                    )));
-                                  },
-                                    child: Container(
-                                    
-                                  padding: const EdgeInsets.only(top:120.0,right: 15.0),
-                                     
-                                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(padding: const EdgeInsets.only(left:15.0),
-                                            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                               Text(payment[index]['accountCompanyName'],
-                                               style: TextStyle(fontWeight: FontWeight.bold),),
-                                               Text(dateFormat(payment[index]['createdAt']),
-                                               style: TextStyle(
-                                                 color: Colors.grey,
-                                                 ),)
-                                              ],
-                                            ),
-                                          ),
-                                          addAmount(payment[index]['accounts'])
+           return  Slidable(
+  actionPane: new SlidableBehindActionPane(),
+  actionExtentRatio: 0.25,
+  child: new Container(
+    color: Colors.white,
+    child: ListTile(
+          title: Container( 
+                child:GestureDetector(
+                                      onTap: (){
+                                         Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) =>Payment(
+                                       
+                                        )));
+                                      },
+                                        child: Container(
+                                        
+                                      //padding: const EdgeInsets.only(top:120.0,right: 15.0),
+                                         
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(padding: const EdgeInsets.only(left:15.0),
+                                                child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                  Text(payment[index]['accountCompanyName'],
+                                                  style: TextStyle(fontWeight: FontWeight.bold),),
+                                                  Text(dateFormat(payment[index]['createdAt']),
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    ),)
+                                                  ],
+                                                ),
+                                              ),
+                                              addAmount(payment[index]['accounts'])
 
-                                        ],
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
+            ),
+    ),),
+          secondaryActions: <Widget>[
+    new IconSlideAction(
+      caption: 'Edit',
+      color: Colors.grey,
+      icon: Icons.more_horiz,
+      onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Payment(
+                                          )))
+    ),
+    new IconSlideAction(
+      caption: 'Delete',
+      color: Colors.tealAccent.shade700,
+      icon: Icons.delete,
+      onTap: ()async{
+        await showDialog(context: context,builder:
+                      (_) => AlertDialog(
+                   title: Text( 'Do you want Delete'),
+                   actions: [
+                    FlatButton(
+                       onPressed:
+                      () {
+                        Navigator.of(context, rootNavigator: true).pop(true);
+                           }, child: Text('No',
+                           style:TextStyle(
+                             color:  Colors.tealAccent.shade700,
                                   ),
-          );
+                                                    )),
+                              FlatButton(
+                                 onPressed:
+                                      () {
+                                     
+                                      Navigator.of(context, rootNavigator: true).pop(true);
+                                       },
+                                        child:Text('Yes',
+                                        style:TextStyle(color:Colors.tealAccent.shade700,
+                                                                              ),
+                                                                            ))
+                                                                      ],
+                                                                    ));
+                                       
+      },
+    ),
+  ],
+           );
+          
+       
         },separatorBuilder: (context, index) {
-                    return Divider();
-                  },
+                      return Divider();
+                    },
         ),
+             ),
+           Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 280.0, bottom: 10.0),
+                      child: SizedBox(
+                        width: 60.0,
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.tealAccent.shade700,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Payment(
+                                        )));
+                          },
+                          child: Icon(Icons.add),
+                        ),
+                      )),
+                ),
           ]),
         ]) 
     );

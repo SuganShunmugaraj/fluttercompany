@@ -102,7 +102,6 @@ removeContacts(index,id)async{
                       suffixIcon: IconButton(icon: Icon(Icons.search), onPressed: (){print(contacts[0]);
                        showSearch(context: context, delegate: SearchBox(
                         searchItem: contacts[0]
-
                        ));
                       }),
                       labelText: ' Search..',
