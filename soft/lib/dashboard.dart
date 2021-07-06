@@ -76,7 +76,8 @@ class DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(padding: const EdgeInsets.only(left: 15.0,top: 15.0),
+        body: 
+        Container(padding: const EdgeInsets.only(left: 15.0,top: 15.0),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(padding: const EdgeInsets.only(right: 15.0,top: 15.0),

@@ -130,12 +130,9 @@ addAmount(account){
                                         )));
                                       },
                                         child: Container(
-                                        
-                                      //padding: const EdgeInsets.only(top:120.0,right: 15.0),
-                                         
                                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Container(padding: const EdgeInsets.only(left:15.0),
+                                              Container(
                                                 child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                   Text(payment[index]['accountCompanyName'],
@@ -227,6 +224,8 @@ addAmount(account){
                         ),
                       )),
                 ),
+          
+          
           ]),
         ]) 
     );

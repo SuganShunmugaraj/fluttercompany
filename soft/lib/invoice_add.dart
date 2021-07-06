@@ -164,7 +164,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
       "total": "",
       "totalwords": "",
       "adjust": "",
-      "recurringagreed": false,
+      "recurringagreed": null,
       "repeat": "",
       "paymentterm": "",
       "customrepeat": "",
@@ -186,12 +186,13 @@ class _InvoiceAddState extends State<InvoiceAdd> {
         print("Error :" + res);
       }
     } else if (this.pageType == 'CREATE') {
+      print(billMockup);
       final response = await http.post(Uri.parse(BaseUrl.addInvoice),
           headers: {'Content-Type': 'application/json; charset=UTF-8'},
           body: jsonEncode(billMockup));
       var res = response.body;
       if (response.statusCode == 200) {
-        print('sucess');
+        print('sucess create');
       } else {
         print("Error :" + res);
       }
@@ -729,7 +730,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                             expiryDate.text,
                                                             invoiceDate.text,
                                                             invoice.text,
-                                                            subject.text);
+                                                            subject.text);Navigator.pop(context);
                                                       },
                                                       textColor: Colors.white,
                                                       color: Colors

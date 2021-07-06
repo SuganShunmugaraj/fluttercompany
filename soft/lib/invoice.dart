@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:soft/config/upload_url.dart';
 import 'package:http/http.dart' as http;
@@ -20,40 +21,46 @@ class _InvoiceState extends State<Invoice> {
   List _invoice;
   Map values;
 
+  // getPayload() async {
+  //   final storage = FlutterSecureStorage();
+  //   var jwt = await storage.read(key: "jwt");
+  //   if (jwt != null) {
+  //     var jwtoken = jwt.split(".");
 
-  
-
+  //     this.values = json
+  //         .decode(ascii.decode(base64.decode(base64.normalize(jwtoken[1]))));
+  //   }print(this.values['_id'] );
+  // }
 
   getData() async {
     var response = await http.get(
-        Uri.parse(BaseUrl.invoice + this.values['_id']),
+        Uri.parse(BaseUrl.invoice),
         headers: {"Accept": "application/json"});
     this.setState(() {
       final invoiceData = json.decode(response.body);
       invoiceList = invoiceData['data'];
       fullinvoiceList = invoiceData['data'];
-    });
+    });print(invoiceList);
   }
 
-removeInvoice(index,id)async{
- setState(() {
-    invoiceList.removeAt(index);
+  removeInvoice(index, id) async {
+    setState(() {
+      invoiceList.removeAt(index);
     });
     var response = await http.delete(Uri.parse(BaseUrl.addInvoice + id),
         headers: {"Accept": "application/json"});
-        print(response);
-}
-
+    print(response);
+  }
 
   @override
   void initState() {
     setState(() {
       this.values = this.widget.argument['values'];
     });
+    //this.getPayload();
     super.initState();
-    this.getData();
+    getData();
   }
-
 
   String chosenValue;
   String drop = 'All Invoice ';
@@ -133,151 +140,160 @@ removeInvoice(index,id)async{
         ),
         body: invoiceList == null
             ? Container(
-                child: Center(child:   Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                      padding: const EdgeInsets.only(left: 280.0, bottom: 10.0),
-                      child: SizedBox(
-                        width: 60.0,
-                        child: FloatingActionButton(
-                          backgroundColor: Colors.tealAccent.shade700,
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => InvoiceAdd(
-                                        )));
-                          },
-                          child: Icon(Icons.add),
-                        ),
-                      )),
+                child: Center(
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                        padding:
+                            const EdgeInsets.only(left: 280.0, bottom: 10.0),
+                        child: SizedBox(
+                          width: 60.0,
+                          child: FloatingActionButton(
+                            backgroundColor: Colors.tealAccent.shade700,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => InvoiceAdd()));
+                            },
+                            child: Icon(Icons.add),
+                          ),
+                        )),
+                  ),
                 ),
-             ),
-
               )
             : Stack(children: [
                 ListView.separated(
                   itemCount: this.invoiceList.length,
                   itemBuilder: (BuildContext context, int index) {
-                      return  Slidable(
-  actionPane: new SlidableBehindActionPane(),
-  actionExtentRatio: 0.25,
-  child: new Container(
-    color: Colors.white,
-    child:  
-    ListTile(
-          title: Container( 
-                   child:GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                                builder: (context) => InvoiceDetails(
-                                      name: this.invoiceList[index],
-                                    )));
-                      },
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    (this.invoiceList[index]['invoice'])
-                                        .toString(),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                    return Slidable(
+                      actionPane: new SlidableBehindActionPane(),
+                      actionExtentRatio: 0.25,
+                      child: new Container(
+                        color: Colors.white,
+                        child: ListTile(
+                          title: Container(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    new MaterialPageRoute(
+                                        builder: (context) => InvoiceDetails(
+                                              name: this.invoiceList[index],
+                                            )));
+                              },
+                              child: Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            (this.invoiceList[index]['invoice'])
+                                                .toString(),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            '₹ ' +
+                                                (this.invoiceList[index]
+                                                        ['totalAmount'])
+                                                    .toString(),
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      if (this.invoiceList[index]
+                                              ['expiryDate'] ==
+                                          null)
+                                        Text((dateFormat(this.invoiceList[index]
+                                                ['recurringstartDate']) +
+                                            ' - ' +
+                                            dateFormat(this.invoiceList[index]
+                                                ['recurringendDate'])))
+                                      else
+                                        Text((dateFormat(this.invoiceList[index]
+                                                ['invoiceDate']) +
+                                            ' - ' +
+                                            dateFormat(this.invoiceList[index]
+                                                ['expiryDate']))),
+                                      setOverdue(
+                                          this.invoiceList[index]['expiryDate'])
+                                    ],
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                   ),
-                                  Text(
-                                    '₹ ' +
-                                        (this.invoiceList[index]['totalAmount'])
-                                            .toString(),
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                ],
+                                ),
                               ),
-                              if (this.invoiceList[index]['expiryDate'] == null)
-                                Text((dateFormat(this.invoiceList[index]
-                                        ['recurringstartDate']) +
-                                    ' - ' +
-                                    dateFormat(this.invoiceList[index]
-                                        ['recurringendDate'])))
-                              else
-                                Text((dateFormat(this.invoiceList[index]
-                                        ['invoiceDate']) +
-                                    ' - ' +
-                                    dateFormat(this.invoiceList[index]
-                                        ['expiryDate']))),
-                              setOverdue(this.invoiceList[index]['expiryDate'])
-                            ],
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-     
-                 ),
-    ),
-    
-  ),
-  
-  
-  secondaryActions: <Widget>[
-    new IconSlideAction(
-      caption: 'Edit',
-      color: Colors.grey,
-      icon: Icons.more_horiz,
-      onTap: () => Navigator.push(
+                      secondaryActions: <Widget>[
+                        new IconSlideAction(
+                            caption: 'Edit',
+                            color: Colors.grey,
+                            icon: Icons.more_horiz,
+                            onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => InvoiceAdd(
-                                         prod: invoiceList[index],
-                                        )))
-    ),
-    new IconSlideAction(
-      caption: 'Delete',
-      color: Colors.tealAccent.shade700,
-      icon: Icons.delete,
-      onTap: ()async{
-        await showDialog(context: context,builder:
-                    (_) => AlertDialog(
-                 title: Text( 'Do you want Delete'),
-                 actions: [
-                  FlatButton(
-                     onPressed:
-                    () {
-                      Navigator.of(context, rootNavigator: true).pop(true);
-                         }, child: Text('No',
-                         style:TextStyle(
-                           color:  Colors.tealAccent.shade700,
-                                ),
-                                                  )),
-                            FlatButton(
-                               onPressed:
-                                    () {
-                                    removeInvoice(index,this.invoiceList[index]['_id']);
-                                    Navigator.of(context, rootNavigator: true).pop(true);
-                                     },
-                                      child:Text('Yes',
-                                      style:TextStyle(color:Colors.tealAccent.shade700,
-                                                                            ),
-                                                                          ))
-                                                                    ],
-                                                                  ));
-                                     
-      },
-    ),
-  ],
-
-          );
-       },
+                                          prod: invoiceList[index],
+                                        )))),
+                        new IconSlideAction(
+                          caption: 'Delete',
+                          color: Colors.tealAccent.shade700,
+                          icon: Icons.delete,
+                          onTap: () async {
+                            await showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                      title: Text('Do you want Delete'),
+                                      actions: [
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .pop(true);
+                                            },
+                                            child: Text(
+                                              'No',
+                                              style: TextStyle(
+                                                color:
+                                                    Colors.tealAccent.shade700,
+                                              ),
+                                            )),
+                                        FlatButton(
+                                            onPressed: () {
+                                              removeInvoice(
+                                                  index,
+                                                  this.invoiceList[index]
+                                                      ['_id']);
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .pop(true);
+                                            },
+                                            child: Text(
+                                              'Yes',
+                                              style: TextStyle(
+                                                color:
+                                                    Colors.tealAccent.shade700,
+                                              ),
+                                            ))
+                                      ],
+                                    ));
+                          },
+                        ),
+                      ],
+                    );
+                  },
                   separatorBuilder: (context, index) {
                     return Divider();
                   },
@@ -294,16 +310,13 @@ removeInvoice(index,id)async{
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => InvoiceAdd(
-                                        )));
+                                    builder: (context) => InvoiceAdd()));
                           },
                           child: Icon(Icons.add),
                         ),
                       )),
                 ),
-             
-              ])
-              );
+              ]));
   }
 }
 

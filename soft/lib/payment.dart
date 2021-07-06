@@ -101,7 +101,10 @@ setPaymentMode(paidMethod){
   paymentMode= paidMethod;
   });
 }
-
+ Map editPaid = {
+        'paymentDate':  dateFormat(DateTime.now()).toString(),
+        'paymentCount': 'PAY003',
+      };
 
 final paymentCount = TextEditingController();
   final paymentDate = TextEditingController();
@@ -109,9 +112,10 @@ final paymentCount = TextEditingController();
   void initState() {
     super.initState();
     getData(); 
-    
+     paymentDate.text = this.editPaid['paymentDate'];
+    paymentCount.text = this.editPaid['paymentCount'];
   }
-  bool _afternoonOutdoor = false;
+ // bool _afternoonOutdoor = false;
  
   String _chosenValue;
   String drop = 'Customer Name';
@@ -138,9 +142,9 @@ final paymentCount = TextEditingController();
                             padding: const EdgeInsets.only(left:15.0,top: 15.0,bottom: 15.0),
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                               Text(this.addEdit['paymentCount'].toString(), style: TextStyle(color: Colors.purple),),
+                               Text(paymentCount.text, style: TextStyle(color: Colors.purple),),
                               Container(padding: const EdgeInsets.only(top:7.0),
-                                child: Text(this.addEdit['paymentDate'].toString(),style: TextStyle(color: Colors.grey.shade500),))
+                                child: Text(paymentDate.text,style: TextStyle(color: Colors.grey.shade500),))
                             ],
                             ),
                           ),
@@ -331,6 +335,7 @@ final paymentCount = TextEditingController();
                                 );
                               }).toList(),
                               onChanged: (value) {
+                                drop=value['userName']['firstName'];
                                 getId(value['_id']);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
                               },
                               hint: Text(this.drop.toString(),
@@ -369,7 +374,7 @@ final paymentCount = TextEditingController();
                                         },
                      decoration: InputDecoration(
                                              border:  OutlineInputBorder(), 
-                                             labelText: ('₹'),
+                                             labelText: '₹',
                                              hintText: 'Enter Amount',  
                       ),  
                     ),
