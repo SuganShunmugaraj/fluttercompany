@@ -92,7 +92,7 @@ class _InvoiceState extends State<Invoice> {
               dropdownColor: Colors.tealAccent.shade700,
               value: chosenValue,
               style:
-                  TextStyle(color: Colors.white, decorationColor: Colors.white),
+                  TextStyle(color: Colors.white, decorationColor: Colors.white,fontWeight: FontWeight.bold),
               items: [
                 'All Invoice',
                 'Draft',
@@ -170,7 +170,7 @@ class _InvoiceState extends State<Invoice> {
                       actionPane: new SlidableBehindActionPane(),
                       actionExtentRatio: 0.25,
                       child: new Container(
-                        color: Colors.white,
+                        //color: Colors.white,
                         child: ListTile(
                           title: Container(
                             child: GestureDetector(
@@ -210,22 +210,17 @@ class _InvoiceState extends State<Invoice> {
                                           )
                                         ],
                                       ),
-                                      if (this.invoiceList[index]
-                                              ['expiryDate'] ==
-                                          null)
+                                      if (this.invoiceList[index]['expiryDate'] ==null)
                                         Text((dateFormat(this.invoiceList[index]
-                                                ['recurringstartDate']) +
-                                            ' - ' +
+                                                ['recurringstartDate']) +' - ' +
                                             dateFormat(this.invoiceList[index]
                                                 ['recurringendDate'])))
                                       else
                                         Text((dateFormat(this.invoiceList[index]
-                                                ['invoiceDate']) +
-                                            ' - ' +
+                                                ['invoiceDate']) +' - ' +
                                             dateFormat(this.invoiceList[index]
                                                 ['expiryDate']))),
-                                      setOverdue(
-                                          this.invoiceList[index]['expiryDate'])
+                                      setOverdue(this.invoiceList[index]['expiryDate'])
                                     ],
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,

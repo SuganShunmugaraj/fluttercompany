@@ -19,7 +19,7 @@ class _PaymentListState extends State<PaymentList> {
     this.setState(() {
    var paymentList = json.decode(response.body);
       payment = paymentList['data'];
-    });print(payment[0]['accounts']);
+    });
   }
 
 addAmount(account){
@@ -38,6 +38,9 @@ addAmount(account){
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(backgroundColor: Colors.white,
+        title: Text('Transaction',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+      ),
       body: Stack(
         children: [
           payment == null
@@ -48,120 +51,122 @@ addAmount(account){
 
                        Column(
                         children: [
-                          Container( padding: const EdgeInsets.only(top:40.0,left: 15.0,right: 15.0,bottom: 15.0),
-                                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text('Transaction',
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,),),
-                                                      Stack(
-    children: [
-      Container(
-  width: 30,
-  height: 30,
-  child:
-   Stack(
-    children: [
-      Icon(
-        Icons.notifications,
-        color: Colors.grey,
-        size: 30,
-      ),
-      Container(
-        width: 30,
-        height: 30,
-        alignment: Alignment.topRight,
-        margin: EdgeInsets.only(top: 2),
-        child: Container(
-          width: 9,
-          height: 9,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.red,
-             ),
+  //                         Container( padding: const EdgeInsets.only(top:40.0,left: 15.0,right: 15.0,bottom: 15.0),
+  //                                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                                                 children: [
+  //                                                   Text('Transaction',
+  //                                                   style: TextStyle(
+  //                                                     fontWeight: FontWeight.bold,),),
+  // //                                                     
+  // // Stack(
+  // //   children: [
+  // //     Container(
+  // // width: 30,
+  // // height: 30,
+  // // child:
+  // //  Stack(
+  // //   children: [
+  // //     Icon(
+  // //       Icons.notifications,
+  // //       color: Colors.grey,
+  // //       size: 30,
+  // //     ),
+  // //     Container(
+  // //       width: 30,
+  // //       height: 30,
+  // //       alignment: Alignment.topRight,
+  // //       margin: EdgeInsets.only(top: 2),
+  // //       child: Container(
+  // //         width: 9,
+  // //         height: 9,
+  // //         decoration: BoxDecoration(
+  // //             shape: BoxShape.circle,
+  // //             color: Colors.red,
+  // //            ),
          
-        ),
-      ),
-    ],
-  ),)
-                   ],
-  ),
+  // //       ),
+  // //     ),
+  // //   ],
+  // // ),)
+  // //                  ],
+  // // ),
                 
-                                                  ],
-                                                ),
-                                              ),
-                                          Container(
-                                           height: 40.0,
-                                           width: 330.0,
+  //                                                 ],
+  //                                               ),
+  //                                             ),
+  
+  //                                         Container(
+  //                                          height: 40.0,
+  //                                          width: 330.0,
 
    
-  decoration: BoxDecoration(
-    border: Border.all(color: Colors.grey
-    ),
-    borderRadius: BorderRadius.all(
-        Radius.circular(5.0) 
-    ),
-  ),child: Row(
-    children: [
-      Container(padding: const EdgeInsets.only(left:5.0),
-        child: Icon(Icons.search))
-    ],
-  ),),
+  // decoration: BoxDecoration(
+  //   border: Border.all(color: Colors.grey
+  //   ),
+  //   borderRadius: BorderRadius.all(
+  //       Radius.circular(5.0) 
+  //   ),
+  // ),child: Row(
+  //   children: [
+  //     Container(padding: const EdgeInsets.only(left:5.0),
+  //       child: Icon(Icons.search))
+  //   ],
+  // ),),
                                  
                         ],
                       ),         
              
-             Container(padding: const EdgeInsets.only(top: 120.0),
+             Container(padding: const EdgeInsets.only(top: 10.0),
                child: ListView.separated(
         itemCount: payment.length,
         itemBuilder: (context, index) {
-           return  Slidable(
+           return  GestureDetector(
+              onTap: (){
+                                           Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) =>Payment(
+                                         
+                                          )));
+                                        },
+             child: Slidable(
   actionPane: new SlidableBehindActionPane(),
   actionExtentRatio: 0.25,
   child: new Container(
-    color: Colors.white,
+    //color: Colors.white,
     child: ListTile(
-          title: Container( 
-                child:GestureDetector(
-                                      onTap: (){
-                                         Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) =>Payment(
-                                       
-                                        )));
-                                      },
-                                        child: Container(
-                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                  Text(payment[index]['accountCompanyName'],
-                                                  style: TextStyle(fontWeight: FontWeight.bold),),
-                                                  Text(dateFormat(payment[index]['createdAt']),
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                    ),)
-                                                  ],
+          title: Container(
+                                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Container(
+                                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                    Text(payment[index]['accountCompanyName'],
+                                                    style: TextStyle(fontWeight: FontWeight.bold),),
+                                                    Text(dateFormat(payment[index]['createdAt']),
+                                                    style: TextStyle(
+                                                      color: Colors.grey,
+                                                      ),)
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              addAmount(payment[index]['accounts'])
+                                                addAmount(payment[index]['accounts'])
 
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ),
-            ),
-    ),),
+                                        
+              ),
+    ),
+    
           secondaryActions: <Widget>[
     new IconSlideAction(
       caption: 'Edit',
       color: Colors.grey,
       icon: Icons.more_horiz,
       onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Payment(
-                                          )))
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Payment(
+                                            )))
     ),
     new IconSlideAction(
       caption: 'Delete',
@@ -169,34 +174,35 @@ addAmount(account){
       icon: Icons.delete,
       onTap: ()async{
         await showDialog(context: context,builder:
-                      (_) => AlertDialog(
-                   title: Text( 'Do you want Delete'),
-                   actions: [
-                    FlatButton(
-                       onPressed:
-                      () {
-                        Navigator.of(context, rootNavigator: true).pop(true);
-                           }, child: Text('No',
-                           style:TextStyle(
-                             color:  Colors.tealAccent.shade700,
-                                  ),
-                                                    )),
-                              FlatButton(
-                                 onPressed:
-                                      () {
-                                     
-                                      Navigator.of(context, rootNavigator: true).pop(true);
-                                       },
-                                        child:Text('Yes',
-                                        style:TextStyle(color:Colors.tealAccent.shade700,
-                                                                              ),
-                                                                            ))
-                                                                      ],
-                                                                    ));
+                        (_) => AlertDialog(
+                     title: Text( 'Do you want Delete'),
+                     actions: [
+                      FlatButton(
+                         onPressed:
+                        () {
+                          Navigator.of(context, rootNavigator: true).pop(true);
+                             }, child: Text('No',
+                             style:TextStyle(
+                               color:  Colors.tealAccent.shade700,
+                                    ),
+                                                      )),
+                                FlatButton(
+                                   onPressed:
+                                        () {
                                        
+                                        Navigator.of(context, rootNavigator: true).pop(true);
+                                         },
+                                          child:Text('Yes',
+                                          style:TextStyle(color:Colors.tealAccent.shade700,
+                                                                                ),
+                                                                              ))
+                                                                        ],
+                                                                      ));
+                                         
       },
     ),
   ],
+             ),
            );
           
        

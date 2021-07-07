@@ -145,6 +145,8 @@ class _EditState extends State<Edit> {
       this.widget.prod['userName']['firstName'] = firstName;
       this.widget.prod['userName']['lastName'] = lastName;
       this.widget.prod['companyName'] = companyName;
+      this.widget.prod['contactEmail'] = contactEmail;
+      this.widget.prod['phone']['primaryContact'] = primaryContact;
       this.widget.prod['phone']['secondarycontact'] = secondarycontact;
       this.widget.prod['website'] = website;
       this.widget.prod['otherDetails']['facebook'] = facebook;

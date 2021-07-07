@@ -25,32 +25,39 @@ class _PaymentState extends State<Payment> {
 
 
   getId(getid)async{
-     var response = await http.get(Uri.parse(BaseUrl.invoice + getid),
+     var response = await http.get(Uri.parse(BaseUrl.getInvoice + getid),
         headers: {"Accept": "application/json"});
-    this.setState(() {
-   var paymentList = json.decode(response.body);
-      payment = paymentList['data'];
+    this.setState(() {;
+  var paymentList = json.decode(response.body);
+     payment = paymentList['data'];
     }); 
   }
 
-
+List paymentTotal;
   addAmount(amount){
-    var receivedAmount = amount;
+    var paymentReceived = int.parse(amount);
+   var paymentTotal = this.payment;
+    paymentTotal.forEach((ipayment) { 
+setState(() {
+  if(ipayment['subTotal'] > paymentReceived){
+    print( '///////////////////////////////////////'  );
 
-    this.payment.forEach((element) { 
-      print(element['subTotal']);
-     var test =   int.parse(amount) - element['subTotal'] ;
-     if(test > 0){
-       test  =   test - element['subTotal'];
+    print( ipayment['subTotal']  );
+       ipayment['subTotal']  =   ipayment['subTotal'] - paymentReceived;
+    print( ipayment['subTotal']  );
+    print( '///////////////////////////////////////'  );
+
+       paymentReceived  = 0;
      }else{
-       return false;
+        ipayment['amountPaid']  = ipayment['subTotal'];
+       paymentReceived = paymentReceived - ipayment['subTotal'];
      }
-     print(test);
-      // if(element['subTotal'] > amount ){ 
-      //       element['amountPaid'] = element['subTotal'] - amount;
-      // }
+});
+     
+    //  print(paymentReceived);
      
     });
+    print(payment);
     
     }
 
@@ -108,6 +115,7 @@ setPaymentMode(paidMethod){
 
 final paymentCount = TextEditingController();
   final paymentDate = TextEditingController();
+  final enterAmount = TextEditingController();
     @override
   void initState() {
     super.initState();
@@ -126,7 +134,9 @@ final paymentCount = TextEditingController();
        appBar:AppBar(backgroundColor: Colors.white,
         title: Text('Add Received Payment',style: TextStyle(color: Colors.black
         ),),
-        leading: Icon(Icons.arrow_back,color: Colors.black,),
+        leading: IconButton(icon: Icon(Icons.arrow_back,color: Colors.black), onPressed: (){
+          Navigator.pop(context);
+        }),
         ),
       body:Stack(children: [
         SingleChildScrollView(
@@ -369,13 +379,15 @@ final paymentCount = TextEditingController();
                              ), ),
                                       Container(width: 250.0,
                                       height: 45.0,
-                                        child: TextField(  onChanged: (text) {
-                                         addAmount(text);
-                                        },
+                                        child: TextField(  
+                                          controller: enterAmount,
                      decoration: InputDecoration(
                                              border:  OutlineInputBorder(), 
                                              labelText: '₹',
-                                             hintText: 'Enter Amount',  
+                                             hintText: 'Enter Amount', 
+                                             suffixIcon: IconButton(icon: Icon(Icons.radio_button_checked_rounded), onPressed: (){
+                                               addAmount(enterAmount.text);
+                                             }) 
                       ),  
                     ),
                                       ),

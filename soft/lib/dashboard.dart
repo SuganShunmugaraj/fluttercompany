@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:soft/config/upload_url.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key key}) : super(key: key);
@@ -10,6 +15,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class DashboardState extends State<Dashboard> {
+  List invoiceList;
    List<charts.Series> seriesList;
  
   static List<charts.Series<Sales, String>> _createRandomData() {
@@ -67,16 +73,29 @@ class DashboardState extends State<Dashboard> {
     );
   }
  
+   getData() async {
+    var response = await http.get(
+        Uri.parse(BaseUrl.invoice),
+        headers: {"Accept": "application/json"});
+    this.setState(() {
+      final invoiceData = json.decode(response.body);
+      invoiceList = invoiceData['data'];
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     seriesList = _createRandomData();
+    getData();
   }
  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: 
+        body: invoiceList==null? Container(
+                  child: Center(child: CircularProgressIndicator()),
+                ):
         Container(padding: const EdgeInsets.only(left: 15.0,top: 15.0),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -151,6 +170,7 @@ class DashboardState extends State<Dashboard> {
              height: 270.0,
         child: barChart(),
       ),
+      
 Container(
   padding: const EdgeInsets.only(top: 30.0,right: 15.0),
  
@@ -159,7 +179,7 @@ Container(
                         initialIndex: 0,
                         child: Column(
                           children: [
-                          Container(
+                       Container(
                             height: 30.0,
                             child: TabBar(
                               indicatorWeight: 0,
@@ -222,7 +242,7 @@ Container(
                               Container(
                                 child: Column(
                                   children: [
-                                    Text('ssss')
+                                    Text(''),
                                  ],
                                 ),
                               ),
@@ -237,13 +257,28 @@ Container(
                               ),
                              
                               Container(
-                                  child: SingleChildScrollView(
+                                  child: ListView.separated(
+                  itemCount: this.invoiceList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return SingleChildScrollView(
                                 child: Column(
                                   children: [
-                                    Text('ssssssssss')
+                                     if (this.invoiceList[index]['expiryDate'] ==null)
+                                        Text((dateFormat(this.invoiceList[index]
+                                                ['recurringstartDate'])
+                                            ))
+                                      else
+                                        Text((dateFormat(this.invoiceList[index]
+                                                ['invoiceDate']) +' - ' +
+                                            dateFormat(this.invoiceList[index]
+                                                ['expiryDate']))),
                                     ],
                                 ),
-                              )),
+                              );}, separatorBuilder: (context, index) {
+                    return Divider();
+                  },
+                                  )
+                              ),
                             ]),
                           ),
                         
@@ -261,4 +296,15 @@ class Sales {
   final int sales;
  
   Sales(this.year, this.sales);
+}
+
+dateFormat(dateFormat) {
+  return DateUtil().formattedDate(DateTime.parse(dateFormat));
+}
+
+class DateUtil {
+  static const DATE_FORMAT = 'yyyy-MMM-dd';
+  String formattedDate(DateTime dateTime) {
+    return DateFormat(DATE_FORMAT).format(dateTime);
+  }
 }

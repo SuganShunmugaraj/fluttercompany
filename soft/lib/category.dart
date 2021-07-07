@@ -211,8 +211,8 @@ createSubModal(context,types,datas){
         setState(() { 
           List selectedcatagory;
           selectedcatagory =  this.subCategory.where((subcat) => subcat['_id']== value).toList();
-           this.subcategoryDropDownName  = selectedcatagory[0]['subcategoryCategory']['categoryName'];
            this.subcategoryDropDownId  = selectedcatagory[0]['subcategoryCategory']['_id'];
+           this.subcategoryDropDownName  = selectedcatagory[0]['subcategoryCategory']['categoryName'];
                             });
         },
          hint: Text(this.subcategoryDropDownName.toString(),
@@ -392,12 +392,14 @@ createSubModal(context,types,datas){
         backgroundColor: Colors.white,
         title: Text(
           'Category',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
         ),
-        leading: Icon(
+        leading: IconButton(icon: Icon(
           Icons.arrow_back,
           color: Colors.black,
-        ),
+        ), onPressed: (){
+          Navigator.pop(context);
+        })
       ),
       body: Stack(
         children: [
@@ -446,7 +448,7 @@ createSubModal(context,types,datas){
                   actionPane: new SlidableBehindActionPane(),
                   actionExtentRatio: 0.25,
                  child: new Container(
-                 color: Colors.white,
+                 //color: Colors.white,
                      child: ListTile(
                title:SingleChildScrollView(
              child: Container(
@@ -557,7 +559,7 @@ createSubModal(context,types,datas){
                        actionPane: new SlidableBehindActionPane(),
                        actionExtentRatio: 0.25,
                        child: new Container(
-                       color: Colors.white,
+                       //color: Colors.white,
                        child: ListTile(
                        title:SingleChildScrollView(
                        child:  Container(

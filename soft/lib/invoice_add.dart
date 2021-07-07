@@ -225,131 +225,133 @@ class _InvoiceAddState extends State<InvoiceAdd> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                  padding:
-                      const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.search),
-                      suffixIcon: Icon(Icons.record_voice_over),
-                      icon: Icon(Icons.arrow_back),
-                      labelText: ' Search..',
-                    ),
-                  ),
-                ),
+                // Container(
+                //   padding:
+                //       const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                //   child: TextField(
+                //     obscureText: true,
+                //     decoration: InputDecoration(
+                //       border: OutlineInputBorder(),
+                //       prefixIcon: Icon(Icons.search),
+                //       suffixIcon: Icon(Icons.record_voice_over),
+                //       icon: Icon(Icons.arrow_back),
+                //       labelText: ' Search..',
+                //     ),
+                //   ),
+                // ),
                 Expanded(
                     child: ListView.separated(
                         itemCount: items.length,
                         itemBuilder: (context, index) {
-                          return Stack(
-                            children: [
-                              Container(
-                                color: Colors.white,
-                                child: ListTile(
-                                  title: Container(
-                                    child: Row(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                          child: Container(
-                                            color: Colors.tealAccent.shade700,
-                                            width: 50,
-                                            height: 50,
-                                            child: Center(
-                                                child: Text(
-                                              '${this.items[index]['serviceName'].substring(0, 1)}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 30.0,
-                                                  color: Colors.white),
-                                            )),
+                          return Container(padding: const EdgeInsets.only(top: 15.0, ),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  color: Colors.white,
+                                  child: ListTile(
+                                    title: Container(
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                            child: Container(
+                                              color: Colors.tealAccent.shade700,
+                                              width: 50,
+                                              height: 50,
+                                              child: Center(
+                                                  child: Text(
+                                                '${this.items[index]['serviceName'].substring(0, 1)}',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 30.0,
+                                                    color: Colors.white),
+                                              )),
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          padding:
-                                              const EdgeInsets.only(left: 15.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(this.items[index]
-                                                  ['serviceName']),
-                                              Text(this.items[index]
-                                                  ['serviceSaleSellingPrice']),
-                                            ],
+                                          Container(
+                                            padding:
+                                                const EdgeInsets.only(left: 15.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(this.items[index]
+                                                    ['serviceName']),
+                                                Text(this.items[index]
+                                                    ['serviceSaleSellingPrice']),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(
-                                    left: 250.0, right: 15.0, top: 15.0),
-                                child: Align(
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                        left: 20.0, top: 5.0, bottom: 5.0),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.tealAccent.shade700),
-                                    child: Row(
-                                      children: [
-                                        InkWell(
-                                            onTap: () {
-                                              if (this.items[index]
-                                                      ['quantity'] !=
-                                                  0)
+                                Container(
+                                  padding: const EdgeInsets.only(
+                                      left: 250.0, right: 15.0, top: 15.0),
+                                  child: Align(
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                          left: 20.0, top: 5.0, bottom: 5.0),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          color: Colors.tealAccent.shade700),
+                                      child: Row(
+                                        children: [
+                                          InkWell(
+                                              onTap: () {
+                                                if (this.items[index]
+                                                        ['quantity'] !=
+                                                    0)
+                                                  setState(() {
+                                                    this.items[index]
+                                                        ['quantity'] -= 1;
+                                                    setSubtract(
+                                                        this.items[index]);
+                                                  });
+                                              },
+                                              child: Icon(
+                                                Icons.remove,
+                                                color: Colors.white,
+                                                size: 16,
+                                              )),
+                                          Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 3),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 3, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(3),
+                                                  color: Colors.white),
+                                              child: Text(this
+                                                  .items[index]['quantity']
+                                                  .toString())),
+                                          InkWell(
+                                              onTap: () {
                                                 setState(() {
-                                                  this.items[index]
-                                                      ['quantity'] -= 1;
-                                                  setSubtract(
+                                                  this.items[index]['quantity'] +=
+                                                      1;
+                                                  //  this.test += 1;
+                                                  //  print(this.test);
+                                                  setSelectedItems(
                                                       this.items[index]);
                                                 });
-                                            },
-                                            child: Icon(
-                                              Icons.remove,
-                                              color: Colors.white,
-                                              size: 16,
-                                            )),
-                                        Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 3),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 3, vertical: 2),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(3),
-                                                color: Colors.white),
-                                            child: Text(this
-                                                .items[index]['quantity']
-                                                .toString())),
-                                        InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                this.items[index]['quantity'] +=
-                                                    1;
-                                                //  this.test += 1;
-                                                //  print(this.test);
-                                                setSelectedItems(
-                                                    this.items[index]);
-                                              });
-                                            },
-                                            child: Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                              size: 16,
-                                            )),
-                                      ],
+                                              },
+                                              child: Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                                size: 16,
+                                              )),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              )
-                            ],
+                                )
+                              ],
+                            ),
                           );
                         },
                         separatorBuilder: (context, index) {
@@ -430,7 +432,9 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                             Icons.arrow_back,
                             color: Colors.tealAccent.shade700,
                           ),
-                          onPressed: () {}),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          }),
                       Text(
                         heading(),
                         style: TextStyle(color: Colors.black),
@@ -817,16 +821,13 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                           );
                                         }).toList(),
                                         onChanged: (value) {
-                                          List setDropDown;
-                                          setDropDown = customer
-                                              .where((subcat) =>
-                                                  subcat['_id'] == value)
-                                              .toList();
-                                          this.invoiceDropDownName =
-                                              setDropDown[0]['userName']
-                                                  ['firstName'];
-                                          this.invoiceDropDownId =
-                                              setDropDown[0]['_id'];
+                                          setState(() {
+                                            List setDropDown;
+                                          setDropDown = customer.where((subcat) =>subcat['_id'] == value).toList();
+                                          this.invoiceDropDownId =setDropDown[0]['_id'];
+                                          this.invoiceDropDownName =setDropDown[0]['userName']['firstName'];
+                                           });
+                                          
                                         },
                                         hint: Text(
                                             this.invoiceDropDownName.toString(),

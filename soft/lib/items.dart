@@ -34,7 +34,7 @@ removeContacts(index, id) async {
     this.setState(() {
       var categoryData = json.decode(response.body);
       service = categoryData['data'];
-    });
+    });print(service);                      
   }
 
   editCategory(serviceName, serviceSaleSellingPrice,id) async {
@@ -158,6 +158,9 @@ final serviceId = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(backgroundColor: Colors.white,
+        title:Text('Items',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)
+      ),
       body:service== null?
     Container(child: Center(
       child: CircularProgressIndicator(),
@@ -165,71 +168,71 @@ final serviceId = TextEditingController();
               children: [ 
                  Column(
                         children: [
-                          Container( padding: const EdgeInsets.only(top:40.0,left: 15.0,right: 15.0,bottom: 15.0),
-                                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text('Items',
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 17.0
-                                                     ),),
-                                                     Stack(
-    children: [
-      Container(
-  width: 30,
-  height: 30,
-  child:
-   Stack(
-    children: [
-      Icon(
-        Icons.notifications,
-        color: Colors.grey,
-        size: 30,
-      ),
-      Container(
-        width: 30,
-        height: 30,
-        alignment: Alignment.topRight,
-        margin: EdgeInsets.only(top: 2),
-        child: Container(
-          width: 9,
-          height: 9,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.red,
-             ),
+  //                         Container( padding: const EdgeInsets.only(top:40.0,left: 15.0,right: 15.0,bottom: 15.0),
+  //                                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                                                 children: [
+  //                                                   Text('Items',
+  //                                                   style: TextStyle(
+  //                                                     fontWeight: FontWeight.bold,
+  //                                                     fontSize: 17.0
+  //                                                    ),),
+  //                                                    Stack(
+  //   children: [
+  //     Container(
+  // width: 30,
+  // height: 30,
+  // child:
+  //  Stack(
+  //   children: [
+  //     Icon(
+  //       Icons.notifications,
+  //       color: Colors.grey,
+  //       size: 30,
+  //     ),
+  //     Container(
+  //       width: 30,
+  //       height: 30,
+  //       alignment: Alignment.topRight,
+  //       margin: EdgeInsets.only(top: 2),
+  //       child: Container(
+  //         width: 9,
+  //         height: 9,
+  //         decoration: BoxDecoration(
+  //             shape: BoxShape.circle,
+  //             color: Colors.red,
+  //            ),
          
-        ),
-      ),
-    ],
-  ),)
-                 ],
-  ),
+  //       ),
+  //     ),
+  //   ],
+  // ),)
+  //                ],
+  // ),
                 
-                                                  ],
-                                                ),
-                                              ),
-                                          Container(
-                                           height: 40.0,
-                                           width: 330.0,
+  //                                                 ],
+  //                                               ),
+  //                                             ),
+  //                                         Container(
+  //                                          height: 40.0,
+  //                                          width: 330.0,
 
    
-  decoration: BoxDecoration(
-    border: Border.all(color: Colors.grey
-    ),
-    borderRadius: BorderRadius.all(
-        Radius.circular(5.0) 
-    ),
-  ),child: Row(mainAxisAlignment: MainAxisAlignment.end,
-    children: [
-      Container(padding: const EdgeInsets.only(right: 5.0),
-        child: Icon(Icons.search))
-    ],
-  ),),
+  // decoration: BoxDecoration(
+  //   border: Border.all(color: Colors.grey
+  //   ),
+  //   borderRadius: BorderRadius.all(
+  //       Radius.circular(5.0) 
+  //   ),
+  // ),child: Row(mainAxisAlignment: MainAxisAlignment.end,
+  //   children: [
+  //     Container(padding: const EdgeInsets.only(right: 5.0),
+  //       child: Icon(Icons.search))
+  //   ],
+  // ),),
                                  
                         ],
                       ),  
-                    Container(padding: const EdgeInsets.only(top:120.0),
+                    Container(padding: const EdgeInsets.only(top:10.0),
                       child: ListView.separated(
                                       itemCount: service.length,
                                       itemBuilder: (context, index) {
@@ -245,7 +248,7 @@ final serviceId = TextEditingController();
   actionExtentRatio: 0.25,
   child: new
    Container(
-    color: Colors.white,
+    //color: Colors.white,
     child:  
     ListTile(
           title: Container( 

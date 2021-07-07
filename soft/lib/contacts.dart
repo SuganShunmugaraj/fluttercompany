@@ -40,6 +40,9 @@ removeContacts(index,id)async{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       appBar: AppBar(backgroundColor: Colors.white,
+        title: Text('Contacts',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+      ),
       body: Stack(
         children: [
           contacts == null
@@ -49,73 +52,74 @@ removeContacts(index,id)async{
                    children: [
                       Column(
                         children: [
-                          Container( padding: const EdgeInsets.only(top:40.0,left: 15.0,right: 15.0,bottom: 15.0),
-                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                          Text('Contacts',style: TextStyle(
-                         fontWeight: FontWeight.bold,
-                         fontSize: 17.0
-                         ),),
-                   Stack(
-    children: [
-      Container(
-  width: 30,
-  height: 30,
-  child:
-   Stack(
-    children: [
-      Icon(
-        Icons.notifications,
-        color: Colors.grey,
-        size: 30,
-      ),
-      Container(
-        width: 30,
-        height: 30,
-        alignment: Alignment.topRight,
-        margin: EdgeInsets.only(top: 2),
-        child: Container(
-          width: 9,
-          height: 9,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.red,
-             ),
-        ),
-      ),
-    ],
-  ),)
-                 ],
-  ),
-     ],
-     ),
-      ),
-        Container(
-           height: 40.0,
-           width: 330.0,
-   child: 
-   TextField(
-                    //obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      //prefixIcon: Icon(Icons.search),
-                      suffixIcon: IconButton(icon: Icon(Icons.search), onPressed: (){print(contacts[0]);
-                       showSearch(context: context, delegate: SearchBox(
-                        searchItem: contacts[0]
-                       ));
-                      }),
-                      labelText: ' Search..',
-                    ),
-                  ),
-  ),
+  //                         Container( padding: const EdgeInsets.only(top:40.0,left: 15.0,right: 15.0,bottom: 15.0),
+  //                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                         Text('Contacts',style: TextStyle(
+  //                        fontWeight: FontWeight.bold,
+  //                        fontSize: 17.0
+  //                        ),),
+  //                  Stack(
+  //   children: [
+  //     Container(
+  // width: 30,
+  // height: 30,
+  // child:
+  //  Stack(
+  //   children: [
+  //     Icon(
+  //       Icons.notifications,
+  //       color: Colors.grey,
+  //       size: 30,
+  //     ),
+  //     Container(
+  //       width: 30,
+  //       height: 30,
+  //       alignment: Alignment.topRight,
+  //       margin: EdgeInsets.only(top: 2),
+  //       child: Container(
+  //         width: 9,
+  //         height: 9,
+  //         decoration: BoxDecoration(
+  //             shape: BoxShape.circle,
+  //             color: Colors.red,
+  //            ),
+  //       ),
+  //     ),
+  //   ],
+  // ),)
+  //                ],
+  // ),
+  //    ],
+  //    ),
+  //     ),
+  //       Container(
+  //          height: 40.0,
+  //          width: 330.0,
+  //  child: 
+  //  TextField(
+  //                   //obscureText: true,
+  //                   decoration: InputDecoration(
+  //                     border: OutlineInputBorder(),
+  //                     //prefixIcon: Icon(Icons.search),
+  //                     suffixIcon: IconButton(icon: Icon(Icons.search), onPressed: (){print(contacts[0]);
+  //                      showSearch(context: context, delegate: SearchBox(
+  //                       searchItem: contacts[0]
+  //                      ));
+  //                     }),
+  //                     labelText: ' Search..',
+  //                   ),
+  //                 ),
+  // ),
   
    ],
      ), 
-      Container(padding: const EdgeInsets.only(top: 120.0),
+      Container(padding: const EdgeInsets.only(top: 10.0),
         child: ListView.separated(
         itemCount: contacts.length,
         itemBuilder: (context, index) {
-          return GestureDetector(
+          return 
+          GestureDetector(
                    onTap: (){
                     Navigator.push(context,
                      MaterialPageRoute(builder: (context) =>ContactDetailPage(
@@ -126,7 +130,7 @@ removeContacts(index,id)async{
   actionPane: new SlidableBehindActionPane(),
   actionExtentRatio: 0.25,
   child: new Container(
-    color: Colors.white,
+   // color: Colors.white,
     child:  
     ListTile(
             title: Container( 
