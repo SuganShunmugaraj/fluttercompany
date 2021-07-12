@@ -32,7 +32,7 @@ class _ProfileState extends State<Profile> {
     super.initState();
      //getPayload();
   }
-  
+   final storage = FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,7 +152,10 @@ class _ProfileState extends State<Profile> {
                     Padding(
                      padding: const EdgeInsets.only(top:20.0),
                      child: GestureDetector(
-                        onTap: (){
+                        onTap: ()async {
+                          storage.delete(key: "jwt");
+                          var jwt = await storage.read(key: "jwt");
+                          print(jwt);
                           Navigator.push(context,
                            MaterialPageRoute(builder: (context) =>Signin(
                            )));

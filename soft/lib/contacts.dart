@@ -17,7 +17,7 @@ class _ContactsState extends State<Contacts> {
   Future getData() async {
     var response = await http.get(Uri.parse(BaseUrl.contacts),
         headers: {"Accept": "application/json"});
-    this.setState(() {
+ setState(() {
    var contactsData = json.decode(response.body);
       contacts = contactsData['data'];
     });

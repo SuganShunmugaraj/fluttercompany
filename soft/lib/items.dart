@@ -31,10 +31,10 @@ removeContacts(index, id) async {
   Future getData() async {                                 
     var response = await http.get(Uri.parse(BaseUrl.service),
         headers: {"Accept": "application/json"});
-    this.setState(() {
+   setState(() {
       var categoryData = json.decode(response.body);
       service = categoryData['data'];
-    });print(service);                      
+    });                 
   }
 
   editCategory(serviceName, serviceSaleSellingPrice,id) async {
@@ -56,9 +56,6 @@ removeContacts(index, id) async {
       print("Error :" + res);
     }
   }
-
-
-
 
  createModal(context, type, data) {
     if (type == "EDIT") {
@@ -154,12 +151,15 @@ removeContacts(index, id) async {
   
  final serviceName = TextEditingController();
  final serviceSaleSellingPrice = TextEditingController();
-final serviceId = TextEditingController();
+ final serviceId = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white,
-        title:Text('Items',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)
+        title:Text('Items',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+        leading: IconButton(icon: Icon(Icons.arrow_back,color: Colors.black), onPressed: (){
+          Navigator.pop(context);
+        }),
       ),
       body:service== null?
     Container(child: Center(

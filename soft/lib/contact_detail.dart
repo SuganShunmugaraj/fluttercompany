@@ -69,7 +69,6 @@ class _ContactDetailPageState extends State<ContactDetailPage> {
         context, MaterialPageRoute(
         builder: (context) => Edit(prod: this.widget.prod)));
                         }),
-                        //Icon(Icons.more_vert,color: Colors.white)
                       ],
                     ),
                   ),

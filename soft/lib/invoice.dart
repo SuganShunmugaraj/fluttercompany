@@ -21,26 +21,15 @@ class _InvoiceState extends State<Invoice> {
   List _invoice;
   Map values;
 
-  // getPayload() async {
-  //   final storage = FlutterSecureStorage();
-  //   var jwt = await storage.read(key: "jwt");
-  //   if (jwt != null) {
-  //     var jwtoken = jwt.split(".");
-
-  //     this.values = json
-  //         .decode(ascii.decode(base64.decode(base64.normalize(jwtoken[1]))));
-  //   }print(this.values['_id'] );
-  // }
-
   getData() async {
     var response = await http.get(
         Uri.parse(BaseUrl.invoice),
         headers: {"Accept": "application/json"});
-    this.setState(() {
+    setState(() {
       final invoiceData = json.decode(response.body);
       invoiceList = invoiceData['data'];
       fullinvoiceList = invoiceData['data'];
-    });print(invoiceList);
+    });
   }
 
   removeInvoice(index, id) async {
@@ -57,7 +46,6 @@ class _InvoiceState extends State<Invoice> {
     setState(() {
       this.values = this.widget.argument['values'];
     });
-    //this.getPayload();
     super.initState();
     getData();
   }
@@ -79,7 +67,9 @@ class _InvoiceState extends State<Invoice> {
         ),
       );
     } else {
-      return Text('Pending');
+      return Text('Pending', style: TextStyle(
+          color: Colors.green,
+        ),);
     }
   }
 
@@ -89,7 +79,7 @@ class _InvoiceState extends State<Invoice> {
         appBar: AppBar(
           title: DropdownButtonHideUnderline(
             child: DropdownButton(
-              dropdownColor: Colors.tealAccent.shade700,
+              dropdownColor: Colors.white,
               value: chosenValue,
               style:
                   TextStyle(color: Colors.white, decorationColor: Colors.white,fontWeight: FontWeight.bold),
@@ -104,7 +94,7 @@ class _InvoiceState extends State<Invoice> {
                   child: Text(
                     value,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.tealAccent.shade700,
                       fontSize: 20.0,
                     ),
                   ),
@@ -127,16 +117,16 @@ class _InvoiceState extends State<Invoice> {
               },
               hint: Text(this.drop.toString(),
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
+                    color: Colors.black,fontSize: 20.0,
+                    fontWeight: FontWeight.bold
                   )),
               icon: Icon(
                 Icons.arrow_drop_down,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
           ),
-          backgroundColor: Colors.tealAccent.shade700,
+          backgroundColor: Colors.white,
         ),
         body: invoiceList == null
             ? Container(
@@ -184,21 +174,34 @@ class _InvoiceState extends State<Invoice> {
                               },
                               child: Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
+                                  padding: const EdgeInsets.only(top:8.0),
+                                  child: Row( mainAxisAlignment:MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                      Column(crossAxisAlignment:CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            (this.invoiceList[index]['invoice'])
-                                                .toString(),
+                                            (this.invoiceList[index]['invoice']).toString(),
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          Text(
+                                          if (this.invoiceList[index]['expiryDate'] ==null)
+                                        Text((dateFormat(this.invoiceList[index]
+                                                ['recurringstartDate']) +' - ' +
+                                            dateFormat(this.invoiceList[index]
+                                                ['recurringendDate'])), style: TextStyle(color: Colors.grey,
+                     fontWeight: FontWeight.bold),)
+                                      else
+                                        Text((dateFormat(this.invoiceList[index]
+                                                ['invoiceDate']) +' - ' +
+                                            dateFormat(this.invoiceList[index]
+                                                ['expiryDate'])), style: TextStyle(color: Colors.grey,
+                     fontWeight: FontWeight.bold),),
+                                      setOverdue(this.invoiceList[index]['expiryDate'])
+                                        ],
+                                      ),
+                                      
+                                      Text(
                                             '₹ ' +
                                                 (this.invoiceList[index]
                                                         ['totalAmount'])
@@ -208,22 +211,7 @@ class _InvoiceState extends State<Invoice> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           )
-                                        ],
-                                      ),
-                                      if (this.invoiceList[index]['expiryDate'] ==null)
-                                        Text((dateFormat(this.invoiceList[index]
-                                                ['recurringstartDate']) +' - ' +
-                                            dateFormat(this.invoiceList[index]
-                                                ['recurringendDate'])))
-                                      else
-                                        Text((dateFormat(this.invoiceList[index]
-                                                ['invoiceDate']) +' - ' +
-                                            dateFormat(this.invoiceList[index]
-                                                ['expiryDate']))),
-                                      setOverdue(this.invoiceList[index]['expiryDate'])
                                     ],
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                   ),
                                 ),
                               ),
@@ -322,6 +310,6 @@ dateFormat(dateFormat) {
 class DateUtil {
   static const DATE_FORMAT = 'yyyy-MMM-dd';
   String formattedDate(DateTime dateTime) {
-    return DateFormat(DATE_FORMAT).format(dateTime);
+    return DateFormat(DATE_FORMAT).format(dateTime.toLocal());
   }
 }

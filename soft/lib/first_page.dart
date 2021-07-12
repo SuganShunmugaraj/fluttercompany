@@ -45,6 +45,10 @@ final PageController _pageController = PageController();
     _pageController.jumpToPage(index);
   }
  
+  @override
+  void initState() {
+    super.initState();
+  }
  
   final storage = FlutterSecureStorage();
 

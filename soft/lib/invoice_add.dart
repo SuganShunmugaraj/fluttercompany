@@ -37,7 +37,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
   getItems() async {
     var response = await http.get(Uri.parse(BaseUrl.service),
         headers: {"Accept": "application/json"});
-    this.setState(() {
+    setState(() {
       var itemsList = json.decode(response.body);
       if (this.widget.prod != null) {
         var editSelectedItems = this.widget.prod['items'];
@@ -149,13 +149,13 @@ class _InvoiceAddState extends State<InvoiceAdd> {
       "invoice": this.editInvoice['number'],
       "reference": "1234",
       "status": "Draft",
-      "invoiceDate": this.editInvoice['startDate'],
-      "expiryDate": this.editInvoice['endDate'],
+      "invoiceDate": this.addEdit['invoiceDate'],
+      "expiryDate": this.addEdit['expiryDate'],
       "recurringstartDate": null,
       "recurringendDate": null,
       "salesPerson": null,
       "projectName": null,
-      "subject": "hiii inviove",
+      "subject": this.editInvoice['subject'],
       "items": this.selectedItems,
       "totalAmount": amount,
       "customerNotes": "",
@@ -212,7 +212,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
 
   Map editInvoice = {
     'startDate': dateFormat(DateTime.now()).toString(),
-    'endDate': dateFormat(DateTime(2021, 06, 25)).toString(),
+    'endDate': dateFormat(DateTime.now()).toString(),
     'number': 'INV0123',
     'subject': 'Invoice Subject',
   };
@@ -225,20 +225,6 @@ class _InvoiceAddState extends State<InvoiceAdd> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Container(
-                //   padding:
-                //       const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-                //   child: TextField(
-                //     obscureText: true,
-                //     decoration: InputDecoration(
-                //       border: OutlineInputBorder(),
-                //       prefixIcon: Icon(Icons.search),
-                //       suffixIcon: Icon(Icons.record_voice_over),
-                //       icon: Icon(Icons.arrow_back),
-                //       labelText: ' Search..',
-                //     ),
-                //   ),
-                // ),
                 Expanded(
                     child: ListView.separated(
                         itemCount: items.length,
@@ -332,10 +318,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                           InkWell(
                                               onTap: () {
                                                 setState(() {
-                                                  this.items[index]['quantity'] +=
-                                                      1;
-                                                  //  this.test += 1;
-                                                  //  print(this.test);
+                                                  this.items[index]['quantity'] += 1;
                                                   setSelectedItems(
                                                       this.items[index]);
                                                 });
@@ -529,7 +512,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                   decoration: InputDecoration(
                                                     border:
                                                         OutlineInputBorder(),
-                                                    labelText: "Invoice Date",
+                                                    labelText: "Expiry Date",
                                                     suffixIcon: Icon(Icons
                                                         .calendar_today_outlined),
                                                   ),
@@ -734,7 +717,8 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                             expiryDate.text,
                                                             invoiceDate.text,
                                                             invoice.text,
-                                                            subject.text);Navigator.pop(context);
+                                                            subject.text
+                                                            );Navigator.pop(context);
                                                       },
                                                       textColor: Colors.white,
                                                       color: Colors
@@ -1021,6 +1005,6 @@ dateFormat(dateFormat) {
 class DateUtil {
   static const DATE_FORMAT = 'yyyy-MMM-dd';
   String formattedDate(DateTime dateTime) {
-    return DateFormat(DATE_FORMAT).format(dateTime);
+    return DateFormat(DATE_FORMAT).format(dateTime.toLocal());
   }
 }

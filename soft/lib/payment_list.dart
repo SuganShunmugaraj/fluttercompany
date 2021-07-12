@@ -16,12 +16,19 @@ class _PaymentListState extends State<PaymentList> {
   Future getData() async {
     var response = await http.get(Uri.parse(BaseUrl.payment),
         headers: {"Accept": "application/json"});
-    this.setState(() {
+    setState(() {
    var paymentList = json.decode(response.body);
       payment = paymentList['data'];
     });
   }
-
+ removePayment(index, id) async {
+    setState(() {
+      payment.removeAt(index);
+    });
+    var response = await http.delete(Uri.parse(BaseUrl.payment + id),
+        headers: {"Accept": "application/json"});
+    print(response);
+  }
 addAmount(account){
     var amount=0;
      account.forEach((element) {
@@ -30,11 +37,14 @@ addAmount(account){
    totalAmount =amount.toString();
    return Text('₹ '+totalAmount,style: TextStyle(fontWeight: FontWeight.bold),);
 }
+
+
  @override
   void initState() {
   super.initState();
    getData();
   }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,8 +188,7 @@ addAmount(account){
                      title: Text( 'Do you want Delete'),
                      actions: [
                       FlatButton(
-                         onPressed:
-                        () {
+                         onPressed:() {
                           Navigator.of(context, rootNavigator: true).pop(true);
                              }, child: Text('No',
                              style:TextStyle(
@@ -189,7 +198,7 @@ addAmount(account){
                                 FlatButton(
                                    onPressed:
                                         () {
-                                       
+                                        removePayment(index,this.payment[index]['_id']);
                                         Navigator.of(context, rootNavigator: true).pop(true);
                                          },
                                           child:Text('Yes',
