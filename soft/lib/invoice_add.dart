@@ -955,6 +955,7 @@ class _InvoiceAddState extends State<InvoiceAdd> {
                                                             fontSize: 18.0),
                                                       ))
                                                     ],
+                                                    
                                                   ),
                                                   color: Colors
                                                       .tealAccent.shade700,

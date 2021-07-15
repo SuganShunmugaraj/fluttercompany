@@ -1,4 +1,4 @@
-package com.example.soft
+package com.hysaserp.erp
 
 import io.flutter.embedding.android.FlutterActivity
 

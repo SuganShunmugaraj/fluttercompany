@@ -1,5 +1,5 @@
 class BaseUrl{
-  static String baseUrl = "http://192.168.1.100:3000/";
+  static String baseUrl = "http://192.168.1.102:3000/";
   static String contacts = baseUrl + "api/client/";
   static String login = baseUrl + "api/company/login";
    static String invoice = baseUrl + "api/invoices/getnonrecurringinvoice/";

@@ -49,7 +49,8 @@ addAmount(account){
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white,
-        title: Text('Transaction',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+        title: Text('Transaction',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+        ),
       ),
       body: Stack(
         children: [

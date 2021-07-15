@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.soft">
+    package="com.hysaserp.erp">
    <application
         android:label="soft"
         android:usesCleartextTraffic="true"
